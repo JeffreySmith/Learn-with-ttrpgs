@@ -4,12 +4,13 @@
     "description": "Capstone Project for INFO8105",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+	"index": "tsc && node index"
     },
     "author": "",
     "license": "BSD-3-Clause",
     "dependencies": {
-        "@types/better-sqlite3": "^7.6.5",
+
         "bcrypt": "^5.1.1",
         "better-sqlite3": "^8.6.0",
         "cookie-session": "^2.0.0",
@@ -19,6 +20,7 @@
     },
     "devDependencies": {
         "@types/bcrypt": "^5.0.0",
+	"@types/better-sqlite3": "^7.6.5",
         "@types/body-parser": "^1.19.3",
         "@types/cookie-session": "^2.0.45",
         "@types/express": "^4.17.18",
