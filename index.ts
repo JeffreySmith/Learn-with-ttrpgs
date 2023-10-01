@@ -1,8 +1,9 @@
 import express, { Express, Request, Response } from 'express';
 import * as crypto from "crypto";
 import session, { Cookie, Session } from 'express-session';
-
-const sqlite3 = require("sqlite3");
+import * as bcrypt from 'bcrypt';
+import Database from 'better-sqlite3';
+//const sqlite3 = require("sqlite3");
 const port = 8000;
 
 const my_session = {
@@ -17,72 +18,126 @@ declare module 'express-session'{
     username:string;
   }
 }
-
+bcrypt
+  .compare("54321","$2b$10$QiAdjxrfixKQVxf1xhf8ou9XRRwPcn3fN9CXR3FbnDWNM5WNBkqHu")
+  .then(result=>{
+    console.log(result);
+  })
+  .catch(err=>console.error(err.message));
 
 const app: Express = express();
 app.use(session(my_session));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-let db = new sqlite3.Database("./SQL/testDB.db", (err: any) => {
+
+/*let db:Database = new Database("./SQL/testDB.db", (err: any) => {
   if (err) {
     console.error(err.message);
+    process.exit();
   }
 });
-
-type User = {
+*/
+const db = new Database('SQL/testDB.db');
+interface User {
   name:string;
   email:string;
   password:string;
-  id:number
+  id:number | null
 };
-let users:User[] = [];
+/*interface PublicUser  {
+  name:string;
+  email:string;
+  id:number|null;
+  };
+*/
+type PublicUser = Omit<User,'password'>;
+function convertUser (user:User):PublicUser{
+  console.log(user.name);
+  let new_user:PublicUser = {
+    name:user.name,
+    email:user.email,
+    id:user.id
+  };
+  return new_user;
+}
 
-db.serialize(() => {
-  db.each("select * from Users",
-    (err: any, row: any) => {
-      if (err) {
-        console.error(err.message);
-      }
-      let user:User = {
-        id: row.ID,
-        name: row.Name,
-        email: row.Email,
-        password: row.Password
-      };
+function argCount(args:number,body:object){
+  let arg_count = 0;
+  for ( let _ in body){
+    arg_count+=1;
+  }
+  if(arg_count===args){
+    return true;
+  }
+  return false;
+}
+
+function get_users():User[] {
+  let users: User[]=[];
+ 
+  const rows = db.prepare("SELECT * FROM Users").all();
+  for (let row of rows){
+    let json = JSON.stringify(row);
+    users.push(JSON.parse(json as string));
+  }
+
+  return users;
+}
+function insert_user(user:User){
+  bcrypt
+    .hash(user.password,10)
+    .then(hash=>{
       
-      let jSON = JSON.stringify(user);
-      users.push(user);
-      console.log(jSON);
-      console.log(row.ID + "\t" + row.Name);
-    });
-});
-
+  
+      let expr = db.prepare("INSERT INTO Users (name,password,email) VALUES(?,?,?)");
+      let info = expr.run(user.name,hash,user.email);
+      console.log(info);
+      console.log(hash);
+    })
+    .catch(err=>console.error(err.message));
+}
 app.get("/", (_req: Request, res: Response) => {
   res.send("Hello there!");
 });
 app.get("/user", (_req: Request, res: Response) => {
-  let a = JSON.stringify(users[0]);
-  res.json(a);
+  const users:User[] = get_users();
+  let users_nopwd = users.map(u=>convertUser(u));
+
+  res.json(users_nopwd);
+});
+app.post("/user",(req:Request,res:Response)=>{
+  const num_args = 3;
+  if(!argCount(num_args,req.body)){
+    res.status(400).send("Incorrect format");
+  }
+  let new_user:User = {
+    id:null,
+    name:req.body.name,
+    email:req.body.email,
+    password:req.body.password
+  };
+  insert_user(new_user);
+  console.log(`Name: ${new_user.name}, email: ${new_user.email}, password: ${new_user.password}`);
+  res.status(200).send("User created!")
+  
 });
 app.post("/login", (req: Request, res: Response) => {
+  
   if (req.body.username) {
     console.log(`Username is: ${req.body.username}`);
   }
   if (req.body.password) {
     console.log(`Password is ${req.body.password}`);
   }
-  let args = 0;
-  for (let arg in req.body){
-    args+=1;
-  }
-  if(args > 2){
+  
+  if(!argCount(2,req.body)){
     res.status(400).send("Incorrect format");
   }
   
   let successfull = false;
   let email = "";
   let username = "";
-  for(let user of users){
+  for(let user of get_users()){
     if(req.body.username === user.email && req.body.password === user.password){
       successfull = true;
       email = user.email;

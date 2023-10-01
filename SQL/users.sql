@@ -1,17 +1,15 @@
 CREATE TABLE IF NOT EXISTS Users (
-       ID INTEGER PRIMARY KEY,
-       Name VARCHAR(50) NOT NULL,
-       Email VARCHAR(50) NOT NULL UNIQUE,
-       Password VARCHAR(50) NOT NULL
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       name VARCHAR(51) NOT NULL,
+       email VARCHAR(50) NOT NULL UNIQUE,
+       password VARCHAR(50) NOT NULL
 );
-INSERT OR REPLACE INTO Users(ID,Name,Email,Password) VALUES(
-       1,
+INSERT OR REPLACE INTO Users (Name,Email,Password) VALUES(
        "Bobby",
        "bob@gmail.com",
        "12345"
 );
-INSERT OR REPLACE INTO Users (ID,Name,Email,Password) VALUES(
-       2,
+INSERT OR REPLACE INTO Users (Name,Email,Password) VALUES(
        "Jane",
        "jaoy@hotmail.com",
        "98543"
