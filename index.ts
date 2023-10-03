@@ -12,10 +12,12 @@ const my_session = {
   saveUninitialized: true
 };
 
+//Type annotations for things from req.session
 declare module 'express-session'{
   interface SessionData{
     loggedIn:boolean;
     username:string;
+    role:"admin"|"user";
   }
 }
 
@@ -25,15 +27,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-const db = new Database('SQL/testDB.db');
+
 interface User {
   name:string;
   email:string;
   password:string;
   id:number | null
 };
+
 //PublicUser is the only thing that should ever be sent to the browser. We don't want to accidentally send passwords
 type PublicUser = Omit<User,'password'>;
+
 function convertUser (user:User):PublicUser{
   console.log(user.name);
   let new_user:PublicUser = {
@@ -56,18 +60,24 @@ function argCount(args:number,body:object):boolean{
 }
 
 function get_users():User[] {
+  const db = new Database("SQL/testDB.db");
   let users: User[]=[];
  
   const rows = db.prepare("SELECT * FROM Users").all();
   for (let row of rows){
-    let json = JSON.stringify(row);
-    users.push(JSON.parse(json as string));
+    
+    //let json = JSON.stringify(row);
+    //console.log(`${row as User} \n ${json}`);
+    //users.push(JSON.parse(json as string));
+    users.push(row as User);
   }
+  db.close();
 
   return users;
 }
 // This function hashes the user's password before saving things to the db
-function insert_user(user:User){
+function insert_user(user:User):void{
+  const db = new Database("SQL/testDB.db");
   bcrypt
     .hash(user.password,10)
     .then(hash=>{
@@ -77,6 +87,7 @@ function insert_user(user:User){
       console.log(hash);
     })
     .catch(err=>console.error(err.message));
+  db.close();
 }
 app.get("/", (_req: Request, res: Response) => {
   res.send("Hello there!");
