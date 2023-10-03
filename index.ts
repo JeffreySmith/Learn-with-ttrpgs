@@ -6,6 +6,8 @@ import Database from 'better-sqlite3';
 
 const port = 8000;
 
+const db_string:string = "SQL/testDB.db";
+
 const my_session = {
   secret: crypto.randomUUID(),
   resave: false,
@@ -38,6 +40,22 @@ interface User {
 //PublicUser is the only thing that should ever be sent to the browser. We don't want to accidentally send passwords
 type PublicUser = Omit<User,'password'>;
 
+interface Group {
+  id: number | null;
+  owner:User;
+  name:string;
+};
+function insertGroup(owner:User,groupName:string):void {
+  let group:Group = {
+    id:null,
+    name:groupName,
+    owner:owner,
+  };
+  const db = new Database(db_string);
+  let expr = db.prepare("INSERT INTO Groups (name,owner) VALUES(?,?)");
+  let info = expr.run(group.name,owner.id);
+  console.log(info);
+}
 function convertUser (user:User):PublicUser{
   console.log(user.name);
   let new_user:PublicUser = {
@@ -59,16 +77,12 @@ function argCount(args:number,body:object):boolean{
   return false;
 }
 
-function get_users():User[] {
-  const db = new Database("SQL/testDB.db");
+function getUsers():User[] {
+  const db = new Database(db_string);
   let users: User[]=[];
  
   const rows = db.prepare("SELECT * FROM Users").all();
   for (let row of rows){
-    
-    //let json = JSON.stringify(row);
-    //console.log(`${row as User} \n ${json}`);
-    //users.push(JSON.parse(json as string));
     users.push(row as User);
   }
   db.close();
@@ -77,7 +91,7 @@ function get_users():User[] {
 }
 // This function hashes the user's password before saving things to the db
 function insert_user(user:User):void{
-  const db = new Database("SQL/testDB.db");
+  const db = new Database(db_string);
   bcrypt
     .hash(user.password,10)
     .then(hash=>{
@@ -93,7 +107,7 @@ app.get("/", (_req: Request, res: Response) => {
   res.send("Hello there!");
 });
 app.get("/user", (_req: Request, res: Response) => {
-  const users:User[] = get_users();
+  const users:User[] = getUsers();
   let users_nopwd = users.map(u=>convertUser(u));
 
   res.json(users_nopwd);
@@ -121,13 +135,31 @@ app.get("/check",(req:Request,res:Response)=>{
     res.send(`No available session?`);
   }
 });
+//First argument to post: username?
+app.post("/group",(req:Request,res:Response) => {
+  let foundUser = false;
+  if(!argCount(2,req.body)){
+    res.status(400).send("Incorrect format");
+  }
+  let users = getUsers();
+  for(let user of users){
+    if(user.email === req.body.username){
+      foundUser = true;
+      insertGroup(user,req.body.name);
+      res.status(200).send(`Successfully created group ${req.body.name}`);
+    }
+  }
+  if (!foundUser){
+    res.status(401).send(`User ${req.body.username} was not found`);
+  }
+});
 app.post("/login", (req: Request, res: Response) => {
   
   if(!argCount(2,req.body)){
     res.status(400).send("Incorrect format");
   }
   
-  let users = get_users();
+  let users = getUsers();
   users.map(u=>console.log(u));
   for(let user of users){
     if(req.body.username === user.email){
