@@ -28,8 +28,6 @@ app.use(session(my_session));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-
 interface User {
   name:string;
   email:string;
@@ -45,6 +43,20 @@ interface Group {
   owner:User;
   name:string;
 };
+
+function getGroups():Group[]{
+  const db = new Database(db_string);
+  let groups:Group[] = [];
+  const rows = db.prepare("SELECT * FROM Groups").all();
+  for (let row of rows){
+    console.log(row);
+    groups.push(row as Group);
+  }
+  
+  db.close();
+  return groups;
+  
+}
 function insertGroup(owner:User,groupName:string):void {
   let group:Group = {
     id:null,
@@ -54,10 +66,18 @@ function insertGroup(owner:User,groupName:string):void {
   const db = new Database(db_string);
   let expr = db.prepare("INSERT INTO Groups (name,owner) VALUES(?,?)");
   let info = expr.run(group.name,owner.id);
+  db.close();
   console.log(info);
 }
+function deleteGroup(group:Group){
+  const db = new Database(db_string);
+  let expr = db.prepare("DELETE FROM Groups WHERE id=?");
+  let info = expr.run(group.id);
+  console.log(info);
+  
+  db.close();
+}
 function convertUser (user:User):PublicUser{
-  console.log(user.name);
   let new_user:PublicUser = {
     name:user.name,
     email:user.email,
@@ -123,8 +143,12 @@ app.post("/user",(req:Request,res:Response)=>{
     email:req.body.email,
     password:req.body.password
   };
-  insert_user(new_user);
-  res.status(200).send(`User ${new_user.email} created!`);
+  try{
+    insert_user(new_user);
+    res.status(200).send(`User ${new_user.email} created!`);
+  }catch(err){
+    res.status(401).send(`Error: ${err}`);
+  }
   
 });
 app.get("/check",(req:Request,res:Response)=>{
@@ -145,8 +169,16 @@ app.post("/group",(req:Request,res:Response) => {
   for(let user of users){
     if(user.email === req.body.username){
       foundUser = true;
-      insertGroup(user,req.body.name);
-      res.status(200).send(`Successfully created group ${req.body.name}`);
+      try{
+        insertGroup(user,req.body.name);
+        res.status(200).send(`Successfully created group ${req.body.name}`);
+        
+      }catch(err){
+        res.status(401).send(`Error: ${err}`);
+      }
+        
+      
+      
     }
   }
   if (!foundUser){
@@ -184,7 +216,22 @@ app.post("/login", (req: Request, res: Response) => {
     }
   }
 });
-
+app.post("/deletegroup", (req:Request,res:Response)=>{
+  let groups:Group[] = getGroups();
+  if(!argCount(1,req.body)){
+    res.status(400).send("Incorrect format");
+  }
+  for(let group of groups){
+    console.log(group.name);
+    if(group.name === req.body.groupname){
+      deleteGroup(group);
+      console.log(`Deleted group ${group.name}`);
+      break;
+    }
+  }
+  
+  res.status(200).send("Deleted");
+});
   
 
 
