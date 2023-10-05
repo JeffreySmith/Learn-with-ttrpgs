@@ -1,15 +1,15 @@
 CREATE TABLE IF NOT EXISTS Groups(
-       ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-       Name VARCHAR(50) NOT NULL UNIQUE,
-       Owner INT NOT NULL,
-       FOREIGN KEY(Owner) REFERENCES Users(ID)
+       id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+       name VARCHAR(50) NOT NULL UNIQUE,
+       owner INT NOT NULL,
+       FOREIGN KEY(owner) REFERENCES Users(id)
 );
 
 CREATE TABLE IF NOT EXISTS Sessions(
-       ID INT NOT NULL PRIMARY KEY,
-       GroupID INTEGER,
-       Time DATETIME NOT NULL,
-       FOREIGN KEY(GroupID) REFERENCES Groups(ID)
+       id INT NOT NULL PRIMARY KEY,
+       groupid INTEGER,
+       time DATETIME NOT NULL,
+       FOREIGN KEY(groupid) REFERENCES Groups(id)
 );       
 
        
