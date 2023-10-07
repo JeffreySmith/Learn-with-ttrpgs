@@ -1,9 +1,9 @@
 import express, { Express, Request, Response } from 'express';
 import * as crypto from "crypto";
-import session, { Cookie, Session } from 'express-session';
+import session from 'express-session';
 import * as bcrypt from 'bcrypt';
 import Database from 'better-sqlite3';
-
+import * as path from 'path';
 const port = 8000;
 
 const db_string:string = "SQL/testDB.db";
@@ -27,6 +27,12 @@ const app: Express = express();
 app.use(session(my_session));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.set("view engine","ejs");
+app.set("views",path.join(__dirname,"www/views"));
+app.use(express.static(__dirname + "/www"));
+
+
 
 interface User {
   name:string;
@@ -52,11 +58,10 @@ function getGroups():Group[]{
     console.log(row);
     groups.push(row as Group);
   }
-  
   db.close();
   return groups;
-  
 }
+
 function insertGroup(owner:User,groupName:string):void {
   let group:Group = {
     id:null,
@@ -123,6 +128,11 @@ function insert_user(user:User):void{
     .catch(err=>console.error(err.message));
   db.close();
 }
+
+app.get("/ejs",(_req:Request, res:Response)=>{
+  res.render('index');
+});
+
 app.get("/", (_req: Request, res: Response) => {
   res.send("Hello there!");
 });
