@@ -114,9 +114,19 @@ function getUsers():User[] {
 
   return users;
 }
+function findUser(user:User):User|null{
+  let users:User[] = getUsers();
+  for(let u of users){
+    if (u.email === user.email){
+      return u;
+    }
+  }
+  return null;
+}
 // This function hashes the user's password before saving things to the db
 function insert_user(user:User):void{
-  const db = new Database(db_string);
+  let result:boolean = false;
+  const db = new Database(db_string,{verbose:console.log,fileMustExist:true});
   bcrypt
     .hash(user.password,10)
     .then(hash=>{
@@ -124,14 +134,37 @@ function insert_user(user:User):void{
       let info = expr.run(user.name,hash,user.email);
       console.log(info);
       console.log(hash);
+      db.close();
+      
     })
     .catch(err=>console.error(err.message));
-  db.close();
+
+  
 }
 
 app.get("/ejs",(_req:Request, res:Response)=>{
   res.render('index');
 });
+app.get("/register",(req:Request,res:Response)=>{
+  res.render("register");
+});
+app.get("/account",(req:Request,res:Response)=>{
+
+  //res.render("account",);
+});
+app.post("/register",(req:Request,res:Response)=>{
+
+  let new_user:User = {
+    id:null,
+    name:req.body.name,
+    email:req.body.email,
+    password:req.body.password,
+  };
+
+
+  res.redirect("/account");
+});
+
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("Hello there!");
@@ -142,7 +175,11 @@ app.get("/user", (_req: Request, res: Response) => {
 
   res.json(users_nopwd);
 });
+app.get("/login",(req:Request,res:Response)=>{
+  res.render("login");
+});
 app.post("/user",(req:Request,res:Response)=>{
+
   const num_args = 3;
   if(!argCount(num_args,req.body)){
     res.status(400).send("Incorrect format");
@@ -154,12 +191,15 @@ app.post("/user",(req:Request,res:Response)=>{
     password:req.body.password
   };
   try{
-    insert_user(new_user);
+    
+    let result = insert_user(new_user);
+
     res.status(200).send(`User ${new_user.email} created!`);
+
   }catch(err){
     res.status(401).send(`Error: ${err}`);
   }
-  
+
 });
 app.get("/check",(req:Request,res:Response)=>{
   if(req.session.username){
