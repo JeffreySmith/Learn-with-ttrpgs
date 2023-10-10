@@ -152,6 +152,33 @@ app.get("/account",(req:Request,res:Response)=>{
 
   //res.render("account",);
 });
+
+app.post("/login",(req:Request,res:Response)=>{
+  const users:User[] = getUsers();
+  const email:string = req.body.email;
+  const password:string = req.body.password;
+  const user:User|undefined = users.find((user)=>user.email === email);
+
+  if(!user){
+    return res.render("login");
+  }
+  bcrypt.compare(password,user.password)
+    .then((result)=>{
+      if (result) {
+        req.session.loggedIn = true;
+        req.session.username = user.email;
+        res.render(`Logged in as ${user.email}`);
+      } else {
+        res.render("login");
+      }
+    })
+    .catch((err) => {
+      console.error(`Error: ${err}`);
+      res.render("login");
+    });
+  
+});
+
 app.post("/register",(req:Request,res:Response)=>{
 
   let new_user:User = {
