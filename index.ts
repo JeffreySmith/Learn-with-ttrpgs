@@ -160,6 +160,7 @@ app.post("/login",(req:Request,res:Response)=>{
   const user:User|undefined = users.find((user)=>user.email === email);
 
   if(!user){
+    console.log("User not found");
     return res.render("login");
   }
   bcrypt.compare(password,user.password)
@@ -167,13 +168,16 @@ app.post("/login",(req:Request,res:Response)=>{
       if (result) {
         req.session.loggedIn = true;
         req.session.username = user.email;
-        res.render(`Logged in as ${user.email}`);
+        req.session.role = "user";
+        console.log("User login correct");
+        res.render("login");
       } else {
+        console.log("Password is wrong");
         res.render("login");
       }
     })
     .catch((err) => {
-      console.error(`Error: ${err}`);
+      console.error(`Error with bcrypt: ${err}`);
       res.render("login");
     });
   
@@ -188,7 +192,7 @@ app.post("/register",(req:Request,res:Response)=>{
     password:req.body.password,
   };
 
-
+  //doesn't exist yet
   res.redirect("/account");
 });
 
@@ -262,8 +266,8 @@ app.post("/group",(req:Request,res:Response) => {
     res.status(401).send(`User ${req.body.username} was not found`);
   }
 });
-app.post("/login", (req: Request, res: Response) => {
-  
+app.post("/login", (err:Error, req: Request, res: Response) => {
+  console.log(`Error: ${err}`);
   if(!argCount(2,req.body)){
     res.status(400).send("Incorrect format");
   }
