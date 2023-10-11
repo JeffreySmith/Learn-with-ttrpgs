@@ -4,7 +4,7 @@ import session from 'express-session';
 import * as bcrypt from 'bcrypt';
 import Database from 'better-sqlite3';
 import * as path from 'path';
-import {hello} from './hello';
+//import {hello} from './hello';
 const port = 8000;
 
 const db_string:string = "SQL/testDB.db";
@@ -14,7 +14,7 @@ const my_session = {
   resave: false,
   saveUninitialized: true
 };
-hello("Jeffrey");
+
 //Type annotations for things from req.session
 declare module 'express-session'{
   interface SessionData{
@@ -32,8 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"www/views"));
 app.use(express.static(__dirname + "/www"));
-
-
 
 interface User {
   name:string;
@@ -103,7 +101,7 @@ function argCount(args:number,body:object):boolean{
   return false;
 }
 
-function getUsers():User[] {
+export function getUsers():User[] {
   const db = new Database(db_string);
   let users: User[]=[];
  

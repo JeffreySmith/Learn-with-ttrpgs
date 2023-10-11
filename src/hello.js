@@ -1,4 +1,5 @@
+import {test} from './index';
 export function hello(name){
-    console.log(`Hello, ${name}`);
+    test();
 }
-module = hello;
+hello("Jeffrey");
