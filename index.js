@@ -5,6 +5,16 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const Database = require('better-sqlite3');
 const path = require('path');
+const nodemailer = require('nodemailer');
+const { exit } = require('process');
+
+require('dotenv').config();
+
+if(process.env.pass == undefined){
+  console.log(`You need pass="passwordhere" in .env`);
+  exit(1);
+}
+
 
 const port = 8000;
 
@@ -13,6 +23,29 @@ const my_session = {
     resave: false,
     saveUninitialized: true
 };
+
+const transporter = nodemailer.createTransport({
+  service:'gmail',
+  auth:{
+    user:'ttrpglearning@gmail.com',
+    pass:process.env.pass
+  }
+});
+
+const mailOptions = {
+  from:'ttrpglearning@gmail.com',
+  to:'test@test.com', //Address to which you want to send
+  subject:'Sending email via node.js', //subject
+  text:"If this email makes it to you, I've figured out how to send emails via node.js" //body of email
+};
+transporter.sendMail(mailOptions,(error,info)=>{
+  if(error){
+    console.log(error);
+  }
+  else{
+    console.log(`Email sent: `+info.response);
+  }
+});
 
 const app = express();
 app.use(session(my_session));
