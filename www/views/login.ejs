@@ -8,9 +8,9 @@
 <body>
     <form action="/login" method="post" >
         <label>Email:</label>
-        <input type="text" id="email" name="email" >
+        <input required type="text" id="email" name="email" >
         <label>Password:</label>
-        <input type="password" id="password" name="password">
+        <input required type="password" id="password" name="password">
         <input type="submit" >
     </form>
     <% if (typeof(message) != 'undefined'){ %>
