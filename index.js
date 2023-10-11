@@ -121,6 +121,18 @@ app.post("/login", (req, res) => {
       res.render("login");
     });
 });
+app.post("/logout",(req,res)=>{
+  if(req.session.username){
+    console.log(`User ${req.session.username} has been logged out`);
+  }
+  else{
+    console.log("No one is currently logged in");
+  }
+  req.session.loggedIn = undefined;
+  req.session.username = undefined;
+  req.session.role = undefined;
+  res.render("index");
+});
 
 app.post("/group",(req,res)=>{
   let email = req.body.email;
