@@ -75,12 +75,20 @@ app.get("/check",(req,res)=>{
     res.send("Please log in");
   }
 });
-
+app.get("/register",(req,res)=>{
+  res.render("registration");
+});
 app.get("/login",(req,res)=>{
   res.render("login");
 });
-app.get("/logout",(req,res)=>{
-  
+app.get("/userpage",(req,res)=>{
+  if(req.session.loggedIn){
+    let user = getUsers().find((user)=> user.email === req.session.username);
+    res.render("userpage",{user:user});
+  }
+  else{
+    res.redirect("/login");
+  }
 });
 
 app.post("/register",(req,res)=>{
@@ -89,7 +97,7 @@ app.post("/register",(req,res)=>{
   let password = req.body.password;
 
   insertUser(name,email,password);
-  res.send("Pretend that we definitely did that right");
+  res.send("Pretend that we definitely did that right. Eventually we'll check this server-side");
 });
 
 app.post("/login", (req, res) => {
