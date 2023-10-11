@@ -44,16 +44,19 @@ function insertUser(name,email,password){
     })
     .catch(err=>console.error(err.message));
 }
-
+//Make sure you don't try to bind an object to one of the values.
+//Trust me, it doesn't work
 function insertGroup(owner,name){
   let expr = db.prepare("INSERT INTO Groups (name,owner) VALUES(?,?)");
-  let info = expr.run(name,findUserSafe(owner).id);
-  console.log(info);
+  let info = expr.run(name,findUserSafe(owner.email).id);
+  console.log(`Insert group response: ${info}`);
 }
 
 function findUserSafe(email){
-  let rows = db.prepare("SELECT id,name,email From Users WHERE email=?").all(email);
-  return rows;
+  let expr = db.prepare("SELECT id,name,email From Users WHERE email=?");
+  let info = expr.get(email);
+  console.log(info);
+  return info;
 }
 function deleteGroup(group){
   let expr = db.prepare("DELETE FROM Groups where id=?");
@@ -61,11 +64,18 @@ function deleteGroup(group){
   console.log(info);
 }
 app.get("/",(req,res)=>{
-  console.log(findUserSafe("test@email.com"));
-  res.render("index");
+  
+  if(req.session.username){
+    let user = getUsers().find((user)=>user.email === req.session.username);
+    res.render("index",{user:user});
+  }
+  else{
+    res.render("index");
+  }
 });
 app.get("/group",(req,res)=>{
-  res.render("group");
+  let users = getUsers();
+  res.render("creategroup",{users:users});
 });
 app.get("/check",(req,res)=>{
   if(req.session.username){
@@ -143,15 +153,17 @@ app.post("/logout",(req,res)=>{
 });
 
 app.post("/group",(req,res)=>{
-  let email = req.body.email;
+  let email = req.body.owner;
   let name = req.body.name;
   let users = getUsers();
+  console.log(`Email:${email}`);
+  console.log(`Name:${name}`);
   const user = users.find((user)=> user.email === email);
   if(!user){
-    return res.render("group",{error:"User doesn't exist"});
+    return res.render("creategroup",{error:"User doesn't exist"});
   }
   insertGroup(user,name);
-  res.render("group",{message:"Successfull"});
+  res.render("creategroup",{message:"Successfull"});
 });
 app.post("/findgroup",(req,res)=>{
   let name = req.body.name;
