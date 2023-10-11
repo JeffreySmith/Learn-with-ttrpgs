@@ -13,5 +13,8 @@
         <input type="password" id="password" name="password">
         <input type="submit" >
     </form>
+    <% if (typeof(message) != 'undefined'){ %>
+    <p><%=message%></p>
+    <% } %>
 </body>
 </html>
