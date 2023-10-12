@@ -12,7 +12,7 @@ require('dotenv').config();
 
 if(process.env.pass == undefined){
   console.log(`You need pass="passwordhere" in .env`);
-  exit(1);
+  console.log("Without it, you won't be able to send emails");
 }
 
 
