@@ -7,7 +7,8 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const { exit } = require('process');
-
+const { query,validationResult } = require('express-validator');
+const {check} = require( 'express-validator');
 require('dotenv').config();
 
 if(process.env.pass == undefined){
@@ -18,12 +19,16 @@ if(process.env.pass == undefined){
 
 const port = 8000;
 
+//I genuinely don't know if this is the right way to do this. We do have support for a .env file
+//now, so we could load it from there
 const my_session = {
     secret: crypto.randomUUID(),
     resave: false,
     saveUninitialized: true
 };
 
+//I know the following code works, so I don't want to delete it yet
+/*
 const transporter = nodemailer.createTransport({
   service:'gmail',
   auth:{
@@ -46,7 +51,7 @@ transporter.sendMail(mailOptions,(error,info)=>{
     console.log(`Email sent: `+info.response);
   }
 });
-
+*/
 const app = express();
 app.use(session(my_session));
 app.use(express.json());
@@ -55,7 +60,8 @@ app.use(express.urlencoded({extended:true}));
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"www/views"));
 app.use(express.static(__dirname + "/www"));
-	
+
+//Eventually we'll need to change this. At the very least, away from the name testDB
 const db_string = "SQL/testDB.db";
 const db = new Database(db_string);
 
@@ -77,6 +83,7 @@ function insertUser(name,email,password){
     })
     .catch(err=>console.error(err.message));
 }
+
 //Make sure you don't try to bind an object to one of the values.
 //Trust me, it doesn't work
 function insertGroup(owner,name){
@@ -85,17 +92,52 @@ function insertGroup(owner,name){
   console.log(`Insert group response: ${info}`);
 }
 
+//If you don't need to get the user's password, this is the function you should use
 function findUserSafe(email){
   let expr = db.prepare("SELECT id,name,email From Users WHERE email=?");
   let info = expr.get(email);
   console.log(info);
   return info;
 }
+
 function deleteGroup(group){
   let expr = db.prepare("DELETE FROM Groups where id=?");
   let info = expr.run(group.id);
   console.log(info);
 }
+//This creates the object for 
+function getTransporter(){
+  return nodemailer.createTransport({
+    service:'gmail',
+    auth:{
+      user:'ttrpglearning@gmail.com',
+      pass:process.env.pass
+    }
+  });
+}
+function sendMail(transporter,mailOptions){
+  transporter.sendMail(mailOptions,(error,info)=>{
+    if(error){
+      console.log(error);
+    }
+    else{
+      console.log(`Email sent: ${info.response}`);
+    }
+  });
+}
+function sendPasswordResetEmail(email){
+  const transporter = getTransporter();
+
+  const mailOptions = {
+    from:'ttrpglearning@gmail.com',
+    to:email, //Address to which you want to send
+    subject:'Password Reset', //subject
+    text:"Click this link to reset your password <link goes here>" //body of email
+  };
+  sendMail(transporter,mailOptions);
+}
+
+
 app.get("/",(req,res)=>{
   
   if(req.session.username){
@@ -134,43 +176,51 @@ app.get("/userpage",(req,res)=>{
   }
 });
 
-app.post("/register",(req,res)=>{
+app.post("/register",[check('name',"Please enter a name").notEmpty(),check('email',"Please enter a valid email").isEmail(),check('password',"Please enter a password").notEmpty(),check('confirmPassword',"Please confirm your password").notEmpty()],(req,res)=>{
+  
+  const errors = validationResult(req);
+  console.log(errors);
+  if(!errors.isEmpty()){
+    return res.render("registration",{errors:errors.array()});
+  }
   let name = req.body.name;
   let email = req.body.email;
   let password = req.body.password;
 
   insertUser(name,email,password);
-  res.send("Pretend that we definitely did that right. Eventually we'll check this server-side");
+  //res.send("Pretend that we definitely did that right. Eventually we'll check this server-side");
+  res.render("registration",{message:"User account created!"});
 });
 
-app.post("/login", (req, res) => {
-  const users = getUsers();
-  const email = req.body.email;
-  const password = req.body.password;
-  const user = users.find((user) => user.email === email);
+app.post("/login",[
+  query('email').isEmail()], (req, res) => {
+    const users = getUsers();
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = users.find((user) => user.email === email);
 
-  if (!user) {
-    console.log("User not found");
-    return res.render("login");
-  }
+    if (!user) {
+      console.log("User not found");
+      return res.render("login");
+    }
 
-  bcrypt.compare(password, user.password)
-    .then((result) => {
-      if (result) {
-        req.session.loggedIn = true;
-        req.session.username = user.email;
-        req.session.role = "user";
-        console.log("User login correct");
-        res.render("login",{message:"You've logged in successfully!"});
-      } else {
-        console.log("Password is wrong");
-        res.render("login",{message:"Incorrect login info"});
-      }
-    })
-    .catch((err) => {
-      console.error(`Error with bcrypt: ${err}`);
-      res.render("login");
-    });
+    bcrypt.compare(password, user.password)
+      .then((result) => {
+	if (result) {
+          req.session.loggedIn = true;
+          req.session.username = user.email;
+          req.session.role = "user";
+          console.log("User login correct");
+          res.render("login",{message:"You've logged in successfully!"});
+	} else {
+          console.log("Password is wrong");
+          res.render("login",{message:"Incorrect login info"});
+	}
+      })
+      .catch((err) => {
+	console.error(`Error with bcrypt: ${err}`);
+	res.render("login");
+      });
 });
 app.post("/logout",(req,res)=>{
   if(req.session.username){
