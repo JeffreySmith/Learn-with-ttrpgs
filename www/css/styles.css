@@ -8,6 +8,43 @@ body{
 button,input,select,textarea,optgroup{
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Open Sans',  sans-serif !important;
 }
+.new-account{
+    margin-bottom:25px;
+}
+.new-account label{
+    color:#727374;
+}
+   
+.new-account form{
+    background-color:#CBEFF7;
+
+}
+.new-account form button{
+    width:425px;
+    border-radius:25px;
+    background-color:#1D3F88;
+    margin:auto;
+}
+.right-align{
+    width:175px;
+    text-align:right;
+    margin-left:-50px;
+}
+.small-text{
+    font-size:12px;
+    text-align:center;
+}
+.centre-button{
+    display:flex;
+    justify-content:center
+}
+.centred-text{
+    text-align:center;
+}
+   
+.registration-title{
+    background-color:#2675B3
+}
 .errors{
     margin:auto;
     margin-bottom:30px;
