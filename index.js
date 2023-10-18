@@ -65,6 +65,8 @@ app.use(express.static(__dirname + "/www"));
 const db_string = "SQL/testDB.db";
 const db = new Database(db_string);
 
+console.log(findGroup(undefined,"rnstihe"));
+
 function getUsers(){
     return db.prepare("SELECT * FROM Users").all();
 }
@@ -86,9 +88,9 @@ function insertUser(name,email,password){
 
 //Make sure you don't try to bind an object to one of the values.
 //Trust me, it doesn't work
-function insertGroup(owner,name){
-  let expr = db.prepare("INSERT INTO Groups (name,owner) VALUES(?,?)");
-  let info = expr.run(name,findUserSafe(owner.email).id);
+function insertGroup(owner,name,description){
+  let expr = db.prepare("INSERT INTO Groups (name,owner,description) VALUES(?,?,?)");
+  let info = expr.run(name,findUserSafe(owner.email).id,description);
   console.log(`Insert group response: ${info}`);
 }
 
@@ -96,8 +98,26 @@ function insertGroup(owner,name){
 function findUserSafe(email){
   let expr = db.prepare("SELECT id,name,email From Users WHERE email=?");
   let info = expr.get(email);
-  console.log(info);
   return info;
+}
+function findGroup(ownerEmail,name){
+  let user = findUserSafe(ownerEmail);
+  let expr = "";
+  let matchingGroups = undefined;
+  if (user && name){
+    expr = db.prepare("SELECT id,name,description FROM Groups WHERE name=? AND Owner=?");
+    matchingGroups = expr.all(name,user.id);
+  }
+  else if(user){
+    expr = db.prepare("SELECT id,name,description FROM Groups WHERE OWNER=?");
+    matchingGroups = expr.all(user.id);
+  }
+  else if (name){
+    expr = db.prepare("SELECT id,name,description FROM Groups WHERE name=?");
+    matchingGroups = expr.all(name);
+  }
+
+  return matchingGroups;
 }
 
 function deleteGroup(group){
@@ -238,6 +258,7 @@ app.post("/logout",(req,res)=>{
 app.post("/group",(req,res)=>{
   let email = req.body.owner;
   let name = req.body.name;
+  let description = req.body.description;
   let users = getUsers();
   console.log(`Email:${email}`);
   console.log(`Name:${name}`);
@@ -245,7 +266,7 @@ app.post("/group",(req,res)=>{
   if(!user){
     return res.render("creategroup",{error:"User doesn't exist"});
   }
-  insertGroup(user,name);
+  insertGroup(user,name,description);
   res.render("creategroup",{message:"Successfull"});
 });
 app.post("/findgroup",(req,res)=>{
@@ -268,8 +289,21 @@ app.post("/deletegroup",(req,res)=>{
     return res.render("group",{message:"No such group exists"});
   }
   deleteGroup(group);
+});
+app.post("/groupsearch",(req,res)=>{
   
-  
+  let ownerEmail = req.body.email;
+  let groupName = req.body.groupName;
+  let matches = findGroup(ownerEmail,groupName);
+  if(matches){
+    res.status(200).json(matches);
+  }
+  else if (!ownerEmail && !groupName){
+    res.status(400).send("Bad request");
+  }
+  else{
+    res.status(200).send("No matches");
+  }
 });
 
 app.listen(port,()=>{

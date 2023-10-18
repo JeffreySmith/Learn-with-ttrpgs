@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS Groups(
        id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
        name VARCHAR(50) NOT NULL UNIQUE,
+       description VARCHAR(512),
        owner INTEGER NOT NULL,
        FOREIGN KEY(owner) REFERENCES Users(id)
 );
