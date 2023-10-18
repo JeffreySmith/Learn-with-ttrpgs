@@ -10,6 +10,11 @@ button,input,select,textarea,optgroup{
 }
 .new-account{
     margin-bottom:25px;
+    
+    
+}
+.registration-title{
+    border-radius:10px 10px 0 0;
 }
 .new-account label{
     color:#727374;
@@ -17,6 +22,7 @@ button,input,select,textarea,optgroup{
    
 .new-account form{
     background-color:#CBEFF7;
+    border-radius: 0 0 10px 10px;
 
 }
 .new-account form button{
