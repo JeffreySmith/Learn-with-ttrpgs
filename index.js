@@ -86,6 +86,7 @@ function getGroups() {
 function joinGroup(userEmail,groupName){
   let user = findUserSafe(userEmail);
   let group = findGroup(undefined,groupName);
+  
   if(group.length === 1){
     group = group[0];
     
@@ -97,11 +98,9 @@ function joinGroup(userEmail,groupName){
     }
     catch(err){
       console.log(`Error:\n${err}`);
-      return false;
     }
   }
-  
-
+  return false;
 }
 function insertUser(name,email,password){
   bcrypt
@@ -147,6 +146,32 @@ function findGroup(ownerEmail,name){
   }
 
   return matchingGroups;
+}
+function createSession(groupName,time,transcript){
+  let group = findGroup(undefined,groupName);
+  group = group[0];
+  let expr = "";
+  if(!transcript){
+    expr = db.prepare("INSERT INTO Sessions (groupid,time) VALUES (?,?)");
+    expr.run(group.id,time);
+  }
+  else if(transcript){
+    expr = db.prepare("INSERT INTO Sessions (groupid,time,transcript) VALUES (?,?)");
+    expr.run(group.id,time,transcript);
+  }
+
+}
+function findSession(id){
+  let expr = db.prepare("SELECT * FROM Sessions WHERE id=?");
+  let session = expr.all(id);
+  session = session[0];
+
+  expr = db.prepare("SELECT *,name FROM Sessions INNER JOIN Groups ON Sessions.groupid = Groups.id WHERE Groups.id=?");
+  let name = expr.all(session.groupid);
+  name = name[0].name;
+  console.log(`Found name: ${name}`);
+  session.name=name;
+  return session;
 }
 
 function deleteGroup(group){
@@ -222,6 +247,22 @@ app.get("/userpage",(req,res)=>{
   }
   else{
     res.redirect("/login");
+  }
+});
+app.get("/session/:id/",(req,res)=>{
+  let id = req.params.id;
+  let errors = [];
+  let session = findSession(id);
+  console.log(session);
+  /*if(errors.length === 0){
+    res.render("sessionpage",{errors:errors});
+  }*/
+  if(session != undefined){
+    console.log(session);
+    res.render("sessionpage",{session:session});
+  }
+  else{
+    res.render("sessionpage");
   }
 });
 

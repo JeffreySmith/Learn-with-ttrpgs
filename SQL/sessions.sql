@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS Sessions(
-       id INTEGER NOT NULL PRIMARY KEY,
+       id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
        groupid INTEGER,
        time DATETIME NOT NULL,
        transcript VARCHAR(100),
