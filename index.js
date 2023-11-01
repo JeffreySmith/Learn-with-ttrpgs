@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 const express = require('express');
 const crypto = require('crypto');
@@ -6,9 +7,11 @@ const bcrypt = require('bcrypt');
 const Database = require('better-sqlite3');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const FleschKincaid = require('flesch-kincaid');
 const { exit } = require('process');
 const { query,validationResult } = require('express-validator');
 const {check} = require( 'express-validator');
+
 require('dotenv').config();
 
 if(process.env.pass == undefined){
@@ -16,7 +19,7 @@ if(process.env.pass == undefined){
   console.log("Without it, you won't be able to send emails");
 }
 
-
+console.log(analyzeGradeLevel("The quick brown fox jumped over the lazy dogs"));
 const port = 8000;
 
 //I genuinely don't know if this is the right way to do this. We do have support for a .env file
@@ -65,18 +68,43 @@ app.use(express.static(__dirname + "/www"));
 const db_string = "SQL/testDB.db";
 const db = new Database(db_string);
 
-console.log(findGroup(undefined,"rnstihe"));
+console.log(findGroup(undefined,"Group2"));
+joinGroup("test@email.com","Group2");
 
 function getUsers(){
     return db.prepare("SELECT * FROM Users").all();
 }
 
+function analyzeGradeLevel(string){
+  return FleschKincaid.grade(string);
+}
+
+
 function getGroups() {
   return  db.prepare("SELECT * FROM Groups").all();
 }
+function joinGroup(userEmail,groupName){
+  let user = findUserSafe(userEmail);
+  let group = findGroup(undefined,groupName);
+  if(group.length === 1){
+    group = group[0];
+    
+    try{
+      let expr = db.prepare("INSERT INTO GroupMembers (userid,groupid) VALUES(?,?);");
+      let info = expr.run(user.id, group.id);
+      console.log(info);
+      return true;
+    }
+    catch(err){
+      console.log(`Error:\n${err}`);
+      return false;
+    }
+  }
+  
 
+}
 function insertUser(name,email,password){
-    bcrypt
+  bcrypt
     .hash(password,10)
     .then(hash=>{
       let expr = db.prepare("INSERT INTO Users (name,password,email) VALUES(?,?,?)");
@@ -100,6 +128,7 @@ function findUserSafe(email){
   let info = expr.get(email);
   return info;
 }
+
 function findGroup(ownerEmail,name){
   let user = findUserSafe(ownerEmail);
   let expr = "";
