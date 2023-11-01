@@ -11,9 +11,24 @@
     <h1>Session Information</h1>
     <% if(typeof(session) != 'undefined'){%>
         <p>Group Name: <%= session.name%></p>
-        <p>Date: <%=session.time%></p>
+        <p>Scheduled Time: <%=session.time%></p>
     <%}%>
-    
+    <form action="/session" method="post">
+        <div>
+            <input type="datetime-local" id="time" name="time" >
+        </div>
+        <div>
+            <select name="group">
+                <% if(typeof(groups)!='undefined'){ %>
+                    <% for(let group of groups){ %>
+                        <option value="<%= group.name%>"> <%=group.name%> </option>
+                <%}}%>
+            </select>
+        </div>
+        <div>
+            <input type="submit" >
+        </div>
+    </form>
 
 </body>
 </html>

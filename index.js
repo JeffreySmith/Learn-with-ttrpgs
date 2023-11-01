@@ -253,19 +253,29 @@ app.get("/session/:id/",(req,res)=>{
   let id = req.params.id;
   let errors = [];
   let session = findSession(id);
+  let groups = getGroups();
   console.log(session);
   /*if(errors.length === 0){
     res.render("sessionpage",{errors:errors});
-  }*/
+    }*/
+
   if(session != undefined){
     console.log(session);
-    res.render("sessionpage",{session:session});
+    res.render("sessionpage",{session:session,groups:groups});
   }
   else{
-    res.render("sessionpage");
+    res.render("sessionpage",{groups:groups});
   }
 });
-
+app.post("/session",(req,res)=>{
+  let time = req.body.time;
+  let group = req.body.group;
+  time = time.replace("T"," ")+":00";
+  createSession(group,time);
+  console.log(time);
+  console.log(group);
+  res.render("sessionpage");
+});
 app.post("/register",[check('name',"Please enter a name").notEmpty(),check('email',"Please enter a valid email").isEmail(),check('password',"Please enter a password").notEmpty(),check('confirmPassword',"Please confirm your password").notEmpty()],(req,res)=>{
   
   const errors = validationResult(req);
