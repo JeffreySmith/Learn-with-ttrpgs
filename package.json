@@ -17,6 +17,7 @@
         "express": "^4.18.2",
         "express-session": "^1.17.3",
         "express-validator": "^7.0.1",
+        "flesch-kincaid": "github:daveross/flesch-kincaid",
         "nodemailer": "^6.9.6"
     }
 }
