@@ -186,7 +186,7 @@ function sendPasswordResetEmail(email){
     from:'ttrpglearning@gmail.com',
     to:email, //Address to which you want to send
     subject:'Password Reset', //subject
-    text:`Click the link to reset your password: http://localhost:8000/recover/${uuid} ` //body of email
+    html:`Click <a href="http://localhost:8000/recover/${uuid}">here</a> to reset your password` //body of email
   };
   sendMail(transporter,mailOptions);
 }
