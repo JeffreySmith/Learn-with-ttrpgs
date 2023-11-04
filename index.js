@@ -9,7 +9,7 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const FleschKincaid = require('flesch-kincaid');
 const { exit } = require('process');
-const { query,validationResult } = require('express-validator');
+const {query,validationResult } = require('express-validator');
 const {check} = require( 'express-validator');
 
 require('dotenv').config();
@@ -18,7 +18,7 @@ if(process.env.pass == undefined){
   console.log(`You need pass="passwordhere" in .env`);
   console.log("Without it, you won't be able to send emails");
 }
-
+//Displays the grade level for the text. Currently here, so I could see it work
 console.log(analyzeGradeLevel("The quick brown fox jumped over the lazy dogs"));
 const port = 8000;
 
@@ -30,31 +30,6 @@ const my_session = {
     saveUninitialized: true
 };
 
-//I know the following code works, so I don't want to delete it yet
-/*
-const transporter = nodemailer.createTransport({
-  service:'gmail',
-  auth:{
-    user:'ttrpglearning@gmail.com',
-    pass:process.env.pass
-  }
-});
-
-const mailOptions = {
-  from:'ttrpglearning@gmail.com',
-  to:'test@test.com', //Address to which you want to send
-  subject:'Sending email via node.js', //subject
-  text:"If this email makes it to you, I've figured out how to send emails via node.js" //body of email
-};
-transporter.sendMail(mailOptions,(error,info)=>{
-  if(error){
-    console.log(error);
-  }
-  else{
-    console.log(`Email sent: `+info.response);
-  }
-});
-*/
 const app = express();
 app.use(session(my_session));
 app.use(express.json());
@@ -67,8 +42,6 @@ app.use(express.static(__dirname + "/www"));
 //Eventually we'll need to change this. At the very least, away from the name testDB
 const db_string = "SQL/testDB.db";
 const db = new Database(db_string);
-
-console.log(findGroup(undefined,"Group2"));
 
 //joinGroup("test@email.com","Group2");
 
@@ -148,6 +121,8 @@ function findGroup(ownerEmail,name){
 
   return matchingGroups;
 }
+
+
 function createSession(groupName,time,transcript){
   let group = findGroup(undefined,groupName);
   group = group[0];
@@ -160,7 +135,6 @@ function createSession(groupName,time,transcript){
     expr = db.prepare("INSERT INTO Sessions (groupid,time,transcript) VALUES (?,?)");
     expr.run(group.id,time,transcript);
   }
-
 }
 function findSession(id){
   let expr = db.prepare("SELECT * FROM Sessions WHERE id=?");
@@ -207,12 +181,12 @@ function sendMail(transporter,mailOptions){
 }
 function sendPasswordResetEmail(email){
   const transporter = getTransporter();
-
+  const uuid = crypto.randomUUID();
   const mailOptions = {
     from:'ttrpglearning@gmail.com',
     to:email, //Address to which you want to send
     subject:'Password Reset', //subject
-    text:"Click this link to reset your password <link goes here>" //body of email
+    html:`Click <a href="http://localhost:8000/recover/${uuid}">here</a> to reset your password` //body of email
   };
   sendMail(transporter,mailOptions);
 }
@@ -304,7 +278,7 @@ app.post("/recovery",[check('email',"Please enter a valid email").isEmail()],(re
     let email = req.body.email;
  
     sendPasswordResetEmail(email);
-    res.send("A password reset email has been sent");
+    res.send("A password reset email has been sent <FiX THIS LATER>");
   }
 });
 
