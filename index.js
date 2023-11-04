@@ -69,7 +69,8 @@ const db_string = "SQL/testDB.db";
 const db = new Database(db_string);
 
 console.log(findGroup(undefined,"Group2"));
-joinGroup("test@email.com","Group2");
+
+//joinGroup("test@email.com","Group2");
 
 function getUsers(){
     return db.prepare("SELECT * FROM Users").all();
@@ -173,6 +174,11 @@ function findSession(id){
   session.name=name;
   return session;
 }
+function allGroupSessions(groupId){
+  let expr = db.prepare("SELECT * FROM Sessions WHERE groupid=?");
+  let results = expr.all(groupId);
+  return results;
+}
 
 function deleteGroup(group){
   let expr = db.prepare("DELETE FROM Groups where id=?");
@@ -240,6 +246,9 @@ app.get("/register",(req,res)=>{
 app.get("/login",(req,res)=>{
   res.render("login");
 });
+app.get("/recovery",(req,res)=>{
+  res.render("recovery");
+});
 app.get("/userpage",(req,res)=>{
   if(req.session.loggedIn){
     let user = getUsers().find((user)=> user.email === req.session.username);
@@ -255,6 +264,7 @@ app.get("/session/:id/",(req,res)=>{
   let session = findSession(id);
   let groups = getGroups();
   console.log(session);
+  session.time = session.time.slice(0,session.time.length-3);
   /*if(errors.length === 0){
     res.render("sessionpage",{errors:errors});
     }*/
@@ -267,6 +277,12 @@ app.get("/session/:id/",(req,res)=>{
     res.render("sessionpage",{groups:groups});
   }
 });
+app.get("/:id/",(req,res)=>{
+  
+  res.render("joingroup.ejs");
+});
+
+//This needs some checking, probably
 app.post("/session",(req,res)=>{
   let time = req.body.time;
   let group = req.body.group;
@@ -276,6 +292,22 @@ app.post("/session",(req,res)=>{
   console.log(group);
   res.render("sessionpage");
 });
+
+app.post("/recovery",[check('email',"Please enter a valid email").isEmail()],(req,res)=>{
+  const errors = validationResult(req);
+
+  if(!errors.isEmpty()){
+    res.render("recovery");
+  }
+  else{
+    
+    let email = req.body.email;
+ 
+    sendPasswordResetEmail(email);
+    res.send("A password reset email has been sent");
+  }
+});
+
 app.post("/register",[check('name',"Please enter a name").notEmpty(),check('email',"Please enter a valid email").isEmail(),check('password',"Please enter a password").notEmpty(),check('confirmPassword',"Please confirm your password").notEmpty()],(req,res)=>{
   
   const errors = validationResult(req);
