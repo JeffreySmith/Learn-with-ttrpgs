@@ -251,11 +251,11 @@ app.get("/session/:id/",(req,res)=>{
     res.render("sessionpage",{groups:groups});
   }
 });
-app.get("/:id/",(req,res)=>{
+/*app.get("/:id/",(req,res)=>{
   
   res.render("joingroup.ejs");
 });
-
+*/
 //This needs some checking, probably
 app.post("/session",(req,res)=>{
   let time = req.body.time;
