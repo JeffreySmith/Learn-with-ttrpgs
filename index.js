@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 "use strict";
 const express = require('express');
 const crypto = require('crypto');
@@ -8,7 +7,7 @@ const Database = require('better-sqlite3');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const FleschKincaid = require('flesch-kincaid');
-const { exit } = require('process');
+
 const {query,validationResult } = require('express-validator');
 const {check} = require( 'express-validator');
 
@@ -43,6 +42,8 @@ app.use(express.static(__dirname + "/www"));
 const db_string = "SQL/testDB.db";
 const db = new Database(db_string);
 
+const resetUUIDS = [];
+
 //joinGroup("test@email.com","Group2");
 
 function getUsers(){
@@ -53,10 +54,10 @@ function analyzeGradeLevel(string){
   return FleschKincaid.grade(string);
 }
 
-
 function getGroups() {
   return  db.prepare("SELECT * FROM Groups").all();
 }
+
 function joinGroup(userEmail,groupName){
   let user = findUserSafe(userEmail);
   let group = findGroup(undefined,groupName);
@@ -71,6 +72,7 @@ function joinGroup(userEmail,groupName){
       return true;
     }
     catch(err){
+      console.log("You're probably trying to add a user to a group that's already in it");
       console.log(`Error:\n${err}`);
     }
   }
@@ -121,7 +123,27 @@ function findGroup(ownerEmail,name){
 
   return matchingGroups;
 }
+function rateUser(targetUserId,userId,rating){
+  let target = findUserSafe(targetUserId);
+  let rater = findUserSafe(userId);
+  
+  let expr = "";
 
+  if(target && rater && rating && target.id!==rater.id){
+    try{
+      expr = db.prepare("INSERT INTO UserRatings (rating,ratedby,ratingfor)");
+      let info = expr.run(rating,rater.id,target.id);
+      
+    }
+    catch(err){
+      console.log(`Error: ${err}`);
+    }
+  }
+  else{
+    console.log(`Info: target user: ${target}, rater: ${rater}, rating: ${rating}`);
+  }
+  
+}
 
 function createSession(groupName,time,transcript){
   let group = findGroup(undefined,groupName);
@@ -182,6 +204,12 @@ function sendMail(transporter,mailOptions){
 function sendPasswordResetEmail(email){
   const transporter = getTransporter();
   const uuid = crypto.randomUUID();
+  const reset_request = {
+    email:email,
+    uuid:uuid,
+    time:Date.now()
+  }
+  resetUUIDS.push(reset_request);
   const mailOptions = {
     from:'ttrpglearning@gmail.com',
     to:email, //Address to which you want to send
@@ -201,6 +229,30 @@ app.get("/",(req,res)=>{
   else{
     res.render("index");
   }
+});
+app.get("/recover/:id/",(req,res)=>{
+  let id = req.params.id;
+  let validRequest = resetUUIDS.find(u=>u.uuid === id);
+  let index = undefined;
+  if(validRequest){
+    index = resetUUIDS.findIndex(u=>u.uuid === id);
+  }
+  else{
+    res.status(400).send("Invalid link");
+  }
+  console.log(validRequest);
+  console.log("Index is: "+index);
+  if(validRequest && Date.now() - validRequest.time <= 9000000){
+    console.log("Allow password resetting");
+    console.log(Date.now() - validRequest.time);
+    res.render("newpassword");
+  }
+  else{
+    console.log("Password reset no longer valid");
+    resetUUIDS = resetUUIDS.filter(u=>u.uuid !== id);
+    res.status(401).send("Link no longer valid");
+  }
+  
 });
 app.get("/group",(req,res)=>{
   let users = getUsers();
@@ -251,11 +303,9 @@ app.get("/session/:id/",(req,res)=>{
     res.render("sessionpage",{groups:groups});
   }
 });
-/*app.get("/:id/",(req,res)=>{
-  
-  res.render("joingroup.ejs");
+app.post("/recoverpassword",(req,res)=>{
+  //Do some stuff here
 });
-*/
 //This needs some checking, probably
 app.post("/session",(req,res)=>{
   let time = req.body.time;
