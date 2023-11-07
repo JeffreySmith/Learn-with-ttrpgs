@@ -123,6 +123,7 @@ function findGroup(ownerEmail,name){
 
   return matchingGroups;
 }
+
 function rateUser(targetUserId,userId,rating){
   let target = findUserSafe(targetUserId);
   let rater = findUserSafe(userId);
@@ -133,7 +134,7 @@ function rateUser(targetUserId,userId,rating){
     try{
       expr = db.prepare("INSERT INTO UserRatings (rating,ratedby,ratingfor)");
       let info = expr.run(rating,rater.id,target.id);
-      
+      console.log(info);
     }
     catch(err){
       console.log(`Error: ${err}`);
@@ -245,7 +246,8 @@ app.get("/recover/:id/",(req,res)=>{
   if(validRequest && Date.now() - validRequest.time <= 9000000){
     console.log("Allow password resetting");
     console.log(Date.now() - validRequest.time);
-    res.render("newpassword");
+    //res.render("newpassword");
+    res.send("Worked!");
   }
   else{
     console.log("Password reset no longer valid");
@@ -286,25 +288,39 @@ app.get("/userpage",(req,res)=>{
 });
 app.get("/session/:id/",(req,res)=>{
   let id = req.params.id;
-  let errors = [];
+  
   let session = findSession(id);
   let groups = getGroups();
   console.log(session);
   session.time = session.time.slice(0,session.time.length-3);
-  /*if(errors.length === 0){
-    res.render("sessionpage",{errors:errors});
-    }*/
-
+  
   if(session != undefined){
     console.log(session);
     res.render("sessionpage",{session:session,groups:groups});
   }
   else{
+    //This should be changed to return an error? Or redirect back to where they came from?
     res.render("sessionpage",{groups:groups});
   }
 });
-app.post("/recoverpassword",(req,res)=>{
-  //Do some stuff here
+app.post("/recoverpassword",[check("password","You must supply a password").notEmpty(),check("confirmpassword","You must confirm your password").notEmpty()],(req,res)=>{
+  const errors = validationResult(req);
+  let localErrors = [];
+  let password = req.body.password;
+  let confirmpassword = req.body.password;
+
+  if(password !== confirmpassword){
+    localErrors.push("Your passwords do not match");
+  }
+  if(errors.length>0 || localErrors.length > 0){
+    //{errors:errors.array()}
+    res.render("whatever the password recovery/change page is");
+  }
+  else{
+    //Do the thing
+  }
+  
+  
 });
 //This needs some checking, probably
 app.post("/session",(req,res)=>{
