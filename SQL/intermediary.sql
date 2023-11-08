@@ -1,11 +1,4 @@
-CREATE TABLE IF NOT EXISTS GroupSessions
-(
-        groupid INTEGER NOT NULL,
-        sessionid INTEGER NOT NULL,
-        FOREIGN KEY(groupid) REFERENCES Groups(id),
-        FOREIGN KEY(sessionid) REFERENCES Sessions(id),
-        PRIMARY KEY (groupid,sessionid)
-);
+PRAGMA foreign_keys=ON;
 CREATE TABLE IF NOT EXISTS GroupMembers
 (
         userid INTEGER NOT NULL,
@@ -14,3 +7,4 @@ CREATE TABLE IF NOT EXISTS GroupMembers
         FOREIGN KEY(groupid) REFERENCES Groups(id),
         PRIMARY KEY (userid,groupid)
 );
+
