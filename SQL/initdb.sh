@@ -1,14 +1,57 @@
 #!/usr/bin/env bash
 
-DB = "testDB.db"
+#This should get changed before we submit this
+DB=testDB.db
 
-init_users()
+#Sets the cli options
+OPTSTRING=":ugrsiRa"
+declare -a options=()
+while getopts ${OPTSTRING} opt; do
+    case ${opt} in
+        u)
+            options+=("users")
+            ;;
+        g)
+            options+=("groups")
+            ;;
+        r)
+            options+=("ratings")
+            ;;
+        s)
+            options+=("sessions")
+            ;;
+        R)
+            options+=("rpgs")
+            ;;
+        i)
+            options+=("intermediaries")
+            ;;
+        a)
+            options+=("users" "groups" "ratings" "sessions" "intermediaries" "rpgs")
+            ;;
+        ?)        
+        echo "Invalid option -${OPTARG}"
+        echo "Valid options are:"
+        echo "-u = users"
+        echo "-g = groups"
+        echo "-r = ratings"
+        echo "-s = sessions"
+        echo "-i = intermediary tables"
+        echo "-R = Rpg table"
+
+        exit 1
+        ;;      
+    esac
+done
+
+init_users ()
 {
     echo "Initializing user table"
     cat users.sql | sqlite3 $DB
 }
 
-init_groups(){
+init_groups ()
+{
     echo "Initializing groups table"
     cat groups.sql | sqlite3 $DB
 }
@@ -33,10 +76,32 @@ init_intermediary()
     cat intermediary.sql | sqlite3 $DB
 }
 
-init_users()
-init_groups()
-init_rpg()
-init_sessions()
-
-init_ratings()
-init_intermediary()
+create_initial_data()
+{
+    if [ "${1}" == "users" ]
+    then
+        init_users
+    elif [ "${1}" == "groups" ]
+    then
+        init_groups
+    elif [ "${1}" == "ratings" ]
+    then
+        init_ratings
+    elif [ "${1}" == "sessions" ]
+    then
+        init_sessions
+    elif [ "${1}" == "rpgs" ]
+    then
+        init_rpg
+    elif [ "${1}" == "intermediaries" ]
+    then
+        init_intermediary
+    else
+        echo "This should not be possible (invalid input)"
+    fi
+}
+for i in "${options[@]}"
+do
+    echo $i
+    create_initial_data $i
+done
