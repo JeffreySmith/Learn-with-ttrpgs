@@ -1,10 +1,13 @@
 
 const bcrypt = require('bcrypt');
+const db = require('better-sqlite3')(global.db_string);
+db.pragma('foreign_key=ON');
+
 function insertUser(name,email,password,role){
   bcrypt
     .hash(password,10)
     .then(hash=>{
-      let expr = global.db.prepare("INSERT INTO Users (name,password,email,role) VALUES(?,?,?,?)");
+      let expr = db.prepare("INSERT INTO Users (name,password,email,role) VALUES(?,?,?,?)");
       let info = expr.run(name,hash,email,role);
       console.log(info);
     })
@@ -13,7 +16,7 @@ function insertUser(name,email,password,role){
 
 //If you don't need to get the user's password, this is the function you should use
 function findUserSafe(email){
-  let expr = global.db.prepare("SELECT id,name,email From Users WHERE email=?");
+  let expr = db.prepare("SELECT id,name,email From Users WHERE email=?");
   let info = expr.get(email);
   return info;
 }
@@ -25,7 +28,7 @@ function rateUser(targetUserId,userId,rating){
 
   if(target && rater && rating && target.id!==rater.id){
     try{
-      expr = global.db.prepare("INSERT INTO UserRatings (rating,ratedby,ratingfor)");
+      expr = db.prepare("INSERT INTO UserRatings (rating,ratedby,ratingfor)");
       let info = expr.run(rating,rater.id,target.id);
       console.log(info);
     }
@@ -39,7 +42,7 @@ function rateUser(targetUserId,userId,rating){
 }
 
 function getUsers(){
-    return global.db.prepare("SELECT * FROM Users").all();
+    return db.prepare("SELECT * FROM Users").all();
 }
 
 
