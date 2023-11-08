@@ -4,7 +4,7 @@ const {insertUser,findUserSafe,rateUser,getUsers} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./groups.js');
 const {sendPasswordResetEmail} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
-
+const bcrypt = require('bcrypt');
 router
   .get('/hi',(req,res)=>{
     res.send("Hi there!");
