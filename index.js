@@ -8,7 +8,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 
 const db = require('better-sqlite3')(global.db_string);
-db.pragma('foreign_key=ON');
+db.pragma('foreign_keys=ON');
 
 const path = require('path');
 const nodemailer = require('nodemailer');

@@ -8,7 +8,7 @@ const {createSession,findSession,allGroupSessions} = require('./session.js');
 const bcrypt = require('bcrypt');
 
 const db = require('better-sqlite3')(global.db_string);
-db.pragma('foreign_key=ON');
+db.pragma('foreign_keys=ON');
 
 router
   .post("/recoverpassword",[check("password","You must supply a password").notEmpty(),check("confirmpassword","You must confirm your password").notEmpty()],(req,res)=>{

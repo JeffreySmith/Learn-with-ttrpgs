@@ -7,7 +7,7 @@ const {createSession,findSession,allGroupSessions} = require('./session.js');
 const bcrypt = require('bcrypt');
 
 const db = require('better-sqlite3')(global.db_string);
-db.pragma('foreign_key=ON');
+db.pragma('foreign_keys=ON');
 
 router
   .get('/hi',(req,res)=>{
