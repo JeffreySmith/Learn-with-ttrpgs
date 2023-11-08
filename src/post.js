@@ -6,7 +6,9 @@ const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./group
 const {sendPasswordResetEmail} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
 const bcrypt = require('bcrypt');
-const db = require('better-sqlite3')(db_string);
+
+const db = require('better-sqlite3')(global.db_string);
+db.pragma('foreign_key=ON');
 
 router
   .post("/recoverpassword",[check("password","You must supply a password").notEmpty(),check("confirmpassword","You must confirm your password").notEmpty()],(req,res)=>{

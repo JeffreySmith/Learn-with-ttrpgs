@@ -1,5 +1,8 @@
 const {insertUser,findUserSafe,rateUser} = require('./user');
+
 const db = require('better-sqlite3')(global.db_string);
+db.pragma('foreign_key=ON');
+
 function getGroups() {
   return  db.prepare("SELECT * FROM Groups").all();
 }

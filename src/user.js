@@ -1,6 +1,7 @@
 
 const bcrypt = require('bcrypt');
 const db = require('better-sqlite3')(global.db_string);
+db.pragma('foreign_key=ON');
 
 function insertUser(name,email,password,role){
   bcrypt
