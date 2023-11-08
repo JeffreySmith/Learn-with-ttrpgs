@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./groups.js');
 const {sendPasswordResetEmail} = require('./email.js');
@@ -155,3 +156,4 @@ router
       res.status(200).send("No matches");
     }
   })
+module.exports = router;

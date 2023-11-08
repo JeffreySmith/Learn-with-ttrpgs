@@ -1,4 +1,4 @@
-
+const {findUserSafe} = require('./user');
 const resetUUIDS = [];
 
 //This creates the object for 
@@ -22,6 +22,10 @@ function sendMail(transporter,mailOptions){
   });
 }
 function sendPasswordResetEmail(email){
+  if (!findUserSafe(email)){
+    console.log("Email isn't in the db, so we're silently ignoring it");
+    return;
+  }
   const transporter = getTransporter();
   const uuid = crypto.randomUUID();
   const reset_request = {

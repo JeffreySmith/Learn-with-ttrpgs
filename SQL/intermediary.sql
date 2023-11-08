@@ -1,4 +1,4 @@
-CREATE TABLE GroupSessions
+CREATE TABLE IF NOT EXISTS GroupSessions
 (
         groupid INTEGER NOT NULL,
         sessionid INTEGER NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE GroupSessions
         FOREIGN KEY(sessionid) REFERENCES Sessions(id),
         PRIMARY KEY (groupid,sessionid)
 );
-CREATE TABLE GroupMembers
+CREATE TABLE IF NOT EXISTS GroupMembers
 (
         userid INTEGER NOT NULL,
         groupid INTEGER NOT NULL,

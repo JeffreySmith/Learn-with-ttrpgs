@@ -8,8 +8,8 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const FleschKincaid = require('flesch-kincaid');
 
-const {query,validationResult } = require('express-validator');
-const {check} = require( 'express-validator');
+const {check,query,validationResult } = require('express-validator');
+
 const get = require('./src/get.js');
 const post = require('./src/post.js');
 const {insertUser,findUserSafe,rateUser,getUsers} = require('./src/user.js');
