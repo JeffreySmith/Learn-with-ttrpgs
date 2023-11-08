@@ -11,7 +11,7 @@ INSERT OR IGNORE INTO Users(id,name,email,password,role) VALUES
         7,
         "Jeffrey",
         "ttrpglearning@gmail.com",
-        "$2b$10$NusZTok1TRI78yDkAO441.cA2/4AxsO7fZZ/BuQvuje2TlMKQJTnW",
+        "$2b$10$/1pWVJBroVrRH4wDEF4gMuBBkf0SmlFqSuDMZpAr6tYP.HsaNQmcq", -- This is '123456'
         "admin"
 );
 

@@ -31,10 +31,11 @@ router
   })
   .get("/recover/:id/",(req,res)=>{
     let id = req.params.id;
-    let validRequest = resetUUIDS.find(u=>u.uuid === id);
+    let validRequest = global.resetUUIDS.find(u=>u.uuid === id);
     let index = undefined;
+    let user = findUserSafe(validRequest.email);
     if(validRequest){
-      index = resetUUIDS.findIndex(u=>u.uuid === id);
+      index = global.resetUUIDS.findIndex(u=>u.uuid === id);
     }
     else{
       res.status(400).send("Invalid link");
@@ -45,7 +46,7 @@ router
       console.log("Allow password resetting");
       console.log(Date.now() - validRequest.time);
       //res.render("newpassword");
-      res.send("Worked!");
+      res.render("newpassword",{user:user});
     }
     else{
       console.log("Password reset no longer valid");

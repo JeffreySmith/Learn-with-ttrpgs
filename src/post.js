@@ -12,16 +12,27 @@ router
     let localErrors = [];
     let password = req.body.password;
     let confirmpassword = req.body.password;
-    
+    let email = req.body.email;
     if(password !== confirmpassword){
       localErrors.push("Your passwords do not match");
     }
     if(errors.length>0 || localErrors.length > 0){
       //{errors:errors.array()}
-      res.render("whatever the password recovery/change page is");
+      res.render("newpassword",{errors:errors.array().concat(localErrors)});
     }
     else{
-      //Do the thing
+      //Need to figure out how to do this securely
+      bcrypt
+	.hash(password,10)
+	.then(hash=>{
+	  
+	  let expr = global.db.prepare("UPDATE Users SET password = ? WHERE email=?");
+	  let info = expr.run(hash,email);
+	  console.log(info);
+	})
+	.catch(err=>console.error(err.message));
+      
+      res.redirect("userpage");
     }
     
   })
@@ -46,7 +57,7 @@ router
       let email = req.body.email;
       
       sendPasswordResetEmail(email);
-      res.send("A password reset email has been sent <FiX THIS LATER>");
+      res.send("A password reset email has been sent FiX THIS LATER");
     }
   })
   .post("/register",[check('name',"Please enter a name").notEmpty(),check('email',"Please enter a valid email").isEmail(),check('password',"Please enter a password").notEmpty(),check('confirmPassword',"Please confirm your password").notEmpty()],(req,res)=>{
@@ -84,6 +95,7 @@ router
             req.session.role = "user";
             console.log("User login correct");
             res.render("login",{message:"You've logged in successfully!"});
+
 	  } else {
             console.log("Password is wrong");
             res.render("login",{message:"Incorrect login info"});

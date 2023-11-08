@@ -1,5 +1,7 @@
 const {findUserSafe} = require('./user');
-const resetUUIDS = [];
+const nodemailer = require('nodemailer');
+const crypto = require('crypto')
+global.resetUUIDS = [];
 
 //This creates the object for 
 function getTransporter(){
