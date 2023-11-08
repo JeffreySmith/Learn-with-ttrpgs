@@ -10,12 +10,12 @@ const FleschKincaid = require('flesch-kincaid');
 
 const {query,validationResult } = require('express-validator');
 const {check} = require( 'express-validator');
-const get = require('./get.js');
-const post = require('./post.js');
-const {insertUser,findUserSafe,rateUser,getUsers} = require('./user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./groups.js');
-const {sendPasswordResetEmail} = require('./email.js');
-const {createSession,findSession,allGroupSessions} = require('./session.js');
+const get = require('./src/get.js');
+const post = require('./src/post.js');
+const {insertUser,findUserSafe,rateUser,getUsers} = require('./src/user.js');
+const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./src/groups.js');
+const {sendPasswordResetEmail} = require('./src/email.js');
+const {createSession,findSession,allGroupSessions} = require('./src/session.js');
 
 require('dotenv').config();
 
