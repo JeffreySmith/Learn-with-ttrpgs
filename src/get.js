@@ -45,12 +45,12 @@ router
     if(validRequest && Date.now() - validRequest.time <= 9000000){
       console.log("Allow password resetting");
       console.log(Date.now() - validRequest.time);
-      //res.render("newpassword");
+      global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
       res.render("newpassword",{user:user});
     }
     else{
       console.log("Password reset no longer valid");
-      resetUUIDS = resetUUIDS.filter(u=>u.uuid !== id);
+      global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
       res.status(401).send("Link no longer valid");
     }
   

@@ -1,9 +1,12 @@
 "use strict";
+//Eventually we'll need to change this. At the very least, away from the name testDB
+ global.db_string = "SQL/testDB.db";
+
 const express = require('express');
 const crypto = require('crypto');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const Database = require('better-sqlite3');
+const db = require('better-sqlite3')(global.db_string);
 const path = require('path');
 const nodemailer = require('nodemailer');
 const FleschKincaid = require('flesch-kincaid');
@@ -44,12 +47,9 @@ app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"www/views"));
 app.use(express.static(__dirname + "/www"));
 
-//Eventually we'll need to change this. At the very least, away from the name testDB
-const db_string = "SQL/testDB.db";
 
-global.db = new Database(db_string);
-global.db.pragma('foreign_key=ON');
-global.db.pragma('journal_mode=WAL');
+db.pragma('foreign_key=ON');
+
 //joinGroup("test@email.com","Group2");
 console.log(getUsers());
 

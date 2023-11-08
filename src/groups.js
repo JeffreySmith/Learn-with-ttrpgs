@@ -1,7 +1,7 @@
 const {insertUser,findUserSafe,rateUser} = require('./user');
-
+const db = require('better-sqlite3')(global.db_string);
 function getGroups() {
-  return  global.db.prepare("SELECT * FROM Groups").all();
+  return  db.prepare("SELECT * FROM Groups").all();
 }
 
 function joinGroup(userEmail,groupName){
@@ -29,7 +29,7 @@ function joinGroup(userEmail,groupName){
 //Make sure you don't try to bind an object to one of the values.
 //Trust me, it doesn't work
 function insertGroup(owner,name,description){
-  let expr = global.db.prepare("INSERT INTO Groups (name,owner,description) VALUES(?,?,?)");
+  let expr = db.prepare("INSERT INTO Groups (name,owner,description) VALUES(?,?,?)");
   let info = expr.run(name,findUserSafe(owner.email).id,description);
   console.log(`Insert group response: ${info}`);
 }
@@ -40,15 +40,15 @@ function findGroup(ownerEmail,name){
   let expr = "";
   let matchingGroups = undefined;
   if (user && name){
-    expr = global.db.prepare("SELECT id,name,description FROM Groups WHERE name=? AND Owner=?");
+    expr = db.prepare("SELECT id,name,description FROM Groups WHERE name=? AND Owner=?");
     matchingGroups = expr.all(name,user.id);
   }
   else if(user){
-    expr = global.db.prepare("SELECT id,name,description FROM Groups WHERE OWNER=?");
+    expr = db.prepare("SELECT id,name,description FROM Groups WHERE OWNER=?");
     matchingGroups = expr.all(user.id);
   }
   else if (name){
-    expr = global.db.prepare("SELECT id,name,description FROM Groups WHERE name=?");
+    expr = db.prepare("SELECT id,name,description FROM Groups WHERE name=?");
     matchingGroups = expr.all(name);
   }
 
@@ -56,7 +56,7 @@ function findGroup(ownerEmail,name){
 }
 
 function deleteGroup(group){
-  let expr = global.db.prepare("DELETE FROM Groups where id=?");
+  let expr = db.prepare("DELETE FROM Groups where id=?");
   let info = expr.run(group.id);
   console.log(info);
 }
