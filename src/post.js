@@ -5,7 +5,7 @@ const {insertUser,findUserSafe,rateUser,getUsers} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./groups.js');
 const {sendPasswordResetEmail} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
-
+const bcrypt = require('bcrypt');
 router
   .post("/recoverpassword",[check("password","You must supply a password").notEmpty(),check("confirmpassword","You must confirm your password").notEmpty()],(req,res)=>{
     const errors = validationResult(req);
@@ -60,7 +60,7 @@ router
     let email = req.body.email;
     let password = req.body.password;
 
-    insertUser(name,email,password);
+    insertUser(name,email,password,"user");
     //res.send("Pretend that we definitely did that right. Eventually we'll check this server-side");
     res.render("registration",{message:"User account created!"});
   })

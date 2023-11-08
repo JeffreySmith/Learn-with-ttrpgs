@@ -1,9 +1,11 @@
-function insertUser(name,email,password){
+
+const bcrypt = require('bcrypt');
+function insertUser(name,email,password,role){
   bcrypt
     .hash(password,10)
     .then(hash=>{
-      let expr = global.db.prepare("INSERT INTO Users (name,password,email) VALUES(?,?,?)");
-      let info = expr.run(name,hash,email);
+      let expr = global.db.prepare("INSERT INTO Users (name,password,email,role) VALUES(?,?,?,?)");
+      let info = expr.run(name,hash,email,role);
       console.log(info);
     })
     .catch(err=>console.error(err.message));
