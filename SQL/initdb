@@ -6,6 +6,13 @@ DB=testDB.db
 #Sets the cli options
 OPTSTRING=":ugrsiRa"
 declare -a options=()
+
+#This runs if you don't pass any arguments. It's the same as passing '-a'
+if [ -z ${1} ]
+then
+    options+=("users" "groups" "rpgs" "ratings" "sessions" "intermediaries")
+fi
+
 while getopts ${OPTSTRING} opt; do
     case ${opt} in
         u)
@@ -17,17 +24,18 @@ while getopts ${OPTSTRING} opt; do
         r)
             options+=("ratings")
             ;;
-        s)
-            options+=("sessions")
-            ;;
         R)
             options+=("rpgs")
             ;;
+        s)
+            options+=("sessions")
+            ;;
+     
         i)
             options+=("intermediaries")
             ;;
         a)
-            options+=("users" "groups" "ratings" "sessions" "intermediaries" "rpgs")
+            options+=("users" "groups" "rpgs" "ratings" "sessions" "intermediaries")
             ;;
         ?)        
         echo "Invalid option -${OPTARG}"
