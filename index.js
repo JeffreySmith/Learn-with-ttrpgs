@@ -48,8 +48,8 @@ app.use(express.static(__dirname + "/www"));
 const db_string = "SQL/testDB.db";
 
 global.db = new Database(db_string);
-
-
+global.db.pragma('foreign_key=ON');
+global.db.pragma('journal_mode=WAL');
 //joinGroup("test@email.com","Group2");
 console.log(getUsers());
 
