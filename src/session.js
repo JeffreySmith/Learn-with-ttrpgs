@@ -9,6 +9,16 @@ db.pragma('foreign_keys=ON');
 function analyzeGradeLevel(string){
   return FleschKincaid.grade(string);
 }
+function groupSessionLevels(groupID){
+  let expr = db.prepare("SELECT * FROM Sessions WHERE groupid=? AND transcript IS NOT NULL");
+  let rows = expr.all(groupID);
+  let sessionInfo = [];
+  for (let row of rows){
+    sessionInfo.push({id:row.id,date:row.time,transcript:row.transcript});
+  }
+  return sessionInfo;
+}
+
 function createSession(groupName,time,transcript){
   let group = findGroup(undefined,groupName);
   group = group[0];
@@ -22,6 +32,12 @@ function createSession(groupName,time,transcript){
     expr.run(group.id,time,transcript);
   }
 }
+function getTranscriptAnalysis(transcript){
+  let fileContent = fs.readFileSync("www/files/"+transcript).toString();
+  let analysis = Math.floor(analyzeGradeLevel(fileContent));
+  return analysis;
+  
+};
 function addTranscript(sessionid,transcript){
   let expr = db.prepare("UPDATE Sessions SET transcript = ? WHERE id=?");
   let info = expr.run(transcript,sessionid);
@@ -41,8 +57,7 @@ function findSession(id){
   
   if(session.transcript){
     //load transcript text here
-    let fileContent = fs.readFileSync("www/files/"+session.transcript).toString();
-    session.languageLevel = Math.floor(analyzeGradeLevel(fileContent));
+    session.languageLevel = getTranscriptAnalysis(session.transcript);
   }
   console.log(`Found name: ${name}`);
   session.name=name;
@@ -55,4 +70,4 @@ function allGroupSessions(groupId){
   let results = expr.all(groupId);
   return results;
 }
-module.exports = {createSession,findSession,allGroupSessions,addTranscript};
+module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels};

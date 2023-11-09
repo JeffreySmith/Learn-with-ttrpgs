@@ -14,7 +14,7 @@ router
     res.send("Hi there!");
   })
   .get('/',(req,res)=>{
-    res.render("index");
+    res.render("home");
   })
   .get('/check',(req,res)=>{
     if(req.session.username){
