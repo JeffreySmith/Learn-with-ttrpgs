@@ -9,11 +9,22 @@ CREATE TABLE IF NOT EXISTS Users (
 );
 INSERT OR IGNORE INTO Users(id,firstname,lastname,email,password,role) VALUES
 (
-        7,
+        1,
         "Jeffrey",
         "Smith",
         "ttrpglearning@gmail.com",
         "$2b$10$/1pWVJBroVrRH4wDEF4gMuBBkf0SmlFqSuDMZpAr6tYP.HsaNQmcq", -- This is '123456'
         "admin"
 );
+INSERT OR IGNORE INTO Users(id,firstname,lastname,email,password,role) VALUES
+(
+        2,
+        "Amelia",
+        "Miller",
+        "ttrpglearning+amelia@gmail.com",
+        "$2b$10$lQ0FNh6.Ct1ZMqaEwGHNdu.HUqgkGRCbEvbyxl4hNamqSkTrVa3Ru", -- This is '123456'
+        "user"
+);
+        
+        
 

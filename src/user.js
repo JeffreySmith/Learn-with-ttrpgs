@@ -16,7 +16,7 @@ function insertUser(name,lastName,email,password,role){
 
 //If you don't need to get the user's password, this is the function you should use
 function findUserSafe(email){
-  let expr = db.prepare("SELECT id,name,email From Users WHERE email=?");
+  let expr = db.prepare("SELECT id,firstname,lastname,email From Users WHERE email=?");
   let info = expr.get(email);
   return info;
 }
