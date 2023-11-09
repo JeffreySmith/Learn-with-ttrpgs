@@ -77,11 +77,10 @@ router
     
     let session = findSession(id);
     let groups = getGroups();
-    console.log(session);
+    
     session.time = session.time.slice(0,session.time.length-3);
     
     if(session != undefined){
-      console.log(session);
       res.render("sessionpage",{session:session,groups:groups});
     }
     else{

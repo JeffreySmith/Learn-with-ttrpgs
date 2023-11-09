@@ -12,6 +12,9 @@
     <% if(typeof(session) != 'undefined'){%>
         <p>Group Name: <%= session.name%></p>
         <p>Scheduled Time: <%=session.time%></p>
+        <% if(typeof(session.languageLevel) !='undefined'){ %>
+            <p>Language level: <%=session.languageLevel%></p>
+        <%}%>
     <%}%>
     <form action="/session" method="post">
         <div>

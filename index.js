@@ -56,9 +56,6 @@ db.pragma('foreign_key=ON');
 //joinGroup("test@email.com","Group2");
 console.log(getUsers());
 
-function analyzeGradeLevel(string){
-  return FleschKincaid.grade(string);
-}
 
 app.use('/',get);
 app.use('/',post);
