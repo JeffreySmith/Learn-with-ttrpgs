@@ -4,7 +4,8 @@
     "description": "Capstone Project for INFO8105",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node index.js"
     },
     "author": "",
     "license": "BSD-3-Clause",
