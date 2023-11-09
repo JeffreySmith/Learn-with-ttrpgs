@@ -22,3 +22,10 @@ INSERT OR IGNORE INTO RPG(id,name,publisher,edition) VALUES
         "White Wolf",
         "5th Edition"
 );
+INSERT OR IGNORE INTO RPG(id,name,publisher,edition) VALUES
+(
+        3,
+        "Shadowrun",
+        "Catalyst Game Lab",
+        "6th Edition"
+);

@@ -38,7 +38,7 @@ while getopts ${OPTSTRING} opt; do
             options+=("users" "groups" "rpgs" "ratings" "sessions" "intermediaries")
             ;;
         ?)        
-        echo "Invalid option -${OPTARG}"
+        echo "Invalid option '-${OPTARG}'"
         echo "Valid options are:"
         echo "-u = users"
         echo "-g = groups"
@@ -54,33 +54,33 @@ done
 
 init_users ()
 {
-    echo "Initializing user table"
+    echo "Initializing Users table"
     cat users.sql | sqlite3 $DB
 }
 
 init_groups ()
 {
-    echo "Initializing groups table"
+    echo "Initializing Groups table"
     cat groups.sql | sqlite3 $DB
 }
 init_ratings()
 {
-    echo "Initializing ratings table"
+    echo "Initializing Ratings table"
     cat ratings.sql | sqlite3 $DB
 }
 init_sessions()
 {
-    echo "Initializing sessions table"
+    echo "Initializing Sessions table"
     cat sessions.sql | sqlite3 $DB
 }
 init_rpg()
 {
-    echo "Initializing the rpg table"
+    echo "Initializing the RPG table"
     cat rpg.sql | sqlite3 $DB
 }
 init_intermediary()
 {
-    echo "Initializing the intermediary tables"
+    echo "Initializing the Intermediary tables"
     cat intermediary.sql | sqlite3 $DB
 }
 
