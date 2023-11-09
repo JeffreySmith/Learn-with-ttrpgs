@@ -46,16 +46,16 @@ router
     }
     console.log(validRequest);
     console.log("Index is: "+index);
-    if(validRequest && Date.now() - validRequest.time <= 9000000){
+    if(validRequest && Date.now()-validRequest.time <= 900000){
       console.log("Allow password resetting");
       console.log(Date.now() - validRequest.time);
-      global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
+      //global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
       res.render("newpassword",{user:user});
     }
     else{
-      console.log("Password reset no longer valid");
+      console.log("Password reset not valid");
       global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
-      res.status(401).send("Link no longer valid");
+      res.status(401).send("Link not valid");
     }
   
   })
