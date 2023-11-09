@@ -21,7 +21,9 @@ const post = require('./src/post.js');
 const {insertUser,findUserSafe,rateUser,getUsers} = require('./src/user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./src/groups.js');
 const {sendPasswordResetEmail} = require('./src/email.js');
-const {createSession,findSession,allGroupSessions} = require('./src/session.js');
+const {groupSessionLevels,createSession,findSession,allGroupSessions} = require('./src/session.js');
+
+console.log(groupSessionLevels(1));
 
 require('dotenv').config();
 global.url = process.env.url;
