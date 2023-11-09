@@ -10,6 +10,10 @@ const bcrypt = require('bcrypt');
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
+//This should change eventually, but until then, 6 is fine
+//Requires fixing the entries in the test data
+const password_len = 6;
+
 router
   .post("/recoverpassword",[check("password","You must supply a password").notEmpty(),check("confirmpassword","You must confirm your password").notEmpty()],(req,res)=>{
     const errors = validationResult(req);
@@ -20,8 +24,12 @@ router
     if(password !== confirmpassword){
       localErrors.push("Your passwords do not match");
     }
+
+    
+    if(password.length< password_len){
+      localErrors.push(`Your password must be at least ${password_len} characters long`);
+    }
     if(errors.length>0 || localErrors.length > 0){
-      //{errors:errors.array()}
       res.render("newpassword",{errors:errors.array().concat(localErrors)});
     }
     else{
@@ -68,14 +76,20 @@ router
   
     const errors = validationResult(req);
     console.log(errors);
-    if(!errors.isEmpty()){
-      return res.render("registration",{errors:errors.array()});
-    }
+
     let name = req.body.name;
     let lastName = req.body.lastname;
     let email = req.body.email;
     let password = req.body.password;
-
+    
+    if(password.length < password_len){
+      localErrors.push(`Your password must be at least ${password_len} characters long`);
+    }
+    
+    if(!errors.isEmpty()){
+      return res.render("registration",{errors:errors.array()});
+    }
+  
     insertUser(name,lastName,email,password,"user");
     res.render("registration",{message:"User account created!"});
   })

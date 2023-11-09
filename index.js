@@ -24,7 +24,7 @@ const {sendPasswordResetEmail} = require('./src/email.js');
 const {createSession,findSession,allGroupSessions} = require('./src/session.js');
 
 require('dotenv').config();
-
+global.url = process.env.url;
 if(process.env.pass == undefined){
   console.log(`You need pass="passwordhere" in .env`);
   console.log("Without it, you won't be able to send emails");
