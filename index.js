@@ -30,7 +30,7 @@ if(process.env.pass == undefined){
   console.log("Without it, you won't be able to send emails");
 }
 //Displays the grade level for the text. Currently here, so I could see it work
-console.log(analyzeGradeLevel("The quick brown fox jumped over the lazy dogs"));
+//console.log(analyzeGradeLevel("The quick brown fox jumped over the lazy dogs"));
 const port = 8000;
 
 //I genuinely don't know if this is the right way to do this. We do have support for a .env file

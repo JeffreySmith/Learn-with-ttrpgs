@@ -30,11 +30,15 @@ function addTranscript(sessionid,transcript){
 function findSession(id){
   let expr = db.prepare("SELECT * FROM Sessions WHERE id=?");
   let session = expr.all(id);
+  let name = [];
   session = session[0];
-
+  
   expr = db.prepare("SELECT *,name FROM Sessions INNER JOIN Groups ON Sessions.groupid = Groups.id WHERE Groups.id=?");
-  let name = expr.all(session.groupid);
+  
+  name = expr.all(session.groupid);
   name = name[0].name;
+  
+  
   if(session.transcript){
     //load transcript text here
     let fileContent = fs.readFileSync("www/files/"+session.transcript).toString();
