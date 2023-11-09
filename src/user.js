@@ -20,9 +20,9 @@ function findUserSafe(email){
   let info = expr.get(email);
   return info;
 }
-function rateUser(targetUserId,userId,rating){
-  let target = findUserSafe(targetUserId);
-  let rater = findUserSafe(userId);
+function rateUser(targetUserEmail,userEmail,rating){
+  let target = findUserSafe(targetUserEmail);
+  let rater = findUserSafe(userEmail);
   
   let expr = "";
 
@@ -39,6 +39,22 @@ function rateUser(targetUserId,userId,rating){
   else{
     console.log(`Info: target user: ${target}, rater: ${rater}, rating: ${rating}`);
   }
+}
+function updateRating(targetUserEmail,userEmail,newRating){
+  let target = findUserSafe(targetUserEmail);
+  let rater = findUserSafe(userEmail);
+
+  if(target && rater && rating && target.id!==rater.id){
+    try{
+      let expr = db.prepare("UPDATE UserRatings SET rating = ? WHERE ratedby=? AND ratingfor=?");
+      let info = expr.run(newRating,rater.id,target.id);
+      console.log(info);
+    }
+    catch(err){
+      console.log(`Error: ${err}`);
+    }
+  }
+
 }
 
 function getUsers(){
