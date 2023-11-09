@@ -24,13 +24,13 @@ const {sendPasswordResetEmail} = require('./src/email.js');
 const {createSession,findSession,allGroupSessions} = require('./src/session.js');
 
 require('dotenv').config();
-
+global.url = process.env.url;
 if(process.env.pass == undefined){
   console.log(`You need pass="passwordhere" in .env`);
   console.log("Without it, you won't be able to send emails");
 }
 //Displays the grade level for the text. Currently here, so I could see it work
-console.log(analyzeGradeLevel("The quick brown fox jumped over the lazy dogs"));
+//console.log(analyzeGradeLevel("The quick brown fox jumped over the lazy dogs"));
 const port = 8000;
 
 //I genuinely don't know if this is the right way to do this. We do have support for a .env file
@@ -56,9 +56,6 @@ db.pragma('foreign_key=ON');
 //joinGroup("test@email.com","Group2");
 console.log(getUsers());
 
-function analyzeGradeLevel(string){
-  return FleschKincaid.grade(string);
-}
 
 app.use('/',get);
 app.use('/',post);

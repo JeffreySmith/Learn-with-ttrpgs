@@ -1,17 +1,30 @@
 PRAGMA foreign_keys=ON;
 CREATE TABLE IF NOT EXISTS Users (
        id INTEGER PRIMARY KEY AUTOINCREMENT,
-       name VARCHAR(50) NOT NULL,
+       firstname VARCHAR(50) NOT NULL,
+       lastname VARCHAR(50) NOT NULL,
        email VARCHAR(50) NOT NULL UNIQUE,
        password VARCHAR(50) NOT NULL,
        role VARCHAR(5) NOT NULL
 );
-INSERT OR IGNORE INTO Users(id,name,email,password,role) VALUES
+INSERT OR IGNORE INTO Users(id,firstname,lastname,email,password,role) VALUES
 (
-        7,
+        1,
         "Jeffrey",
+        "Smith",
         "ttrpglearning@gmail.com",
         "$2b$10$/1pWVJBroVrRH4wDEF4gMuBBkf0SmlFqSuDMZpAr6tYP.HsaNQmcq", -- This is '123456'
         "admin"
 );
+INSERT OR IGNORE INTO Users(id,firstname,lastname,email,password,role) VALUES
+(
+        2,
+        "Amelia",
+        "Miller",
+        "ttrpglearning+amelia@gmail.com",
+        "$2b$10$lQ0FNh6.Ct1ZMqaEwGHNdu.HUqgkGRCbEvbyxl4hNamqSkTrVa3Ru", -- This is '123456'
+        "user"
+);
+        
+        
 

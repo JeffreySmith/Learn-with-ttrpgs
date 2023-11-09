@@ -27,9 +27,63 @@ function joinGroup(userEmail,groupName){
   }
   return false;
 }
+function leaveGroup(userEmail,groupName){
+  let user = findUserSafe(userEmail);
+  let group = findGroup(undefined,groupName);
+  if(group.length === 1){
+    group = group[0];
+    try{
+      let expr = db.prepare("DELETE FROM GroupMembers WHERE userid=? AND groupid=?");
+      let info = expr.run(user.id,group.id);
+      console.log(info);
+      return true;
+    }
+    catch(err){
+      console.log(`Error: ${err}`);
+    };
+    return false;
+  }
+}
+function changeOwner(newOwnerEmail,groupName){
+  let newOwner = findUserSafe(newOwnerEmail);
+  let group = findGroup(groupName);
 
+}
 
-//Make sure you don't try to bind an object to one of the values.
+function removeByModeration(userEmail,groupName,adminUserEmail){
+  let admin = findUserSafe(adminUserEmail);
+  let user = findUserSafe(userEmail);
+  let group = []
+  if(admin.role == "admin"){
+    group = findGroup(undefined,groupName);
+    if(group.length > 0){
+      group = group[0];
+    }
+    else{
+      return false;
+    }
+  }
+  else if(findGroup(adminUserEmail,groupName)){
+    group = findGroup(adminUserEmail,groupName);
+    if(group.length > 0){
+      group = group[0];
+    }
+    else{
+      return false;
+    }
+  }
+  else{
+    return false;
+  }
+  
+  let expr = db.prepare("DELETE FROM GroupMembers WHERE userid=? AND groupid=?");
+  let info = expr.run(user.id,group.id);
+  console.log(info);
+  return true;
+  
+}
+
+//make sure you don't try to bind an object to one of the values.
 //Trust me, it doesn't work
 function insertGroup(owner,name,description){
   let expr = db.prepare("INSERT INTO Groups (name,owner,description) VALUES(?,?,?)");
