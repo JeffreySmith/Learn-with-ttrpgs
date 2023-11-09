@@ -64,7 +64,7 @@ router
       res.send("A password reset email has been sent FiX THIS LATER");
     }
   })
-  .post("/register",[check('name',"Please enter a name").notEmpty(),check('email',"Please enter a valid email").isEmail(),check('password',"Please enter a password").notEmpty(),check('confirmPassword',"Please confirm your password").notEmpty()],(req,res)=>{
+  .post("/register",[check('name',"Please enter a first name").notEmpty(),check('lastname',"Please enter a last name").notEmpty(),check('email',"Please enter a valid email").isEmail(),check('password',"Please enter a password").notEmpty(),check('confirmPassword',"Please confirm your password").notEmpty()],(req,res)=>{
   
     const errors = validationResult(req);
     console.log(errors);
@@ -72,11 +72,11 @@ router
       return res.render("registration",{errors:errors.array()});
     }
     let name = req.body.name;
+    let lastName = req.body.lastname;
     let email = req.body.email;
     let password = req.body.password;
 
-    insertUser(name,email,password,"user");
-    //res.send("Pretend that we definitely did that right. Eventually we'll check this server-side");
+    insertUser(name,lastName,email,password,"user");
     res.render("registration",{message:"User account created!"});
   })
   .post("/login",[

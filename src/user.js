@@ -3,12 +3,12 @@ const bcrypt = require('bcrypt');
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_key=ON');
 
-function insertUser(name,email,password,role){
+function insertUser(name,lastName,email,password,role){
   bcrypt
     .hash(password,10)
     .then(hash=>{
-      let expr = db.prepare("INSERT INTO Users (name,password,email,role) VALUES(?,?,?,?)");
-      let info = expr.run(name,hash,email,role);
+      let expr = db.prepare("INSERT INTO Users (firstname,lastname,password,email,role) VALUES(?,?,?,?,?)");
+      let info = expr.run(name,lastName,hash,email,role);
       console.log(info);
     })
     .catch(err=>console.error(err.message));
