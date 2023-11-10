@@ -47,7 +47,19 @@ function leaveGroup(userEmail,groupName){
 function changeOwner(newOwnerEmail,groupName){
   let newOwner = findUserSafe(newOwnerEmail);
   let group = findGroup(groupName);
-
+  if (group.length >= 1){
+    group = group[0];
+  }
+  else{
+    return undefined;
+  }
+    
+  if (newOwner && group){
+    let expr = db.prepare("UPDATE Groups SET owner = ? WHERE id = ?");
+    let info = expr.run(user.id,group.id);
+    console.log(info);
+    
+  }
 }
 
 function removeByModeration(userEmail,groupName,adminUserEmail){

@@ -23,4 +23,11 @@ INSERT OR IGNORE INTO Groups(id,name,description,owner) VALUES
         2
 
 );
+INSERT OR IGNORE INTO Groups(id,name,description,owner) VALUES
+(
+        3,
+        "Testing group",
+        "We are a group that is interested in having fun, and including everyone so that we can all improve",
+        1
 
+);

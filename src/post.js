@@ -172,11 +172,25 @@ router
     deleteGroup(group);
   })
   .post("/groupsearch",(req,res)=>{
-    
+    res.set('Access-Control-Allow-Origin', '*');
     let ownerEmail = req.body.email;
     let groupName = req.body.groupName;
-    let matches = findGroup(ownerEmail,groupName);
+    let matches = [];
+    if(ownerEmail && groupName){
+      matches = findGroup(ownerEmail,groupName);
+    }
+    else if(ownerEmail){
+      matches = findGroup(ownerEmail,undefined);
+    }
+    else if(groupName){
+      matches = findGroup(undefined,groupName);
+    }
     if(matches){
+      console.log(matches);
+      for (let match of matches){
+	match.sessions = allGroupSessions(match.id);
+	
+      }
       res.status(200).json(matches);
     }
     else if (!ownerEmail && !groupName){
