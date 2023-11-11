@@ -23,14 +23,18 @@ function createSession(groupName,time,transcript){
   let group = findGroup(undefined,groupName);
   group = group[0];
   let expr = "";
+  let id = "";
   if(!transcript){
     expr = db.prepare("INSERT INTO Sessions (groupid,time) VALUES (?,?)");
     expr.run(group.id,time);
   }
   else if(transcript){
-    expr = db.prepare("INSERT INTO Sessions (groupid,time,transcript) VALUES (?,?)");
+    expr = db.prepare("INSERT INTO Sessions (groupid,time,transcript) VALUES (?,?,?)");
     expr.run(group.id,time,transcript);
   }
+  expr = db.prepare("SELECT id FROM Sessions WHERE groupid=? AND time=?");
+  let info = expr.run(group.id,time);
+  return info;
 }
 function getTranscriptAnalysis(transcript){
   let fileContent = fs.readFileSync("www/files/"+transcript).toString();

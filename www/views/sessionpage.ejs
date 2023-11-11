@@ -16,7 +16,7 @@
             <p>Language level: <%=session.languageLevel%></p>
         <%}%>
     <%}%>
-    <form action="/session" method="post">
+    <form action="/session" method="post" enctype="multipart/form-data">
         <div>
             <input type="datetime-local" id="time" name="time" >
         </div>
@@ -29,9 +29,11 @@
             </select>
         </div>
         <div>
+            <input type="file" id="transcript" name="transcript">
+        <div>
             <input type="submit" >
         </div>
     </form>
-
+    
 </body>
 </html>

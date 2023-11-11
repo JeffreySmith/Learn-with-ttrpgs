@@ -1,4 +1,5 @@
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers} = require('./user.js');
@@ -6,7 +7,7 @@ const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./group
 const {sendPasswordResetEmail} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
 const bcrypt = require('bcrypt');
-
+const crypto = require('crypto');
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
@@ -50,10 +51,38 @@ router
   })
 //This needs some checking, probably
   .post("/session",(req,res)=>{
+    let file = "";
     let time = req.body.time;
     let group = req.body.group;
+    let id = "";
     time = time.replace("T"," ")+":00";
-    createSession(group,time);
+    
+    if(!req.files || Object.keys(req.files).length === 0){
+      console.log("No file");
+      id = createSession(group,time);
+      //return res.render("sessionpage",{error:"No file uploaded"});
+    }
+    else{
+      file = req.files.transcript;
+      const uuid = crypto.randomUUID();
+    
+      file.mv(`www/files/${uuid}.txt`,err=>{
+	if(err){
+	  console.log(`Error:${err}`);
+	  return res.render("sessionpage",{error:err});
+	}
+	else{
+	  console.log(`File, ${file}, uploaded`);
+	}
+      });
+      id = createSession(group,time,`${uuid}.txt`);
+      
+    }
+
+    
+    
+    
+    console.log(id);
     console.log(time);
     console.log(group);
     res.render("sessionpage");
