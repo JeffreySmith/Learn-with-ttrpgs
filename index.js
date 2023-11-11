@@ -3,6 +3,7 @@
  global.db_string = "SQL/testDB.db";
 
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const crypto = require('crypto');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
@@ -47,6 +48,7 @@ const app = express();
 app.use(session(my_session));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
+app.use(fileUpload());
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"www/views"));

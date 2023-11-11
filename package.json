@@ -4,8 +4,8 @@
     "description": "Capstone Project for INFO8105",
     "main": "index.js",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "node index.js"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.js"
     },
     "author": "",
     "license": "BSD-3-Clause",
@@ -16,6 +16,7 @@
         "dotenv": "^16.3.1",
         "ejs": "^3.1.9",
         "express": "^4.18.2",
+        "express-fileupload": "^1.4.2",
         "express-session": "^1.17.3",
         "express-validator": "^7.0.1",
         "flesch-kincaid": "github:daveross/flesch-kincaid",
