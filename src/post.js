@@ -81,11 +81,13 @@ router
 
     
     
-    
-    console.log(id);
+    let groups = getGroups();
+    console.log(`ID: ${id.id}`);
+    let session = findSession(id.id);
+    //console.log(`ID: ${session.id}`);
     console.log(time);
     console.log(group);
-    res.render("sessionpage");
+    res.render("sessionpage",{session:session,groups:groups});
   })
   .post("/recovery",[check('email',"Please enter a valid email").isEmail()],(req,res)=>{
     const errors = validationResult(req);

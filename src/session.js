@@ -5,9 +5,12 @@ const fs = require('fs');
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
-
+//Round to the nearest .25
+function round(num){
+  return Math.round(num/0.25)*0.25;
+}
 function analyzeGradeLevel(string){
-  return FleschKincaid.grade(string);
+  return round(FleschKincaid.grade(string));
 }
 function groupSessionLevels(groupID){
   let expr = db.prepare("SELECT * FROM Sessions WHERE groupid=? AND transcript IS NOT NULL");
@@ -33,7 +36,7 @@ function createSession(groupName,time,transcript){
     expr.run(group.id,time,transcript);
   }
   expr = db.prepare("SELECT id FROM Sessions WHERE groupid=? AND time=?");
-  let info = expr.run(group.id,time);
+  let info = expr.get(group.id,time);
   return info;
 }
 function getTranscriptAnalysis(transcript){
@@ -57,7 +60,7 @@ function findSession(id){
   
   name = expr.all(session.groupid);
   name = name[0].name;
-  
+
   
   if(session.transcript){
     //load transcript text here
