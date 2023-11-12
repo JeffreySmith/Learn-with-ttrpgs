@@ -73,7 +73,7 @@ function findSession(id){
   
 }
 function allGroupSessions(groupId){
-  let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,Sessions.transcript FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=?");
+  let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=?");
   let results = expr.all(groupId);
   return results;
 }

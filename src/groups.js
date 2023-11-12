@@ -7,6 +7,46 @@ function getGroups() {
   return  db.prepare("SELECT * FROM Groups").all();
 }
 
+function isGroupAdmin(email,groupName){
+  let group = findGroup(email,groupName);
+  if(group.length === 1){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
+function getGroupMembers(groupName){
+  let group = findGroup(undefined,groupName);
+  if(group.length===1){
+    group = group[0];
+  }
+  else{
+    return undefined;
+  }
+  let expr = db.prepare("SELECT * FROM GroupMembers INNER JOIN Users ON GroupMembers.userid = Users.id WHERE groupid=?");
+  const rows = expr.all(group.id);
+  return rows;
+}
+
+function isInGroup(email,groupName){
+  let user = findUserSafe(email);
+  let group = findGroup(undefined,groupName);
+  if(group.length === 1 && user){
+    group = group[0];
+    let expr = db.prepare("SELECT * FROM GroupMembers WHERE userid=? AND groupid=?");
+    let info = expr.get(user.id,group.id);
+    if(info.userid==user.id && info.groupid == group.id){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  return false;
+}
+
 function joinGroup(userEmail,groupName){
   let user = findUserSafe(userEmail);
   let group = findGroup(undefined,groupName);
@@ -21,12 +61,13 @@ function joinGroup(userEmail,groupName){
       return true;
     }
     catch(err){
-      console.log("You're probably trying to add a user to a group that's already in it");
-      console.log(`Error:\n${err}`);
+      console.error("You're probably trying to add a user to a group that's already in it");
+      console.error(`Error:\n${err}`);
     }
   }
   return false;
 }
+
 function leaveGroup(userEmail,groupName){
   let user = findUserSafe(userEmail);
   let group = findGroup(undefined,groupName);
@@ -39,11 +80,12 @@ function leaveGroup(userEmail,groupName){
       return true;
     }
     catch(err){
-      console.log(`Error: ${err}`);
+      console.error(`Error: ${err}`);
     };
     return false;
   }
 }
+
 function changeOwner(newOwnerEmail,groupName){
   let newOwner = findUserSafe(newOwnerEmail);
   let group = findGroup(groupName);
@@ -60,6 +102,28 @@ function changeOwner(newOwnerEmail,groupName){
     console.log(info);
     
   }
+}
+
+function updateGroupInfo(groupName,newGroupName,description){
+  let group = findGroup(undefined,groupName);
+  if(group.length === 1){
+    group = group[0];
+  }
+  else{
+    console.error("More than one group was returned. This should not happen");
+  }
+
+  if(newGroupName){
+    let expr = db.prepare("UPDATE Groups SET name = ? WHERE id = ?");
+    let info = expr.run(newGroupName,group.id);
+    console.log(info);
+  }
+  if(description){
+    let expr = db.prepare("UPDATE Groups SET description = ? WHERE id = ?");
+    let info = expr.run(description,group.id);
+    console.log(info);
+  }
+    
 }
 
 function removeByModeration(userEmail,groupName,adminUserEmail){
@@ -103,7 +167,6 @@ function insertGroup(owner,name,description){
   console.log(`Insert group response: ${info}`);
 }
 
-
 function findGroup(ownerEmail,name){
   let user = findUserSafe(ownerEmail);
   let expr = "";
@@ -131,4 +194,4 @@ function deleteGroup(group){
 }
 
 
-module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup};
+module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo};
