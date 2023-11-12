@@ -20,7 +20,7 @@ const {check,query,validationResult } = require('express-validator');
 const get = require('./src/get.js');
 const post = require('./src/post.js');
 const {insertUser,findUserSafe,rateUser,getUsers} = require('./src/user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./src/groups.js');
+const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers} = require('./src/groups.js');
 const {sendPasswordResetEmail} = require('./src/email.js');
 const {groupSessionLevels,createSession,findSession,allGroupSessions} = require('./src/session.js');
 
@@ -58,8 +58,6 @@ app.use(express.static(__dirname + "/www"));
 db.pragma('foreign_key=ON');
 
 //joinGroup("test@email.com","Group2");
-console.log(getUsers());
-
 
 app.use('/',get);
 app.use('/',post);
