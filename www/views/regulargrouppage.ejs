@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+        }
+
+        nav {
+            background-color: #555;
+            padding: 10px;
+            width: 100%;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        nav a:hover {
+            color: #f77062;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background-color: #131313;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+            justify-content: space-between;
+        }
+
+        #groupDetailsSection,
+        #graphSection {
+            flex: 1;
+            padding: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+            background-color: #1d1d1d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            /*display: none;*/
+            /* Initially hide the form */
+        }
+
+        label {
+            color: snow;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea {
+            padding: 10px;
+            margin: 5px 0;
+            width: calc(100% - 20px);
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #333;
+            color: snow;
+        }
+
+        button {
+            font-size: 1rem;
+            background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
+            padding: 14px 32px;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            margin-top: 2rem;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.35s;
+            outline: none;
+        }
+
+        button:hover {
+            background: #4837ff;
+            transition: all 0.3s ease;
+        }
+
+        h2 {
+            color: snow;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background-color: #ddd;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            color: #333;
+        }
+
+        .divider {
+            border-top: 2px solid #555;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Group Dashboard</h1>
+    </header>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="#">My Group</a>
+    </nav>
+
+    <div class="container">
+        <!-- Group Details Section -->
+        <section id="groupDetailsSection">
+            <h2>Group Details</h2>
+            <ul id="groupDetailsList">
+                <!-- Display group details dynamically here -->
+                <li><strong>Name:</strong> <%=  typeof('group') !='undefined' ? group.name : "Group Name" %></li>
+                <li><strong>Description:</strong> <%= typeof('group') !='undefined' ? group.description : "Group Description" %></li>
+                <li class="group-members"><strong>Members:</strong>
+                    <ul>
+                        <% if(typeof('members') != 'undefined'){ %>
+                            <% for(let member of members){ %>
+                                <ul><%=member.firstname%> <%= member.lastname%></ul>
+                            <%}%>
+                        <%}%>
+                    </ul>
+                </li>
+                <li><strong>Admin:</strong> <%= typeof('admin') !='undefined' ? admin.email : "Admin user"%></li>
+            </ul>
+            <form method="post" action="/group" >
+                <input type="hidden" value="<%= typeof('username') !='undefined' ? username:'username'%>" name="username">
+                <input type="hidden" name="groupname" value="<%= typeof('group') !='undefined' ? group.name:''%>">
+                
+                <button id="leaveGroupBtn">Leave Group</button>
+            </form>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Graph Section -->
+        <section id="graphSection">
+            <h2>Group Activity Graph</h2>
+            <div id="graph">
+                <!-- Your graph implementation goes here -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Dark-themed form for creating/joining a group -->
+   
+
+    <script>
+        // JavaScript to handle form submission and dynamically update the group list.
+        document.getElementById('createJoinGroupForm').addEventListener('submit', function (event) {
+            //event.preventDefault();
+
+            // Add logic to handle group creation/joining and update the group list.
+
+        });
+
+        // JavaScript to handle leaving the group
+        /*document.getElementById('leaveGroupBtn').addEventListener('click', function () {
+            // Add logic to handle leaving the group and update the UI.
+            alert("Leave Group button clicked!");
+        });*/
+    </script>
+
+</body>
+
+</html>

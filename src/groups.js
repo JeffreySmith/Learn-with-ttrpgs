@@ -17,6 +17,11 @@ function isGroupAdmin(email,groupName){
   }
 }
 
+function sendJoinRequest(email,groupName){
+
+
+}
+
 function getGroupMembers(groupName){
   let group = findGroup(undefined,groupName);
   if(group.length===1){
@@ -172,15 +177,15 @@ function findGroup(ownerEmail,name){
   let expr = "";
   let matchingGroups = undefined;
   if (user && name){
-    expr = db.prepare("SELECT id,name,description FROM Groups WHERE name=? AND Owner=?");
+    expr = db.prepare("SELECT * FROM Groups WHERE name=? AND Owner=?");
     matchingGroups = expr.all(name,user.id);
   }
   else if(user){
-    expr = db.prepare("SELECT id,name,description FROM Groups WHERE OWNER=?");
+    expr = db.prepare("SELECT * FROM Groups WHERE OWNER=?");
     matchingGroups = expr.all(user.id);
   }
   else if (name){
-    expr = db.prepare("SELECT id,name,description FROM Groups WHERE name=?");
+    expr = db.prepare("SELECT * FROM Groups WHERE name=?");
     matchingGroups = expr.all(name);
   }
 
@@ -192,6 +197,10 @@ function deleteGroup(group){
   let info = expr.run(group.id);
   console.log(info);
 }
+function getGroupById(id){
+  let expr = db.prepare("SELECT * FROM Groups where id=?");
+  let output = expr.get(id);
+  return output;
+}
 
-
-module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo};
+module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById};

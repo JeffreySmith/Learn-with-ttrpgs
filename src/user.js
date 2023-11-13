@@ -61,5 +61,10 @@ function getUsers(){
     return db.prepare("SELECT * FROM Users").all();
 }
 
+function getUserById(id){
+  return db.prepare("SELECT * FROM Users WHERE id=?").get(id);
+}
+  
 
-module.exports = {insertUser,findUserSafe,rateUser,getUsers};
+
+module.exports = {insertUser,findUserSafe,rateUser,getUsers,getUserById};
