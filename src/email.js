@@ -25,6 +25,25 @@ function sendMail(transporter,mailOptions){
     }
   });
 }
+
+function sendJoinRequest(email,groupName){
+  let user = findUserSafe(email);
+  if(!user){
+    return undefined;
+  }
+
+  const transporter = getTransporter();
+  
+  
+  const mailOptions = {
+    from:'ttrpglearning@gmail.com',
+    to:email, //Address to which you want to send
+    subject:'Join Request', //subject
+    html:`User ${email} wants to join your group, ${groupName}`
+  };
+  sendMail(transporter,mailOptions);
+}
+
 function sendPasswordResetEmail(email){
   if (!findUserSafe(email)){
     console.log("Email isn't in the db, so we're silently ignoring it");

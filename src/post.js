@@ -2,12 +2,14 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
-const {insertUser,findUserSafe,rateUser,getUsers} = require('./user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./groups.js');
+const {insertUser,findUserSafe,rateUser,getUsers,getUserById} = require('./user.js');
+const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup} = require('./groups.js');
 const {sendPasswordResetEmail} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const { getGroupMembers } = require("./groups.js");
+const { groupSessionLevels } = require("./session.js");
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
@@ -167,7 +169,7 @@ router
     req.session.role = undefined;
     res.render("index");
   })
-  .post("/group",(req,res)=>{
+  /*.post("/group",(req,res)=>{
     let email = req.body.owner;
     let name = req.body.name;
     let description = req.body.description;
@@ -180,7 +182,8 @@ router
     }
     insertGroup(user,name,description);
     res.render("creategroup",{message:"Successfull"});
-  })
+    })
+    */
   .post("/findgroup",(req,res)=>{
     let name = req.body.name;
     //TODO join Groups and Users table
@@ -201,6 +204,31 @@ router
       return res.render("group",{message:"No such group exists"});
     }
     deleteGroup(group);
+  })
+  .post("/group/:id?/",(req,res)=>{
+    let id = req.body.id;
+    let groupName = req.body.groupname;
+    let username = req.body.username;
+    console.log("Name:"+groupName);
+    let group = findGroup(undefined,groupName);
+    if(group.length === 1){
+      group = group[0];
+      console.log(group);
+    }
+    else{
+      console.log("Didn't find any groups that matched...");
+    }
+    console.log("Owner: "+group.owner);
+    
+    let admin = getUserById(group.owner);
+    let sessionLevels = groupSessionLevels(group.id);
+    console.log("Admin:");
+    console.log(admin);
+    
+    leaveGroup(username,groupName);
+    let members = getGroupMembers(group.name);
+
+    res.render("regulargrouppage",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin});
   })
   .post("/groupsearch",(req,res)=>{
     res.set('Access-Control-Allow-Origin', '*');
