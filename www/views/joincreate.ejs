@@ -26,12 +26,12 @@
         <!-- Create Group Section -->
         <section id="createGroupSection">
             <h2>Create a New Group</h2>
-            <form id="addGroupForm">
-                <label for="groupName">Group Name:</label>
-                <input type="text" id="groupName" name="name" required>
+            <form method="POST" action="/creategroup" id="addGroupForm">
+                <label for="name">Group Name:</label>
+                <input type="text" id="name" name="name" required>
 
-                <label for="groupDescription">Group Description:</label>
-                <textarea id="groupDescription" name="description" rows="4" required></textarea>
+                <label for="description">Group Description:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
 
                 <button type="submit">Create Group</button>
             </form>
@@ -42,7 +42,7 @@
         <!-- Join Group Section -->
         <section id="joinGroupSection">
             <h2>Join an Existing Group</h2>
-            <form id="joinGroupForm">
+            <form method="POST" action="/joingroup" id="joinGroupForm">
                 <%if(typeof('username')!='undefined'){%>
                     <input type="hidden" name="username" value="<%= username%>">
                 <%}%>
