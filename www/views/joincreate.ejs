@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Group or Join Group Page</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/joincreate.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Create Group or Join Group Page</h1>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">My Group</a>
+        <a href="#">Create/Join</a>
+        <a href="#">Group Settings</a>
+    </nav>
+
+    <div class="container">
+        <!-- Create Group Section -->
+        <section id="createGroupSection">
+            <h2>Create a New Group</h2>
+            <form id="addGroupForm">
+                <label for="groupName">Group Name:</label>
+                <input type="text" id="groupName" name="name" required>
+
+                <label for="groupDescription">Group Description:</label>
+                <textarea id="groupDescription" name="description" rows="4" required></textarea>
+
+                <button type="submit">Create Group</button>
+            </form>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Join Group Section -->
+        <section id="joinGroupSection">
+            <h2>Join an Existing Group</h2>
+            <form id="joinGroupForm">
+                <%if(typeof('username')!='undefined'){%>
+                    <input type="hidden" name="username" value="<%= username%>">
+                <%}%>
+                <label for="groups">Groups:
+                <select id="groups">
+                    <% if(typeof('groups')!='undefined'){ %>
+                        <% for(let group of groups) {%>
+                            <option value="<%= group.name%>"><%=group.name%></option>
+                        <%}%>
+                    <%}%>
+                </select>
+                </label>
+                
+                <button type="submit">Join</button>
+            </form>
+        </section>
+    </div>
+    
+    
+
+</body>
+
+</html>
