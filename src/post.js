@@ -3,7 +3,7 @@ const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers,getUserById} = require('./user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup} = require('./groups.js');
+const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup} = require('./groups.js');
 const {sendPasswordResetEmail} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
 const bcrypt = require('bcrypt');
@@ -145,11 +145,12 @@ router
             req.session.username = user.email;
             req.session.role = "user";
             console.log("User login correct");
-            res.render("login",{message:"You've logged in successfully!"});
-
+            //res.render("login",{message:"You've logged in successfully!"});
+	    res.redirect("/userpage");
 	  } else {
             console.log("Password is wrong");
             res.render("login",{message:"Incorrect login info"});
+
 	  }
 	})
 	.catch((err) => {
@@ -205,6 +206,18 @@ router
     }
     deleteGroup(group);
   })
+  .post("/joingroup",(req,res)=>{
+    let groupName = req.body.group;
+    if(groupName && req.session.username){
+      let group = findGroup(undefined,groupName);
+      group = group[0];
+      joinGroup(req.session.username,groupName);
+      res.redirect(`/group/${group.id}`);
+    }
+    else{
+      res.redirect("/login");
+    }
+  })
   .post("/group/:id?/",(req,res)=>{
     let id = req.body.id;
     let groupName = req.body.groupname;
@@ -231,6 +244,21 @@ router
 
     res.redirect(`/group/${id}/`);
     //res.render("regulargrouppage",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:id});
+  })
+  .post("/creategroup/",(req,res)=>{
+    let groupName = req.body.name;
+    let groupDescription = req.body.description;
+    let username = req.session.username;
+    console.log(`Username: ${username}`);
+    if(username){
+      console.log(`Username should be something: ${username}`);
+      createGroup(username,groupName,groupDescription);
+      let group = findGroup(username,groupName);
+      res.redirect(`/group/${group[0].id}/`);
+    }
+    else{
+      res.redirect("/login");
+    }
   })
   .post("/groupsearch",(req,res)=>{
     res.set('Access-Control-Allow-Origin', '*');

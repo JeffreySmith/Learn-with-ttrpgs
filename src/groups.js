@@ -51,7 +51,15 @@ function isInGroup(email,groupName){
   }
   return false;
 }
-
+function createGroup(userEmail,groupName,groupDescription){
+  let user = findUserSafe(userEmail);
+  console.log(user);
+  let expr = db.prepare("INSERT INTO Groups (name,description,owner) VALUES (?,?,?)");
+  let info = expr.run(groupName,groupDescription,user.id);
+  console.log(info);
+  joinGroup(userEmail,groupName);
+  
+}
 function joinGroup(userEmail,groupName){
   let user = findUserSafe(userEmail);
   let group = findGroup(undefined,groupName);
@@ -203,4 +211,4 @@ function getGroupById(id){
   return output;
 }
 
-module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById};
+module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};

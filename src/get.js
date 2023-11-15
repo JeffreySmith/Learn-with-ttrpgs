@@ -60,6 +60,7 @@ router
     }
   
   })
+  
   .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
     let groups = getGroups();
@@ -94,6 +95,16 @@ router
     }
     else{
       res.render("joincreate",{groups:groups,username:username});
+    }
+  })
+  .get("/group",(req,res)=>{
+    let groups = getGroups();
+    if (req.session.username){
+      let username = req.session.username;
+      res.render("joincreate",{groups:groups,username:username});
+    }
+    else{
+      res.redirect("/login");
     }
   })
   .get("/userpage",(req,res)=>{
