@@ -63,28 +63,25 @@ router
   .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
     let groups = getGroups();
-    
+    let username = req.session.username;
     if(req.params.id){
       groupid = req.params.id;
     }
-    if(!req.session.username){
-      //return res.redirect("/login");
+    if(req.session.username==undefined){
+      //username = "ttrpglearning@gmail.com";
+      return res.redirect("/login");
     }
-    
-    //let username = req.session.username;
-    let username = "ttrpglearning@gmail.com";
+   
+    console.log(req.body.username);
     let user = findUserSafe(username);
-    if (user.role === "admin"){
-      //do stuff here
-    }
 
     if (groupid){
       let group = getGroupById(groupid);
       let sessionLevels = groupSessionLevels(groupid);
-      if(user.id === group.owner){
+     /* if(user.id === group.owner){
 	//Show group admin version?
       }
-      else{
+      else{*/
 	//Show the regular group member page
 	let members = getGroupMembers(group.name);
 	let admin = getUserById(group.owner);
@@ -92,8 +89,8 @@ router
 	console.log(admin);
 	console.log(members);
 	console.log(group);
-	res.render("regulargrouppage",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id});
-      }
+	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id});
+      //}
     }
     else{
       res.render("joincreate",{groups:groups,username:username});
