@@ -209,6 +209,7 @@ router
     let id = req.body.id;
     let groupName = req.body.groupname;
     let username = req.body.username;
+   
     console.log("Name:"+groupName);
     let group = findGroup(undefined,groupName);
     if(group.length === 1){
@@ -226,9 +227,10 @@ router
     console.log(admin);
     
     leaveGroup(username,groupName);
-    let members = getGroupMembers(group.name);
+    let members = getGroupMembers(groupName);
 
-    res.render("regulargrouppage",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin});
+    res.redirect(`/group/${id}/`);
+    //res.render("regulargrouppage",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:id});
   })
   .post("/groupsearch",(req,res)=>{
     res.set('Access-Control-Allow-Origin', '*');
