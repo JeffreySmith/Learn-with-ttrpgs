@@ -206,7 +206,19 @@ router
     }
     deleteGroup(group);
   })
-  .post("/group/:id/",(req,res)=>{
+  .post("/joingroup",(req,res)=>{
+    let groupName = req.body.group;
+    if(groupName && req.session.username){
+      let group = findGroup(undefined,groupName);
+      group = group[0];
+      joinGroup(req.session.username,groupName);
+      res.redirect(`/group/${group.id}`);
+    }
+    else{
+      res.redirect("/login");
+    }
+  })
+  .post("/group/:id?/",(req,res)=>{
     let id = req.body.id;
     let groupName = req.body.groupname;
     let username = req.body.username;

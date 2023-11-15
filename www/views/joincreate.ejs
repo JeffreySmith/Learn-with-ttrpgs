@@ -47,7 +47,7 @@
                     <input type="hidden" name="username" value="<%= username%>">
                 <%}%>
                 <label for="groups">Groups:
-                <select id="groups">
+                <select name="group" id="groups">
                     <% if(typeof('groups')!='undefined'){ %>
                         <% for(let group of groups) {%>
                             <option value="<%= group.name%>"><%=group.name%></option>
