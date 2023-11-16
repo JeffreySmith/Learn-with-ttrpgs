@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>User Profile</title>
+        <style>
+         body {
+             font-family: Arial, sans-serif;
+             margin: 0;
+             padding: 0;
+             background-color: #000000;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+         }
+
+         header {
+             background-color: #333;
+             color: white;
+             padding: 10px;
+             text-align: center;
+             width: 100%;
+         }
+
+         nav {
+             background-color: #555;
+             padding: 10px;
+             width: 100%;
+             transition: color 0.3s ease;
+         }
+
+         nav a {
+             color: white;
+             text-decoration: none;
+             padding: 10px;
+             margin: 0 10px;
+         }
+
+         nav a:hover {
+             color: #f77062;
+         }
+
+         .container {
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             width: 100%;
+             max-width: 800px;
+             background-color: #131313;
+             border-radius: 8px;
+             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+             overflow: hidden;
+             margin-top: 20px;
+         }
+
+         .profile-section {
+             padding: 20px;
+             width: 100%;
+             box-sizing: border-box;
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+         }
+
+         .profile-picture {
+             width: 150px;
+             height: 150px;
+             border-radius: 50%;
+             object-fit: cover;
+             margin-bottom: 20px;
+         }
+
+         .user-details {
+             text-align: center;
+             color: snow;
+             margin-bottom: 20px;
+         }
+
+         .button-container {
+             display: flex;
+             justify-content: space-around;
+             width: 100%;
+             margin-top: 20px;
+         }
+
+         button {
+             font-size: 1rem;
+             background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
+             padding: 14px 32px;
+             border: none;
+             border-radius: 4px;
+             color: #fff;
+             cursor: pointer;
+             transition: all 0.35s;
+             outline: none;
+         }
+
+         button:hover {
+             background: #4837ff;
+             transition: all 0.3s ease;
+         }
+
+         h2 {
+             color: snow;
+             text-align: center;
+         }
+
+         .graph-section,
+         .ratings-reviews-section {
+             width: 100%;
+             max-width: 800px;
+             margin-top: 20px;
+             background-color: #333;
+             border-radius: 8px;
+             padding: 20px;
+             box-sizing: border-box;
+             color: #fff;
+             text-align: center;
+         }
+
+         .graph {
+             height: 200px;
+             background-color: #333;
+             border-radius: 8px;
+         }
+
+         .review {
+             background-color: #333;
+             margin: 10px;
+             padding: 10px;
+             border-radius: 4px;
+             flex: 0 0 auto;
+             width: 100%;
+             box-sizing: border-box;
+             color: #fff;
+         }
+
+         .slider {
+             overflow: hidden;
+             position: relative;
+         }
+
+         .slides {
+             display: flex;
+             transition: transform 0.5s ease-in-out;
+         }
+
+         .slider-btn {
+             position: absolute;
+             top: 50%;
+             transform: translateY(-50%);
+             font-size: 1.5rem;
+             background: none;
+             border: none;
+             color: #fff;
+             cursor: pointer;
+             outline: none;
+         }
+
+         .slider-btn.prev {
+             left: 10px;
+         }
+
+         .slider-btn.next {
+             right: 10px;
+         }
+        </style>
+    </head>
+
+    <body>
+
+        <header>
+            <h1>User Profile</h1>
+        </header>
+
+        <nav>
+            <a href="#">Home</a>
+        </nav>
+
+        <div class="container">
+            <div class="profile-section">
+                <img class="profile-picture" src="profilepic.jpg" alt="Profile Picture">
+                <div class="user-details">
+                    <% if (typeof(user)!='undefined'){%>
+                        <h2><%=user.firstname%> <%=user.lastname%></h2>
+                        <p>ID: <%=user.id%></p>
+                        <p>Email: <%=user.email%></p>
+                        <p>Joined on: November 11, 2023</p> <!--If we want to include that, not necessary though -->
+                    <%}%>
+                </div>
+
+                <!-- Language Level Graph Section -->
+                <div class="graph-section">
+                    <h2>Language Level</h2>
+                    <div class="graph"></div>
+                </div>
+
+                <!-- Ratings and Reviews Section -->
+                <div class="ratings-reviews-section">
+                    <h2>Ratings and Reviews</h2>
+                    <div class="slider">
+                        <div class="slides">
+                            <% if(typeof(ratings) !='undefined'){ %>
+                                <% for(let rating of ratings){ %>
+                                    <div class="review">
+                                        <p><strong>Rating:</strong> <%=rating.rating%></p>
+                                        <p><strong>Review:</strong> <%=rating.comment%></p>
+                                    </div>
+                                <%}%>
+                            <%}%>
+                        </div>
+                        <button class="slider-btn prev">&#10094;</button>
+                        <button class="slider-btn next">&#10095;</button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+             // Javascript for the slider
+             const slider = document.querySelector('.slider');
+             const slides = document.querySelector('.slides');
+             const nextBtn = document.querySelector('.next');
+             const prevBtn = document.querySelector('.prev');
+
+             let counter = 1;
+             const size = slides.clientWidth;
+             let numberOfReviews = document.querySelectorAll('.review').length;
+             console.log(numberOfReviews);
+             nextBtn.addEventListener('click', () => {
+                 if (counter >= slides.children.length - 1) return;
+                 slides.style.transition = 'transform 0.5s ease-in-out';
+                 counter++;
+                 slides.style.transform = `translateX(${-counter * size}px)`;
+             });
+
+             prevBtn.addEventListener('click', () => {
+                 if (counter <= 0) return;
+                 slides.style.transition = 'transform 0.5s ease-in-out';
+                 counter--;
+                 slides.style.transform = `translateX(${-counter * size}px)`;
+             });
+
+             slides.addEventListener('transitionend', () => {
+                 if (slides.children[counter].id === 'last-clone') {
+                     slides.style.transition = 'none';
+                     counter = slides.children.length - 2;
+                     slides.style.transform = `translateX(${-counter * size}px)`;
+                 }
+                 if (slides.children[counter].id === 'first-clone') {
+                     slides.style.transition = 'none';
+                     counter = slides.children.length - counter;
+                     slides.style.transform = `translateX(${-counter * size}px)`;
+                 }
+             });
+            </script>
+
+    </body>
+
+</html>
