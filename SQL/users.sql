@@ -25,6 +25,15 @@ INSERT OR IGNORE INTO Users(id,firstname,lastname,email,password,role) VALUES
         "$2b$10$lQ0FNh6.Ct1ZMqaEwGHNdu.HUqgkGRCbEvbyxl4hNamqSkTrVa3Ru", -- This is '123456'
         "user"
 );
-        
+INSERT INTO Users(id,firstname,lastname,email,password,role) VALUES
+(
+        3,
+        "Winston",
+        "Churchill",
+        "ttrpglearning+winston@gmail.com",
+        "$2b$10$lQ0FNh6.Ct1ZMqaEwGHNdu.HUqgkGRCbEvbyxl4hNamqSkTrVa3Ru", --123456
+        "user"
+);
+       
         
 
