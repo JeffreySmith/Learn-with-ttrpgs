@@ -114,8 +114,9 @@ router
   })
   .get("/userprofile/:id/",(req,res)=>{
     let user = getUserById(req.params.id);
-    let ratings = getRatings(user.email);
+    
     if(user){
+      let ratings = getRatings(user.email);
       res.render("publicprofile",{user:user,ratings:ratings});
     }
     else{
