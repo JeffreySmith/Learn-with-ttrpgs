@@ -84,7 +84,8 @@ router
 	//Show group admin version?
       }
       else{*/
-	//Show the regular group member page
+      //Show the regular group member page
+      if(group){
 	let members = getGroupMembers(group.name);
 	let admin = getUserById(group.owner);
 	console.log("Admin:");
@@ -92,10 +93,13 @@ router
 	console.log(members);
 	console.log(group);
 	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id});
-      //}
+      }
+      else{
+	res.redirect("/group");
+      }
     }
     else{
-      res.render("joincreate",{groups:groups,username:username});
+      res.redirect("/group");
     }
   })
   .get("/group",(req,res)=>{
@@ -110,9 +114,13 @@ router
   })
   .get("/userprofile/:id/",(req,res)=>{
     let user = getUserById(req.params.id);
-    let ratings = getRatings(user.email);
+    
     if(user){
+      let ratings = getRatings(user.email);
       res.render("publicprofile",{user:user,ratings:ratings});
+    }
+    else{
+      res.redirect("/userprofile");
     }
   })
   .get("/userprofile",(req,res)=>{
