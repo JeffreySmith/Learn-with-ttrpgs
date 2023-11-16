@@ -56,6 +56,12 @@ function updateRating(targetUserEmail,userEmail,newRating){
   }
 
 }
+function getRatings(userEmail){
+  let user = findUserSafe(userEmail);
+  let rows = db.prepare("SELECT * FROM UserRatings WHERE targetid=?").all(user.id);
+  console.log(rows);
+  return rows;
+}
 
 function getUsers(){
     return db.prepare("SELECT * FROM Users").all();
@@ -67,4 +73,4 @@ function getUserById(id){
   
 
 
-module.exports = {insertUser,findUserSafe,rateUser,getUsers,getUserById};
+module.exports = {insertUser,findUserSafe,rateUser,getUsers,getUserById,getRatings};

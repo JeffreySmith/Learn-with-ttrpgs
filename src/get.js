@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {insertUser,findUserSafe,rateUser,getUsers,getUserById} = require('./user.js');
+const {insertUser,findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,getGroupById,getGroupMembers} = require('./groups.js');
 const {sendPasswordResetEmail} = require('./email.js');
 const {createSession,findSession,allGroupSessions,groupSessionLevels} = require('./session.js');
@@ -70,6 +70,7 @@ router
     }
     if(req.session.username==undefined){
       //username = "ttrpglearning@gmail.com";
+      req.session.previousPage=`/group/${req.params.id}/`;
       return res.redirect("/login");
     }
    
@@ -107,10 +108,18 @@ router
       res.redirect("/login");
     }
   })
-  .get("/userpage",(req,res)=>{
-    if(req.session.loggedIn){
+  .get("/userprofile/:id/",(req,res)=>{
+    let user = getUserById(req.params.id);
+    let ratings = getRatings(user.email);
+    if(user){
+      res.render("publicprofile",{user:user,ratings:ratings});
+    }
+  })
+  .get("/userprofile",(req,res)=>{
+    if(req.session.username){
+      console.log(getRatings(req.session.username));
       let user = getUsers().find((user)=> user.email === req.session.username);
-      res.render("userpage",{user:user});
+      res.render("publicprofile",{user:user});
     }
     else{
       res.redirect("/login");

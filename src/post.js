@@ -146,7 +146,15 @@ router
             req.session.role = "user";
             console.log("User login correct");
             //res.render("login",{message:"You've logged in successfully!"});
-	    res.redirect("/userpage");
+	    if(!req.session.previousPage){
+	      res.redirect("/userprofile");
+	    }
+	    else{
+	      let previous = req.session.previousPage;
+	      req.session.previousPage = undefined;
+	      res.redirect(previous);
+	      
+	    }
 	  } else {
             console.log("Password is wrong");
             res.render("login",{message:"Incorrect login info"});
