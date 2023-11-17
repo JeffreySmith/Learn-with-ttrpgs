@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const {insertUser,findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,getGroupById,getGroupMembers} = require('./groups.js');
-const {sendPasswordResetEmail} = require('./email.js');
-const {createSession,findSession,allGroupSessions,groupSessionLevels} = require('./session.js');
-const bcrypt = require('bcrypt');
+const {findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
+const {getGroups,findGroup,getGroupById,getGroupMembers} = require('./groups.js');
+
+const {createSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel} = require('./session.js');
+
 
 
 const db = require('better-sqlite3')(global.db_string);
@@ -63,7 +63,7 @@ router
   
   .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
-    let groups = getGroups();
+    
     let username = req.session.username;
     if(req.params.id){
       groupid = req.params.id;
@@ -75,16 +75,10 @@ router
     }
    
     console.log(req.body.username);
-    let user = findUserSafe(username);
-
+    
     if (groupid){
       let group = getGroupById(groupid);
       let sessionLevels = groupSessionLevels(groupid);
-     /* if(user.id === group.owner){
-	//Show group admin version?
-      }
-      else{*/
-      //Show the regular group member page
       if(group){
 	let members = getGroupMembers(group.name);
 	let admin = getUserById(group.owner);
@@ -117,7 +111,18 @@ router
     
     if(user){
       let ratings = getRatings(user.email);
-      res.render("publicprofile",{user:user,ratings:ratings});
+      if(req.session.username){
+	let loggedIn = findUserSafe(req.session.username);
+	if(loggedIn != user){
+	  res.render("publicprofile",{user:user,ratings:ratings,loggedInUser:loggedIn});
+	}
+	else{
+	  res.render("publicprofile",{user:user,ratings:ratings});
+	}
+      }
+      else{
+	res.render("publicprofile",{user:user,ratings:ratings});
+      }
     }
     else{
       res.redirect("/userprofile");
@@ -149,6 +154,30 @@ router
       res.render("sessionpage",{groups:groups});
     }
   })
+  .get("/sessioninfo/:groupid/",(req,res)=>{
+    console.log("Trying to get resource...");
+    res.set('Access-Control-Allow-Origin', '*');
+    let sessions = allGroupSessions(req.params.groupid);
+    console.log(sessions);
+    let sessionInfo = [];
+    for(let session of sessions){
+      if(session.transcript){
+	let info = {
+	  id:session.id,
+	  level:getGradeLevel(session.id),
+	  time:session.time.substring(0,10)
+	}
+	sessionInfo.push(info);
+      }
+    }
+    res.json(sessionInfo);
+    
+  })
+  .get("/sessioninfo",(req,res)=>{
+    res.status(401).send("Bad request");
+  })
+    
+  
 
 
 module.exports = router;

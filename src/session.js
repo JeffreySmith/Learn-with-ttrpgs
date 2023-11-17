@@ -12,6 +12,16 @@ function round(num){
 function analyzeGradeLevel(string){
   return round(FleschKincaid.grade(string));
 }
+function getGradeLevel(sessionID){
+  let expr = db.prepare("SELECT * FROM Sessions WHERE id=? AND transcript IS NOT NULL");
+  let info = expr.get(sessionID);
+  if(info){
+    return getTranscriptAnalysis(info.transcript);
+  }
+  else{
+    return undefined;
+  }
+}
 function groupSessionLevels(groupID){
   let expr = db.prepare("SELECT * FROM Sessions WHERE groupid=? AND transcript IS NOT NULL");
   let rows = expr.all(groupID);
@@ -73,8 +83,8 @@ function findSession(id){
   
 }
 function allGroupSessions(groupId){
-  let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=?");
+  let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=? ORDER BY time");
   let results = expr.all(groupId);
   return results;
 }
-module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels};
+module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel};
