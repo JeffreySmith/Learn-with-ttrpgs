@@ -17,10 +17,6 @@ function isGroupAdmin(email,groupName){
   }
 }
 
-function sendJoinRequest(email,groupName){
-
-
-}
 
 function getGroupMembers(groupName){
   let group = findGroup(undefined,groupName);
