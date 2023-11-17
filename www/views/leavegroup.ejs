@@ -5,6 +5,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Group Dashboard</title>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <script>
+     function createGraph(id){
+         console.log("rsnihetarntsiaeh");
+         createChart(id);
+     }
+     function createChart(id){
+         fetch(`/sessioninfo/${id}/`)
+             .then((response)=>{
+                 return response.json();
+             })
+             .then((data)=>{
+                 let xVals = [];
+                 let yVals = [];
+                 
+                 for(let d of data){
+                     xVals.push(d.time);
+                     yVals.push(d.level);
+                 }
+                 new Chart("chart",{
+                     type:"line",
+                     data:{
+                         labels: xVals,
+                         datasets: [{
+                             fill: false,
+                             lineTension:0,
+                             backgroundColor: "rgba(0,0,255,1.0)",
+                             borderColor:"rgba(0,0,255,.5)",
+                             data:yVals
+                         }]
+                     },
+                     options: {
+                         legend: {display:false},
+                         scales:{
+                             yAxes: [{ticks: {min: 0, max:12}}],
+                         }
+                     }
+                 });
+             })
+             .catch((err)=>{
+                 console.log(err);
+             });
+     }
+    </script>
     <style>
      body {
          font-family: system-ui, -apple-system, BlinkMacSystemFont,Ubuntu,Arial, sans-serif;
@@ -131,7 +177,7 @@
     </style>
 </head>
 
-<body>
+<body onload="createGraph(<%= typeof('id') !='undefined' ? id : 1%>);">
 
     <header>
         <h1>Group Dashboard</h1>
@@ -176,29 +222,13 @@
         <section id="graphSection">
             <h2>Group Activity Graph</h2>
             <div id="graph">
-                <!-- Your graph implementation goes here -->
+                <canvas id="chart"  style="width:100%;max-width:250px"></canvas>
             </div>
         </section>
     </div>
 
     <!-- Dark-themed form for creating/joining a group -->
    
-
-    <script>
-        // JavaScript to handle form submission and dynamically update the group list.
-        document.getElementById('createJoinGroupForm').addEventListener('submit', function (event) {
-            //event.preventDefault();
-
-            // Add logic to handle group creation/joining and update the group list.
-
-        });
-
-        // JavaScript to handle leaving the group
-        /*document.getElementById('leaveGroupBtn').addEventListener('click', function () {
-            // Add logic to handle leaving the group and update the UI.
-            alert("Leave Group button clicked!");
-        });*/
-    </script>
 
 </body>
 
