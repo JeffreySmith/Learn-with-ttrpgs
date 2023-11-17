@@ -165,7 +165,7 @@ router
 	let info = {
 	  id:session.id,
 	  level:getGradeLevel(session.id),
-	  time:session.time.substring(0,10)
+	  time:session.time.substring(0,10).replaceAll("-","/")
 	}
 	sessionInfo.push(info);
       }

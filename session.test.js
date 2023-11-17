@@ -1,4 +1,4 @@
-const session = require('./session.js');
+const session = require('./src/session.js');
 
 test("Test grade calculation of testtranscript.txt",()=>{
   expect(session.getTranscriptAnalysis("testtranscript.txt")).toBe(2)
