@@ -4,7 +4,7 @@
     "description": "Capstone Project for INFO8105",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "jest",
         "start": "node index.js"
     },
     "author": "",
@@ -22,5 +22,8 @@
         "express-validator": "^7.0.1",
         "flesch-kincaid": "github:daveross/flesch-kincaid",
         "nodemailer": "^6.9.6"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
     }
 }
