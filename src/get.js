@@ -176,6 +176,10 @@ router
   .get("/sessioninfo",(req,res)=>{
     res.status(401).send("Bad request");
   })
+  .get("/groups",(req,res)=>{
+    let groups = getGroups();
+    res.render("groups",{groups:groups});
+  })
     
   
 
