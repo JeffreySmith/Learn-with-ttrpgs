@@ -87,4 +87,4 @@ function allGroupSessions(groupId){
   let results = expr.all(groupId);
   return results;
 }
-module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel};
+module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis};
