@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>User Profile</title>
+       
         <style>
          body {
              font-family: Arial, sans-serif;
@@ -194,10 +195,11 @@
                 </div>
 
                 <!-- Language Level Graph Section -->
-                <div class="graph-section">
+                <div onload="createGraph()" class="graph-section">
                     <h2>Language Level</h2>
                     <div class="graph"></div>
                 </div>
+                <canvas id="chart"  style="width:100%;max-width:250px"></canvas>
                 <!-- Ratings and Reviews Section -->
                 <div class="ratings-reviews-section">
                     <h2>Ratings and Reviews</h2>

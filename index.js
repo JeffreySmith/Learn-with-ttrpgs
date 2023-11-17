@@ -52,7 +52,7 @@ app.use(fileUpload());
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"www/views"));
-app.use(express.static(__dirname + "/www"));
+app.use(express.static(__dirname + "/www/"));
 
 
 db.pragma('foreign_key=ON');
