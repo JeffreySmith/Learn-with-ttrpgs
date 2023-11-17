@@ -178,21 +178,7 @@ router
     req.session.role = undefined;
     res.render("index");
   })
-  /*.post("/group",(req,res)=>{
-    let email = req.body.owner;
-    let name = req.body.name;
-    let description = req.body.description;
-    let users = getUsers();
-    console.log(`Email:${email}`);
-    console.log(`Name:${name}`);
-    const user = users.find((user)=> user.email === email);
-    if(!user){
-      return res.render("creategroup",{error:"User doesn't exist"});
-    }
-    insertGroup(user,name,description);
-    res.render("creategroup",{message:"Successfull"});
-    })
-    */
+
   .post("/findgroup",(req,res)=>{
     let name = req.body.name;
     //TODO join Groups and Users table
@@ -243,15 +229,15 @@ router
     console.log("Owner: "+group.owner);
     
     let admin = getUserById(group.owner);
-    let sessionLevels = groupSessionLevels(group.id);
+    //let sessionLevels = groupSessionLevels(group.id);
     console.log("Admin:");
     console.log(admin);
     
     leaveGroup(username,groupName);
-    let members = getGroupMembers(groupName);
+
 
     res.redirect(`/group/${id}/`);
-    //res.render("regulargrouppage",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:id});
+
   })
   .post("/creategroup/",(req,res)=>{
     let groupName = req.body.name;
