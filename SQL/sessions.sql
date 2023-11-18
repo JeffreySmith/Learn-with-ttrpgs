@@ -13,8 +13,9 @@ CREATE TABLE IF NOT EXISTS Sessions(
 
 INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location) VALUES
 (
-       "First Session",
+
        1,
+       "First Session",  
        1,
        1,
        "2023-12-16 18:30:00",

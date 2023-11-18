@@ -180,7 +180,27 @@ router
     let groups = getGroups();
     res.render("groups",{groups:groups});
   })
+  .get("/sessions/:groupid/",(req,res)=>{
+    let sessions = allGroupSessions(req.params.groupid);
+    let group = getGroupById(req.params.groupid);
+    name = group.name;
+    console.log(`Name: ${name}`);
+    for (let session of sessions){
+      session.date = session.time.substring(0,9);
+      session.onlyTime = session.time.substring(11,16);
+      
+    }
     
+    console.log(sessions);
+    if (sessions.length===0){
+      res.redirect(`/group/${req.params.groupid}`);
+    }
+    else{
+      console.log(sessions);
+      res.render("sessionsPage",{sessions:sessions,name:name});
+    }
+      
+  })
   
 
 
