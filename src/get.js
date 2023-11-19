@@ -222,7 +222,17 @@ router
     }
     
   })
-  
+  .get("/sendmessage",(req,res)=>{
+    if(req.session.username){
+      let user = findUserSafe(req.session.username);
+      let users = getUsers();
+      res.render("message",{user:user,users:users});
+    }
+    else{
+      req.session.previousPage="/sendmessage";
+      res.redirect("/login");
+    }
+  })
 
 
 module.exports = router;
