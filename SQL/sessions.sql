@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS Sessions(
        name VARCHAR(100),
        rpgid INTEGER,
        groupid INTEGER,
+       description VARCHAR(200),
        time DATETIME NOT NULL,
        transcript VARCHAR(100),
        location VARCHAR(100),
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Sessions(
        FOREIGN KEY(rpgid) REFERENCES RPG(id)
 );
 
-INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location) VALUES
+INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location,description) VALUES
 (
 
        1,
@@ -20,18 +21,20 @@ INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location) V
        1,
        "2023-12-16 18:30:00",
        "testtranscript.txt",
-       "A17, Conestoga College, Guelph Campus"
+       "A17, Conestoga College, Guelph Campus",
+       "Our first in person session"
 );
-INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,location) VALUES
+INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,location,description) VALUES
 (
         2,
         "Second Test Session",
         1,
         2,
         "2023-11-25 16:45:00",
-        "The library"
+        "The library",
+        "We are going to learn a few things in the library this week"
 );
-INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location) VALUES
+INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location,description) VALUES
 (
         3,
         "Third Test Session",
@@ -39,5 +42,6 @@ INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location) V
         1,
         "2023-11-16 12:30:00",
         "testtranscript2.txt",
-        "Online"
+        "Online",
+        "This is an online session. This one will be on Zoom"
 );
