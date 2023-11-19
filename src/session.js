@@ -89,7 +89,7 @@ function findSession(id){
 }
 
 function allGroupSessions(groupId){
-  let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript,Sessions.location,Sessions.name FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=? ORDER BY time");
+  let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript,Sessions.location,Sessions.name,Sessions.description FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=? ORDER BY time");
   let results = expr.all(groupId);
   return results;
 }

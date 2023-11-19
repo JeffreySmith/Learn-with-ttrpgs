@@ -293,14 +293,11 @@ router
     let rpgid = 1;
     let dateTime = date+" "+time+":00";
     let response = createSession(groupName,dateTime,undefined,name,description,location);
-    console.log(name);
-    console.log(description);
-    console.log(location);
-    console.log(date);
-    console.log(time);
-
+    let group = findGroup(undefined,groupName);
+    
+    
     console.log(groupName);
-    res.redirect(`/session/${response.id}`);
+    res.redirect(`/sessions/${group[0].id}`);
     
   })
   .post("/addtranscript/:transcript/",(req,res)=>{
