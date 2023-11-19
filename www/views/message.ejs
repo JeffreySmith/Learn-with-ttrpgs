@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send a Message</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <% if(typeof('user')!='undefined'){ %>
+        <p>From:<%=user.email %></p>
+    <%}%>
+    <form action="/sendmessage" method="POST">
+
+        <label for="emails">To:</label>
+        <select id="emails" name="toemail">
+            <%if(typeof('users')!='undefined'){%>
+                <% for(let user of users){ %>
+                    <option value="<%= user.email%>"><%=user.email%></option>
+                <%}%>
+            <%}%>
+           
+        </select>
+         <div>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" ></textarea>
+         </div>
+         <div>
+             <input type="submit">
+         </div>
+    </form>
+</body>
+</html>
