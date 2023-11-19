@@ -4,7 +4,7 @@ const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers,getUserById} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup} = require('./groups.js');
-const {sendPasswordResetEmail} = require('./email.js');
+const {sendPasswordResetEmail, sendMail, sendMessage} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
@@ -303,4 +303,20 @@ router
   .post("/addtranscript/:transcript/",(req,res)=>{
     
   })
+  .post("/sendmessage",(req,res)=>{
+    let from = req.session.username;
+    let to = req.body.toemail;
+    let message = req.body.message;
+    console.log("From:"+from);
+    console.log("To:"+to);
+    console.log("Message:"+message);
+    if(from && to && message){
+      sendMessage(from,to,message);
+      res.redirect("/sendmessage");
+    }
+    else{
+      res.status(401).send("Bad info supplied");
+    }
+  })
+	
 module.exports = router;

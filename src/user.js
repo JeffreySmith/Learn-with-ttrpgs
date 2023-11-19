@@ -76,4 +76,4 @@ function getUserById(id){
   
 
 
-module.exports = {insertUser,findUserSafe,rateUser,getUsers,getUserById,getRatings,updateRating};
+module.exports = {insertUser,findUserSafe,rateUser,getUsers,getUserById,getRatings,updateRating,getUsers};

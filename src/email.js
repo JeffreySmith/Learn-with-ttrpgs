@@ -44,6 +44,20 @@ function sendJoinRequest(email,groupName){
   sendMail(transporter,mailOptions);
 }
 
+function sendMessage(from,to,message){
+  let fromUserEmail = findUserSafe(from).email;
+  let toUserEmail = findUserSafe(to).email;
+
+  const mailOptions = {
+    from:'ttrpglearning@gmail.com',
+    to:toUserEmail,
+    subject:`Message from ${fromUserEmail}`,
+    html:message
+  };
+  sendMail(getTransporter(),mailOptions);
+
+}
+
 function sendPasswordResetEmail(email){
   if (!findUserSafe(email)){
     console.log("Email isn't in the db, so we're silently ignoring it");
@@ -73,4 +87,4 @@ function sendPasswordResetEmail(email){
   sendMail(transporter,mailOptions);
 }
 
-module.exports = {getTransporter,sendMail,sendPasswordResetEmail};
+module.exports = {getTransporter,sendMail,sendPasswordResetEmail,sendMessage};

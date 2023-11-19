@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
-const {getGroups,findGroup,getGroupById,getGroupMembers} = require('./groups.js');
+const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup} = require('./groups.js');
 
-const {createSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel} = require('./session.js');
+const {createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel} = require('./session.js');
 
 
 
@@ -208,7 +208,31 @@ router
     }
       
   })
-  
+  .get("/deletesession/:groupid/:sessionid/",(req,res)=>{
+    let user = findUserSafe(req.session.username);
+    let group = getGroupById(req.params.groupid);
+    //Basically, you have to be logged in as well as a member of the group to delete something
+    if(user && isInGroup(user.email,group.groupName)){      
+      deleteSession(req.params.sessionid);
+      console.log("Session deleted!");
+      res.redirect(`/sessions/${req.params.groupid}`);
+    }
+    else{
+      res.redirect(`/sessions/${req.params.groupid}`);
+    }
+    
+  })
+  .get("/sendmessage",(req,res)=>{
+    if(req.session.username){
+      let user = findUserSafe(req.session.username);
+      let users = getUsers();
+      res.render("message",{user:user,users:users});
+    }
+    else{
+      req.session.previousPage="/sendmessage";
+      res.redirect("/login");
+    }
+  })
 
 
 module.exports = router;
