@@ -3,7 +3,7 @@ const router = express.Router();
 const {findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
 const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup} = require('./groups.js');
 
-const {createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel} = require('./session.js');
+const {createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel,allRPGS} = require('./session.js');
 
 
 
@@ -182,7 +182,8 @@ router
   })
   .get("/createsession",(req,res)=>{
     const groups = getGroups();
-    res.render("createSessions",{groups:groups});
+    const rpgs = allRPGS();
+    res.render("createSessions",{groups:groups,rpgs:rpgs});
   })
   .get("/sessions/:groupid/",(req,res)=>{
     let sessions = allGroupSessions(req.params.groupid);
