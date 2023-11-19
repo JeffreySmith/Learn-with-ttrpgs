@@ -283,4 +283,24 @@ router
       res.status(200).send("No matches");
     }
   })
+  .post("/createsession",(req,res)=>{
+    let name = req.body.name;
+    let description = req.body.description;
+    let location = req.body.location;
+    let date = req.body.date;
+    let time = req.body.time;
+    let groupName = req.body.groupName;
+    let rpgid = 1;
+    let dateTime = date+" "+time+":00";
+    let response = createSession(groupName,dateTime,undefined,name,description,location);
+    let group = findGroup(undefined,groupName);
+    
+    
+    console.log(groupName);
+    res.redirect(`/sessions/${group[0].id}`);
+    
+  })
+  .post("/addtranscript/:transcript/",(req,res)=>{
+    
+  })
 module.exports = router;

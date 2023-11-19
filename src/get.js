@@ -177,13 +177,20 @@ router
     res.status(401).send("Bad request");
   })
   .get("/groups",(req,res)=>{
-    let groups = getGroups();
+    const groups = getGroups();
     res.render("groups",{groups:groups});
+  })
+  .get("/createsession",(req,res)=>{
+    const groups = getGroups();
+    res.render("createSessions",{groups:groups});
   })
   .get("/sessions/:groupid/",(req,res)=>{
     let sessions = allGroupSessions(req.params.groupid);
     let group = getGroupById(req.params.groupid);
-    name = group.name;
+    let name = "";
+    if(typeof(name) != undefined){
+      name = group.name;
+    }
     console.log(`Name: ${name}`);
     for (let session of sessions){
       session.date = session.time.substring(0,9);
