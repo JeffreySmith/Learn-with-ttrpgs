@@ -52,6 +52,11 @@ function createSession(groupName,time,transcript,name,description,location){
   let info = expr.get(group.id,time);
   return info;
 }
+function deleteSession(id){
+  let expr = db.prepare("DELETE FROM Sessions WHERE id=?");
+  let info = expr.run(id);
+  console.log(info);
+}
 
 function getTranscriptAnalysis(transcript){
   let fileContent = fs.readFileSync("www/files/"+transcript).toString();
@@ -94,4 +99,4 @@ function allGroupSessions(groupId){
   return results;
 }
 
-module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis};
+module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession};
