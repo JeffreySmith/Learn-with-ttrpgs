@@ -153,8 +153,19 @@
                     <%}%>
                 </select>
             </div>
-
-            <div class="form-group">
+            
+             <div class="form-group">
+                <label for="RPG">RPG</label>
+                <select name="rpgid">
+                    <% if(typeof('rpgs')!='undefined'){ %>
+                        <% for(let rpg of rpgs){ %>
+                            <option value="<%=rpg.id%>"><%=rpg.name%></option>
+                        <%}%>
+                    <%}%>
+                </select>
+             </div>
+             
+             <div class="form-group">
                 <label for="sessionDate">Session Date</label>
                 <input type="date" id="sessionDate" name="date" required>
             </div>
@@ -168,7 +179,7 @@
                 <label for="sessionLocation">Session Location</label>
                 <input type="text"id="sessionLocation" name="location" required>
             </div>
-
+           
             <div class="form-group">
                 <label for="sessionDescription">Session Description</label>
                 <textarea id="sessionDescription" name="description" rows="4"></textarea>

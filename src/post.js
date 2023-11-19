@@ -290,9 +290,9 @@ router
     let date = req.body.date;
     let time = req.body.time;
     let groupName = req.body.groupName;
-    let rpgid = 1;
+    let rpgid = req.body.rpgid;
     let dateTime = date+" "+time+":00";
-    let response = createSession(groupName,dateTime,undefined,name,description,location);
+    let response = createSession(groupName,dateTime,undefined,name,description,location,rpgid);
     let group = findGroup(undefined,groupName);
     
     

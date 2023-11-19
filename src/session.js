@@ -35,18 +35,18 @@ function groupSessionLevels(groupID){
   return sessionInfo;
 }
 
-function createSession(groupName,time,transcript,name,description,location){
+function createSession(groupName,time,transcript,name,description,location,rpgid){
   let group = findGroup(undefined,groupName);
   group = group[0];
   let expr = "";
   let id = "";
   if(!transcript){
     expr = db.prepare("INSERT INTO Sessions (groupid,time,name,description,location,rpgid) VALUES (?,?,?,?,?,?)");
-    expr.run(group.id,time,name,description,location,1);
+    expr.run(group.id,time,name,description,location,rpgid);
   }
   else if(transcript){
     expr = db.prepare("INSERT INTO Sessions (groupid,time,transcript,name,description,location,rpgid) VALUES (?,?,?,?,?,?)");
-    expr.run(group.id,time,transcript,name,description,location,1);
+    expr.run(group.id,time,transcript,name,description,location,rpgid);
   }
   expr = db.prepare("SELECT id FROM Sessions WHERE groupid=? AND time=?");
   let info = expr.get(group.id,time);
@@ -98,5 +98,10 @@ function allGroupSessions(groupId){
   let results = expr.all(groupId);
   return results;
 }
+function allRPGS(){
+  let rows = db.prepare("SELECT * FROM RPG").all();
 
-module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession};
+  return rows;
+}
+
+module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession,allRPGS};
