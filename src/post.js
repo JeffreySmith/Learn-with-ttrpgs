@@ -325,26 +325,29 @@ router
     let feedback = req.body.feedback;
     let rating = req.body.rating;
     let target = getUserById(targetId);
-    console.log(targetId);
-    console.log(username);
+    console.log("Target id: "+targetId);
+    console.log("Username: "+username);
+    console.log("User:");
     console.log(user);
-    console.log(rating);
-    console.log(feedback);
+    console.log("Rating: "+rating);
+    console.log("Comment: "+feedback);
     let expr = db.prepare("SELECT * FROM UserRatings WHERE raterid=? AND targetid=?");
-    let info = expr.get(user.id,targetId);
+    let info = expr.get(user.id,target.id);
+    console.log(info);
     if(info){
       console.log("Already exists...");//update rating
       updateRating(target.email,user.email,rating,feedback);
     }
     else if(user.id==targetId){
       console.log("Can't rate yourself...");
-      return res.redirect("/feedback");
+      return res.redirect(`/feedback/${req.body.id}/`);
     }
     else{
+      console.log("Creating a new rating");
       rateUser(target.email,user.email,rating,feedback);
     }
     console.log(info);
-    res.redirect("/feedback");
+    res.redirect("/sessions/"+req.body.id);
   })
 	
 module.exports = router;
