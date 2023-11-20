@@ -10,7 +10,7 @@ function getTransporter(){
   return nodemailer.createTransport({
     service:'gmail',
     auth:{
-      user:'ttrpglearning@gmail.com',
+      user:process.env.email,
       pass:process.env.pass
     }
   });
@@ -36,7 +36,7 @@ function sendJoinRequest(email,groupName){
   
   
   const mailOptions = {
-    from:'ttrpglearning@gmail.com',
+    from:process.env.email,
     to:email, //Address to which you want to send
     subject:'Join Request', //subject
     html:`User ${email} wants to join your group, ${groupName}`
@@ -49,7 +49,7 @@ function sendMessage(from,to,message){
   let toUserEmail = findUserSafe(to).email;
 
   const mailOptions = {
-    from:'ttrpglearning@gmail.com',
+    from:process.env.email,
     to:toUserEmail,
     subject:`Message from ${fromUserEmail}`,
     html:message
@@ -70,7 +70,8 @@ function sendPasswordResetEmail(email){
     uuid:uuid,
     time:Date.now()
   }
-  let url = "http://localhost:8000";
+  //let url = "http://localhost:8000";
+  let url = process.env.url;
   global.resetUUIDS.push(reset_request);
   setTimeout(()=>{
     global.resetUUIDS = global.resetUUIDS.filter(u=>u!=uuid);
@@ -79,7 +80,7 @@ function sendPasswordResetEmail(email){
     url = global.url;
   }
   const mailOptions = {
-    from:'ttrpglearning@gmail.com',
+    from:process.env.email,
     to:email, //Address to which you want to send
     subject:'Password Reset', //subject
     html:`Click <a href="${url}/recover/${uuid}">here</a> to reset your password` //body of email
