@@ -31,7 +31,8 @@ function rateUser(targetUserEmail,userEmail,rating,comment,){
 
   if(target && rater && rating && target.id!==rater.id){
     try{
-      expr = db.prepare("INSERT INTO UserRatings (rating,ratedby,ratingfor,comment) VALUES(?,?,?,?)");
+      //console.log("Creating a rating for "+user.email);
+      expr = db.prepare("INSERT INTO UserRatings (rating,raterid,targetid,comment) VALUES(?,?,?,?)");
       let info = expr.run(rating,rater.id,target.id,comment);
       console.log(info);
     }
