@@ -11,19 +11,9 @@ const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
 router
-  .get('/hi',(req,res)=>{
-    res.send("Hi there!");
-  })
+
   .get('/',(req,res)=>{
     res.render("home");
-  })
-  .get('/check',(req,res)=>{
-    if(req.session.username){
-      res.send(`You're logged in as ${req.session.username}`);
-    }
-    else{
-      res.send('Please log in');
-    }
   })
   .get('/register',(req,res)=>{
     res.render("registration");
@@ -246,6 +236,18 @@ router
       res.redirect("/login");
     }
   })
-
+  .get("/feedback/:id/",(req,res)=>{
+    if (req.session.username){
+      let groupName = getGroupById(req.params.id).name;
+      let members = getGroupMembers(groupName);
+      console.log(members);
+      
+      res.render("feedback",{members:members});
+    }
+    else{
+      req.session.previousPage=`/feedback/${req.params.id}`;
+      res.redirect("/login");
+    }
+  })
 
 module.exports = router;

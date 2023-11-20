@@ -23,7 +23,7 @@ function findUserSafe(email){
   let info = expr.get(email);
   return info;
 }
-function rateUser(targetUserEmail,userEmail,rating){
+function rateUser(targetUserEmail,userEmail,rating,comment,){
   let target = findUserSafe(targetUserEmail);
   let rater = findUserSafe(userEmail);
   
@@ -31,8 +31,8 @@ function rateUser(targetUserEmail,userEmail,rating){
 
   if(target && rater && rating && target.id!==rater.id){
     try{
-      expr = db.prepare("INSERT INTO UserRatings (rating,ratedby,ratingfor)");
-      let info = expr.run(rating,rater.id,target.id);
+      expr = db.prepare("INSERT INTO UserRatings (rating,ratedby,ratingfor,comment) VALUES(?,?,?,?)");
+      let info = expr.run(rating,rater.id,target.id,comment);
       console.log(info);
     }
     catch(err){
@@ -43,14 +43,14 @@ function rateUser(targetUserEmail,userEmail,rating){
     console.log(`Info: target user: ${target}, rater: ${rater}, rating: ${rating}`);
   }
 }
-function updateRating(targetUserEmail,userEmail,newRating){
+function updateRating(targetUserEmail,userEmail,newRating,comment){
   let target = findUserSafe(targetUserEmail);
   let rater = findUserSafe(userEmail);
 
-  if(target && rater && rating && target.id!==rater.id){
+  if(target && rater && newRating && target.id!==rater.id){
     try{
-      let expr = db.prepare("UPDATE UserRatings SET rating = ? WHERE ratedby=? AND ratingfor=?");
-      let info = expr.run(newRating,rater.id,target.id);
+      let expr = db.prepare("UPDATE UserRatings SET rating = ?, comment = ? WHERE raterid=? AND targetid=?");
+      let info = expr.run(newRating,comment, rater.id,target.id);
       console.log(info);
     }
     catch(err){
