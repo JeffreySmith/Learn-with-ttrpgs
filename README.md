@@ -47,9 +47,10 @@ You will need to run the script from the commandline with bash installed. In Lin
 
 
 
-You will also need to create a .env file in the root directory of the project. In there, you need to define two variables:
+You will also need to create a .env file in the root directory of the project. In there, you need to define a few variables:
 ```
 pass="your gmail password here"
 url="the url for the application"
+email="your gmail address that matches the password"
 ```
 This will allow you to send password recovery emails. Without the above variables defined, you will get a warning message in the console.
