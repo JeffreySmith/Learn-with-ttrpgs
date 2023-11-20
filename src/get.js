@@ -180,10 +180,22 @@ router
     const groups = getGroups();
     res.render("groups",{groups:groups});
   })
-  .get("/createsession",(req,res)=>{
+  .get("/createsession/:sessionid?/",(req,res)=>{
     const groups = getGroups();
     const rpgs = allRPGS();
-    res.render("createSessions",{groups:groups,rpgs:rpgs});
+
+    if(!req.params.sessionid){
+      res.render("createSessions",{groups:groups,rpgs:rpgs});
+    }
+    else{
+      const session = findSession(req.params.sessionid);
+
+      if(!session){
+	return res.redirect("/group");
+      }
+      
+      res.render("createSessions",{groups:groups,rpgs:rpgs,session:session});
+    }
   })
   .get("/sessions/:groupid/",(req,res)=>{
     let sessions = allGroupSessions(req.params.groupid);

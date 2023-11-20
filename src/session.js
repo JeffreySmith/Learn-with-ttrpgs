@@ -76,18 +76,18 @@ function findSession(id){
   let name = [];
   session = session[0];
   
-  expr = db.prepare("SELECT *,Groups.name FROM Sessions INNER JOIN Groups ON Sessions.groupid = Groups.id WHERE Groups.id=?");
+  expr = db.prepare("SELECT *,Groups.name FROM Sessions INNER JOIN Groups ON Sessions.groupid = Groups.id INNER JOIN RPG ON Sessions.rpgid = RPG.id WHERE Groups.id=?");
   
   name = expr.all(session.groupid);
   name = name[0].name;
 
-  
+  sessionName = db.prepare("SELECT name FROM Sessions WHERE id=?").get(id);
   if(session.transcript){
     //load transcript text here
     session.languageLevel = getTranscriptAnalysis(session.transcript);
   }
-  console.log(`Found name: ${name}`);
-  session.name=name;
+  console.log(`Found name: ${sessionName}`);
+  session.sessionName = sessionName.name;
   console.log(session);
   return session;
   
