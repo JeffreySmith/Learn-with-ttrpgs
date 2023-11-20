@@ -210,7 +210,7 @@
                                     <input type="hidden" name="id" value="<%=session.id%>">
                                     <label for="transcriptFile1" class="button">Upload Transcript File</label>
                                     <input type="file" id="transcriptFile1" name="transcriptFile" accept=".txt" style="display: none;">
-                                    <a style="color:white;text-decoration:none" href="/rate/ID"><label for="ratingFeedback1" class="button rating"> Rating/Feedback</label></a>
+                                    <a style="color:white;text-decoration:none" href="/feedback/<%=session.groupid%>"><label for="ratingFeedback1" class="button rating"> Rating/Feedback</label></a>
                                     <div><input class="button" type="submit"></div>
                                 </form>
                             </div>

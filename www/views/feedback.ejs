@@ -129,6 +129,7 @@
     <div class="container">
         <form class="review-form" action="/feedback" method="post">
             <div class="form-group">
+                <input type="hidden" name="id" value="<%= typeof id != 'undefined' ? id:"99999"%>">
                 <label for="member">Select Member:</label>
                 <select id="member" name="member">
                     <%if(typeof members != 'undefined'){%>

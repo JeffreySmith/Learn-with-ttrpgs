@@ -338,13 +338,13 @@ router
     }
     else if(user.id==targetId){
       console.log("Can't rate yourself...");
-      return res.redirect("/feedback");
+      return res.redirect(`/feedback/${req.body.id}/`);
     }
     else{
       rateUser(target.email,user.email,rating,feedback);
     }
     console.log(info);
-    res.redirect("/feedback");
+    res.redirect("/sessions/"+req.body.id);
   })
 	
 module.exports = router;

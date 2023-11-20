@@ -11,7 +11,6 @@ const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
 router
-
   .get('/',(req,res)=>{
     res.render("home");
   })
@@ -240,9 +239,9 @@ router
     if (req.session.username){
       let groupName = getGroupById(req.params.id).name;
       let members = getGroupMembers(groupName);
-      console.log(members);
-      
-      res.render("feedback",{members:members});
+      let id = req.params.id;
+      console.log(members);     
+      res.render("feedback",{members:members,id:id});
     }
     else{
       req.session.previousPage=`/feedback/${req.params.id}`;
