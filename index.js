@@ -28,8 +28,14 @@ console.log(groupSessionLevels(1));
 
 require('dotenv').config();
 global.url = process.env.url;
+
+
 if(process.env.pass == undefined){
   console.log(`You need pass="passwordhere" in .env`);
+  console.log("Without it, you won't be able to send emails");
+}
+if(process.env.email == undefined){
+  console.log(`You need email="gmail account here" in .env`);
   console.log("Without it, you won't be able to send emails");
 }
 //Displays the grade level for the text. Currently here, so I could see it work
