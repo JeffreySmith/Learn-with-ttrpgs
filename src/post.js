@@ -2,7 +2,7 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
-const {insertUser,findUserSafe,rateUser,getUsers,getUserById} = require('./user.js');
+const {insertUser,findUserSafe,rateUser,getUsers,getUserById, updateRating} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup} = require('./groups.js');
 const {sendPasswordResetEmail, sendMail, sendMessage} = require('./email.js');
 const {createSession,findSession,allGroupSessions} = require('./session.js');
@@ -317,6 +317,34 @@ router
     else{
       res.status(401).send("Bad info supplied");
     }
+  })
+  .post("/feedback",(req,res)=>{
+    let targetId = req.body.member;
+    let username = req.session.username;
+    let user = findUserSafe(username);
+    let feedback = req.body.feedback;
+    let rating = req.body.rating;
+    let target = getUserById(targetId);
+    console.log(targetId);
+    console.log(username);
+    console.log(user);
+    console.log(rating);
+    console.log(feedback);
+    let expr = db.prepare("SELECT * FROM UserRatings WHERE raterid=? AND targetid=?");
+    let info = expr.get(user.id,targetId);
+    if(info){
+      console.log("Already exists...");//update rating
+      updateRating(target.email,user.email,rating,feedback);
+    }
+    else if(user.id==targetId){
+      console.log("Can't rate yourself...");
+      return res.redirect("/feedback");
+    }
+    else{
+      rateUser(target.email,user.email,rating,feedback);
+    }
+    console.log(info);
+    res.redirect("/feedback");
   })
 	
 module.exports = router;
