@@ -8,16 +8,18 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <% if(typeof('user')!='undefined'){ %>
+    <% if(typeof user !='undefined'){ %>
         <p>From:<%=user.email %></p>
     <%}%>
     <form action="/sendmessage" method="POST">
 
         <label for="emails">To:</label>
         <select id="emails" name="toemail">
-            <%if(typeof('users')!='undefined'){%>
-                <% for(let user of users){ %>
-                    <option value="<%= user.email%>"><%=user.email%></option>
+            <%if(typeof users!='undefined'){%>
+                <% for(let u of users){ %>
+                    <% if(typeof user != 'undefined' && user.email!=u.email) { %>
+                        <option value="<%= u.email%>"><%=u.email%></option>
+                    <%}%>
                 <%}%>
             <%}%>
            

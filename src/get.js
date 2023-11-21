@@ -127,22 +127,7 @@ router
       res.redirect("/login");
     }
   })
-  .get("/session/:id/",(req,res)=>{
-    let id = req.params.id;
-    
-    let session = findSession(id);
-    let groups = getGroups();
-    
-    session.time = session.time.slice(0,session.time.length-3);
-    
-    if(session != undefined){
-      res.render("sessionpage",{session:session,groups:groups});
-    }
-    else{
-      //This should be changed to return an error? Or redirect back to where they came from?
-      res.render("sessionpage",{groups:groups});
-    }
-  })
+  
   .get("/sessioninfo/:groupid/",(req,res)=>{
     console.log("Trying to get resource...");
     res.set('Access-Control-Allow-Origin', '*');
