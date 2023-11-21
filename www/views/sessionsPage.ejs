@@ -211,7 +211,8 @@
                                 <p><strong>Location: </strong><%=session.location%></p>
                                 <p><strong>Description: </strong><%=session.description%></p>
                                 <form action="/uploadtranscript" method="post" enctype="multipart/form-data">
-                                    <input type="hidden" name="id" value="<%=session.groupid%>">
+                                    <input type="hidden" name="id" value="<%=session.id%>">
+                                    <input type="hidden" name="groupid" value="<%=session.groupid%>">
                                     <label for="transcriptFile<%=counter%>" class="button">Upload Transcript File</label>
                                     <input type="file" id="transcriptFile<%=counter%>" name="transcript" accept=".txt" style="display: none;"required>
                                     

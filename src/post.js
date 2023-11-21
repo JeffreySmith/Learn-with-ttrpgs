@@ -351,6 +351,7 @@ router
   })
   .post("/uploadtranscript",(req,res)=>{
     let id = req.body.id;
+    let groupid = req.body.groupid;
     let filename = crypto.randomUUID()+".txt";
     let transcript = undefined;
     if(req.files){
@@ -374,7 +375,7 @@ router
     else{
       console.log("Why isn't there a file?");
     }
-    res.redirect("/sessions/"+id);
+    res.redirect("/sessions/"+groupid);
   })
 	
 module.exports = router;
