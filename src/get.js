@@ -23,7 +23,7 @@ router
   .get('/recovery',(req,res)=>{
     res.render("recovery");
   })
-  .get("/recover/:id/",(_req,res)=>{
+  .get("/recover/:id/",(req,res)=>{
     let id = req.params.id;
     let validRequest = global.resetUUIDS.find(u=>u.uuid === id);
     let index = undefined;
