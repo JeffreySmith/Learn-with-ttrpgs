@@ -93,6 +93,15 @@ function findSession(id){
   
 }
 
+function getSessions() {
+  let results = db.prepare("SELECT * FROM Sessions").all();
+  let sessions = results.map(session => {
+    session.languageLevel = session.transcript ? getTranscriptAnalysis(session.transcript) : 0;
+    return session;
+  })
+  return sessions;
+}
+
 function allGroupSessions(groupId){
   let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript,Sessions.location,Sessions.name,Sessions.description FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=? ORDER BY time");
   let results = expr.all(groupId);
@@ -104,4 +113,4 @@ function allRPGS(){
   return rows;
 }
 
-module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession,allRPGS};
+module.exports = {getSessions,createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession,allRPGS};
