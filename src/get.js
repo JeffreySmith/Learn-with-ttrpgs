@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
-const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup} = require('./groups.js');
+const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup,getGroupsByName} = require('./groups.js');
 
-const {createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel,allRPGS} = require('./session.js');
+const {getSessions,createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel,allRPGS} = require('./session.js');
 
 
 
@@ -23,6 +23,13 @@ router
   .get('/recovery',(req,res)=>{
     res.render("recovery");
   })
+
+  .get("/groups-data", (req, res) => {
+    let query = req.query.query;
+    const groups = getGroupsByName(query);
+    res.json(groups);
+  })
+
   .get("/recover/:id/",(req,res)=>{
     let id = req.params.id;
     let validRequest = global.resetUUIDS.find(u=>u.uuid === id);
@@ -146,6 +153,12 @@ router
     }
     res.json(sessionInfo);
     
+  })
+  .get("/session", (req, res) => {
+    let sessions = getSessions();
+    if (sessions.length > 0) {
+      res.render("sessionsList", { sessionList: sessions });
+    }
   })
   .get("/sessioninfo",(req,res)=>{
     res.status(401).send("Bad request");

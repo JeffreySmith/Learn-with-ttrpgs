@@ -176,6 +176,12 @@ function insertGroup(owner,name,description){
   console.log(`Insert group response: ${info}`);
 }
 
+function getGroupsByName(name) {
+  expr = db.prepare("SELECT * FROM Groups WHERE name LIKE ? ORDER BY name");
+matchingGroups = expr.all('%' + name + '%');
+return matchingGroups
+}
+
 function findGroup(ownerEmail,name){
   let user = findUserSafe(ownerEmail);
   let expr = "";
@@ -207,4 +213,4 @@ function getGroupById(id){
   return output;
 }
 
-module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};
+module.exports = {getGroupsByName,getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};

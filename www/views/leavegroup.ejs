@@ -9,46 +9,81 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     </script>
     <script>
-     function createGraph(id){
-         createChart(id);
-     }
-     function createChart(id){
-         fetch(`/sessioninfo/${id}/`)
-             .then((response)=>{
-                 return response.json();
-             })
-             .then((data)=>{
-                 let xVals = [];
-                 let yVals = [];
-                 
-                 for(let d of data){
-                     xVals.push(d.time);
-                     yVals.push(d.level);
-                 }
-                 new Chart("chart",{
-                     type:"line",
-                     data:{
-                         labels: xVals,
-                         datasets: [{
-                             fill: false,
-                             lineTension:0,
-                             backgroundColor: "rgba(255,255,255,1.0)",
-                             borderColor:"rgba(255,255,255,.5)",
-                             data:yVals
-                         }]
-                     },
-                     options: {
-                         legend: {display:false},
-                         scales:{
-                             yAxes: [{ticks: {min: 0, max:12}}],
-                         }
-                     }
-                 });
-             })
-             .catch((err)=>{
-                 console.log(err);
-             });
-     }
+        console.log("nike");
+   function onLoad(id) {
+        createChart(id);
+
+        document.onclick = function () {
+            var dropDownItems = document.getElementById("dropdown-items");
+            if (dropDownItems) {
+                dropDownItems.style.display = 'none';
+            }
+        }
+    }
+
+    function SearchSubmit() {
+        var inputSearch = document.getElementById("search-input");
+        var query = inputSearch.value;
+
+        if (query !== '') {
+            fetch(`/groups-data?query=${query}`)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
+                    var dropDownItems = document.getElementById("dropdown-items");
+                    dropDownItems.innerHTML = `
+                            ${data.map((item) => {
+                        return `<a class="dropdown-item" href="/group/${item.id}">${item.name}</a>`
+                    }).join('')}
+                        `
+                    dropDownItems.style.display = "flex";
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
+
+    }
+
+    function createChart(id) {
+        fetch(`/sessioninfo/${ id }/`)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                let xVals = [];
+                let yVals = [];
+
+                for (let d of data) {
+                    xVals.push(d.time);
+                    yVals.push(d.level);
+                }
+                new Chart("chart", {
+                    type: "line",
+                    data: {
+                        labels: xVals,
+                        datasets: [{
+                            fill: false,
+                            lineTension: 0,
+                            backgroundColor: "rgba(255,255,255,1.0)",
+                            borderColor: "rgba(255,255,255,.5)",
+                            data: yVals
+                        }]
+                    },
+                    options: {
+                        legend: { display: false },
+                        scales: {
+                            yAxes: [{ ticks: { min: 0, max: 12 } }],
+                        }
+                    }
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
     </script>
     <style>
      body {
@@ -173,18 +208,56 @@
          border-top: 2px solid #555;
          margin: 20px 0;
      }
+
+     .dropdown {
+            position: relative;
+    }
+
+    .dropdown-items {
+            position: absolute;
+            flex-direction: column;
+            background-color: white;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            top: 46px;
+            max-height: 180px;
+            overflow: auto;
+            display: none;
+    }
+
+    .dropdown-item {
+            color: black;
+        }
+
+        button.search {
+            margin-top: 0;
+            margin-left: 1rem;
+            padding: 10px 20px;
+        }
+
+        input.search-input {
+            width: 200px;
+            outline: none;
+        }
+
     </style>
 </head>
 
-<body onload="createGraph(<%= typeof('id') !='undefined' ? id : 1%>);">
+<body onload="onLoad(<%= typeof('id') !='undefined' ? id : 1%>);">
 
     <header>
         <h1>Group Dashboard</h1>
     </header>
 
-    <nav>
+    <nav style="display: flex;">
         <a href="/">Home</a>
         <a href="/groups">Groups</a>
+        <div class="dropdown">
+            <input type="text" id="search-input" placeholder="search" class="search-input">
+            <div class="dropdown-items" id="dropdown-items"></div>
+        </div>
+        <button class="search" onclick="SearchSubmit()" id="search-submit">submit</button>
     </nav>
 
     <div class="container">

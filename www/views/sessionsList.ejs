@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Group or Join Group Page</title>
+    <link rel="stylesheet" type="text/css" href="www/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="www/css/joincreate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid whitesmoke;
+            position: relative;
+        }
+
+        th:hover {
+            cursor: pointer;
+        }
+
+        .search-icon{
+            color: #f77062;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Session Info List</h1>
+    </header>
+
+    <div class="container" style="display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <section>
+            <% if (sessionList.length> 0) { %>
+                <table id="sessionTable">
+                    <thead style="color: #f77062; font-size: 20px; border-bottom: 1px solid whitesmoke;">
+                        <tr>
+                            
+
+                                <th onclick="sortTable(0)">Name <i class="fas fa-sort"></i></th>
+                                
+                            
+                                <th onclick="sortTable(1)">Location <i class="fas fa-sort"></i></th>
+                                
+
+                            
+
+                                <th onclick="sortTable(2)">Time <i class="fas fa-sort"></i></th>
+                                
+                            
+                                <th onclick="sortTable(3)">Description <i class="fas fa-sort"></i></th>
+                                <th onclick="sortTable(4)">Language Level <i class="fas fa-sort"></i></th>
+                                
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let session of sessionList) { %>
+                            <tr style="color: white; font-size: 18px; border-bottom: 1px solid whitesmoke;">
+                                <td>
+                                    <%= session.name %>
+                                </td>
+                                <td>
+                                    <%= session.location %>
+                                </td>
+                                <td>
+                                    <%= session.time %>
+                                </td>
+                                <td>
+                                    <%= session.description %>
+                                </td>
+                                <td>
+                                    <%= session.languageLevel %>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </tbody>
+                </table>
+                <% } else { %>
+                    <p>No sessions available</p>
+                    <% } %>
+        </section>
+    </div>
+
+    <script>
+        function sortTable(columnIndex) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("sessionTable");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < rows.length - 1; i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>
