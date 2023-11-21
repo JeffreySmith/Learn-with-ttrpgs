@@ -5,7 +5,7 @@ const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers,getUserById, updateRating} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup} = require('./groups.js');
 const {sendPasswordResetEmail, sendMail, sendMessage} = require('./email.js');
-const {createSession,findSession,allGroupSessions} = require('./session.js');
+const {createSession,findSession,allGroupSessions,addTranscript} = require('./session.js');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { getGroupMembers } = require("./groups.js");
@@ -348,6 +348,33 @@ router
     }
     console.log(info);
     res.redirect("/sessions/"+req.body.id);
+  })
+  .post("/uploadtranscript",(req,res)=>{
+    let id = req.body.id;
+    let filename = crypto.randomUUID()+".txt";
+    let transcript = undefined;
+    if(req.files){
+      //console.log(`Files: ${req.files}`);
+      console.log(req.files.transcript);
+      transcript = req.files.transcript;
+    }
+    else{
+      console.log(`Error: ${req.files}`);
+    }
+    if(transcript){
+      transcript.mv("./www/files/"+filename,(err)=>{
+	if(err){
+	  console.log(`Error: ${err}`);
+	}
+	else{
+	  addTranscript(id,filename);
+	}
+      });
+    }
+    else{
+      console.log("Why isn't there a file?");
+    }
+    res.redirect("/sessions/"+id);
   })
 	
 module.exports = router;
