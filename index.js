@@ -7,7 +7,7 @@ const fileUpload = require('express-fileupload');
 const crypto = require('crypto');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-
+const bodyParser = require('body-parser');
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
@@ -54,7 +54,10 @@ const app = express();
 app.use(session(my_session));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(fileUpload());
+app.use(fileUpload({ safeFileNames: true, preserveExtension: true }));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"www/views"));

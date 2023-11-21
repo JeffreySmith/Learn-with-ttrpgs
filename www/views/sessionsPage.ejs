@@ -198,8 +198,8 @@
     <div class="container">
         <div class="dashboard-container">
             <div class="dashboard">
-                <div class="dashboard-title" style="text-align:center"><%= typeof(name)!='undefined' ? name : "Group"%> Sessions</div>
-                <% if(typeof(sessions)!=undefined){ %>
+                <div class="dashboard-title" style="text-align:center"><%= typeof name !='undefined' ? name : "Group"%> Sessions</div>
+                <% if(typeof sessions !=undefined){ %>
                     <% for(let session of sessions){ %>
                         <div class="session">
                             <div class="session-title"><%=session.name%></div>
@@ -211,21 +211,19 @@
                                 <form action="/uploadtranscript" method="post" enctype="multipart/form-data">
                                     <input type="hidden" name="id" value="<%=session.id%>">
                                     <label for="transcriptFile1" class="button">Upload Transcript File</label>
-                                    <input type="file" id="transcriptFile1" name="transcriptFile" accept=".txt" style="display: none;">
-                                    <a style="color:white;text-decoration:none" href="/feedback/<%=session.groupid%>"><label for="ratingFeedback1" class="button rating"> Rating/Feedback</label></a>
+                                    <input type="file" id="transcript" name="transcript" required>
+                                    
                                     <div><input class="button" type="submit"></div>
                                 </form>
+                                <a style="color:white;text-decoration:none" href="/feedback/<%=session.groupid%>"><label for="ratingFeedback1" class="button rating"> Rating/Feedback</label></a>
                             </div>
                         </div>
                     <%}%>
                 <%}%>
                 
             </div>
-
-           
         </div>
     </div>
-
 </body>
 
 </html>
