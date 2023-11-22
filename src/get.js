@@ -224,8 +224,10 @@ router
   .get("/deletesession/:groupid/:sessionid/",(req,res)=>{
     let user = findUserSafe(req.session.username);
     let group = getGroupById(req.params.groupid);
+    console.log("GROUP:");
+    console.log(group);
     //Basically, you have to be logged in as well as a member of the group to delete something
-    if(user && isInGroup(user.email,group.groupName)){      
+    if(user && isInGroup(user.email,group.name)){      
       deleteSession(req.params.sessionid);
       console.log("Session deleted!");
       res.redirect(`/sessions/${req.params.groupid}`);
