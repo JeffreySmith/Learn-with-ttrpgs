@@ -139,7 +139,7 @@
         <a href="/">Home</a>
         <a href="/groups">Groups</a>
         <div class="dropdown">
-            <input type="text" onkeydown="search()" id="search-input" placeholder="Search" class="search-input">
+            <input type="text" onkeydown="search()" id="search-input" placeholder="Search for a group" class="search-input">
             <div class="dropdown-items" id="dropdown-items"></div>
         </div>
         <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
@@ -170,10 +170,23 @@
                 <input type="hidden" value="<%= typeof('username') !='undefined' ? username:'username'%>" name="username">
                 <input type="hidden" name="groupname" value="<%= typeof('group') !='undefined' ? group.name:''%>">
                 <input type="hidden" name="id" value="<%= typeof('id') !='undefined' ? id :'id'%>">
-                
-                <button id="leaveGroupBtn">Leave Group</button>
+                <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==true){ %>
+                    <button id="leaveGroupBtn">Leave Group</button>
+                <%}%>
+
             </form>
             <% if(typeof isAdmin != 'undefined' && isAdmin==true){ %>
+                
+                <form method="POST" action="/editgroup" id="addGroupForm">
+                    <input type="hidden" name="groupid" value="<%=group.id%>">
+                    <label for="name">Edit Group Name:</label>
+                    <input type="text" id="name" value="<%=group.name%>" name="name" required>
+
+                    <label for="description">Edit Group Description:</label>
+                    <textarea id="description" name="description" rows="4" required><%=group.description%></textarea>
+
+                    <button type="submit">Save Info</button>
+                </form>
                 <form method="post" action="/changeowner" >
                     <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
                     <% if(typeof('members') != 'undefined'){ %>
