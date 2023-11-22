@@ -34,7 +34,8 @@ function getGroupMembers(groupName){
 function isInGroup(email,groupName){
   let user = findUserSafe(email);
   let group = findGroup(undefined,groupName);
-  if(group.length === 1 && user){
+  
+  if(group && group.length === 1 && user){
     group = group[0];
     let expr = db.prepare("SELECT * FROM GroupMembers WHERE userid=? AND groupid=?");
     let info = expr.get(user.id,group.id);
@@ -45,6 +46,7 @@ function isInGroup(email,groupName){
       return false;
     }
   }
+  
   return false;
 }
 function createGroup(userEmail,groupName,groupDescription){
