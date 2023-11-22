@@ -15,10 +15,20 @@ router
     res.render("home");
   })
   .get('/register',(req,res)=>{
-    res.render("registration");
+    if(!req.session.username){
+      res.render("registration");
+    }
+    else{
+      res.redirect("/userprofile");
+    }
   })
   .get('/login',(req,res)=>{
-    res.render("login");
+    if(!req.session.username){
+      res.render("login");
+    }
+    else{
+      res.redirect("/userprofile");
+    }
   })
   .get('/logout',(req,res)=>{
     if(req.session.username){
