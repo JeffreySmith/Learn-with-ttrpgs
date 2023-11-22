@@ -1,5 +1,5 @@
 
-function onLoadBar(id){
+function onLoadBar(){
   document.onclick = function () {
     let dropDownItems = document.getElementById("dropdown-items");
     if (dropDownItems) {
