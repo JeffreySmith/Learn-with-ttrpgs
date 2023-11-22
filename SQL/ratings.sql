@@ -17,19 +17,19 @@ INSERT OR IGNORE INTO UserRatings (raterid,targetid,rating,comment) VALUES
         1,
         2,
         5,
-        "Had a great time with them."
+        'Had a great time with them.'
 );
 INSERT OR IGNORE INTO UserRatings (raterid,targetid,rating,comment) VALUES
 (
         2,
         1,
         4.5,
-        "Was not too bad"
+        'Was not too bad'
 );
 INSERT OR IGNORE INTO UserRatings (raterid,targetid,rating,comment) VALUES
 (
         3,
         1,
         5,
-        "Had a wonderful time!"
+        'Had a wonderful time!'
 );
