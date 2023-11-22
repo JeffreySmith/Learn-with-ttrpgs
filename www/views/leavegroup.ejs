@@ -178,7 +178,7 @@
             <% if(typeof isAdmin != 'undefined' && isAdmin==true){ %>
                 
                 <form method="POST" action="/editgroup" id="addGroupForm">
-                    <input type="hidden" name="groupid" value="<%=group.id%> ">
+                    <input type="hidden" name="groupid" value="<%=group.id%>">
                     <label for="name">Edit Group Name:</label>
                     <input type="text" id="name" value="<%=group.name%>" name="name" required>
 
