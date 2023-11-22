@@ -7,6 +7,14 @@
     <title>Create Group or Join Group Page</title>
     <link  rel="stylesheet" type="text/css" href="www/css/normalize.css" >
     <link  rel="stylesheet" type="text/css" href="www/css/joincreate.css">
+    <link rel="stylesheet" type="text/css"  href="/www/css/searchdropdown.css">
+    <script type="text/javascript" src="/www/js/searchbar.js" defer></script>
+
+    <script>
+        function onLoad(){
+            onLoadBar();
+        }
+    </script>
 </head>
 
 <body>
@@ -19,6 +27,11 @@
         <a href="/">Home</a>
         <a href="/group">Create/Join</a>
         <a href="/groupsettings">Group Settings</a>
+         <div class="dropdown">
+            <input type="text" onkeydown="search()" id="search-input" placeholder="Search" class="search-input">
+            <div class="dropdown-items" id="dropdown-items"></div>
+        </div>
+        <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
     </nav>
 
     <div class="container">
