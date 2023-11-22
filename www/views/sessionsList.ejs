@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Group or Join Group Page</title>
+    <link rel="stylesheet" type="text/css" href="www/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="www/css/joincreate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid whitesmoke;
+            position: relative;
+        }
+
+        th:hover {
+            cursor: pointer;
+        }
+
+        .search-icon {
+            color: #f77062;
+        }
+
+        .arrow-icon {
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .asc::before {
+            content: '\2191'; 
+        }
+
+        .dsc::before {
+            content: '\2193'; 
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Group-Session Info</h1>
+    </header>
+
+    <div class="container" style="display: flex; align-items: center; justify-content: center; padding: 16px;">
+        <section>
+            <% if (sessionList.length > 0) { %>
+                <table id="sessionTable">
+                    <thead style="color: #f77062; font-size: 20px; border-bottom: 1px solid whitesmoke;">
+                        <tr>
+                            <th onclick="sortTable(0)" data-order="asc">Group Name <span class="arrow-icon asc"></span><span
+                                class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(1)" data-order="asc">Group Owner <span class="arrow-icon asc"></span><span
+                                class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(2)" data-order="asc">Session Name <span class="arrow-icon asc"></span><span
+                                    class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(3)" data-order="asc">Location <span class="arrow-icon asc"></span><span
+                                    class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(4)" data-order="asc">Time <span class="arrow-icon asc"></span><span
+                                    class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(5)" data-order="asc">Language Level <span
+                                    class="arrow-icon asc"></span><span class="arrow-icon dsc"></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let session of sessionList) { %>
+                            <tr style="color: white; font-size: 18px; border-bottom: 1px solid whitesmoke;">
+                                <td>
+                                <% if (session && session.groupid && session.groupName) { %>
+                                    <%= session.groupName %>
+                                <% } %>
+                                </td>
+                                <td>
+                                <% if (session && session.groupid && session.ownerName) { %>
+                                    <%= session.ownerName %>
+                                <% } %>
+                                </td>
+                                <td>
+                                    <%= session.name %>
+                                </td>
+                                <td>
+                                    <%= session.location %>
+                                </td>
+                                <td>
+                                    <%= session.time %>
+                                </td>
+                                <td>
+                                    <%= session.languageLevel %>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No sessions available</p>
+            <% } %>
+        </section>
+    </div>
+
+    <script>
+        function sortTable(columnIndex) {
+            var table, rows, switching, i, x, y, shouldSwitch, isAsc;
+            table = document.getElementById("sessionTable");
+            switching = true;
+            isAsc = table.rows[0].cells[columnIndex].getAttribute("data-order") === "asc"; 
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < rows.length - 1; i++) {
+                    shouldSwitch = false; // assuming initially there is no swapping
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+                    if (isAsc ? x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase() : x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+            isAsc = !isAsc;
+
+            resetArrowIcons();
+
+            var arrowIcons = table.rows[0].cells[columnIndex].getElementsByClassName('arrow-icon');
+            for (var i = 0; i < arrowIcons.length; i++) {
+                arrowIcons[i].classList.add(isAsc ? 'asc' : 'dsc');
+            }
+
+            table.rows[0].cells[columnIndex].setAttribute("data-order", isAsc ? "asc" : "dsc");
+        }
+
+        function resetArrowIcons() {
+            var arrowIcons = document.getElementsByClassName('arrow-icon');
+            for (var i = 0; i < arrowIcons.length; i++) {
+                arrowIcons[i].classList.remove('asc', 'dsc');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

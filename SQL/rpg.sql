@@ -11,21 +11,21 @@ CREATE TABLE IF NOT EXISTS RPG(
 INSERT OR IGNORE INTO RPG(id,name,publisher,edition) VALUES
 (
         1,
-        "Dungeons & Dragons",
-        "Wizards of the Coast",
-        "5th Edition"
+        'Dungeons & Dragons',
+        'Wizards of the Coast',
+        '5th Edition'
 );
 INSERT OR IGNORE INTO RPG(id,name,publisher,edition) VALUES
 (
         2,
-        "Vampire the Masquerade",
-        "White Wolf",
-        "5th Edition"
+        'Vampire the Masquerade',
+        'White Wolf',
+        '5th Edition'
 );
 INSERT OR IGNORE INTO RPG(id,name,publisher,edition) VALUES
 (
         3,
-        "Shadowrun",
-        "Catalyst Game Lab",
-        "6th Edition"
+        'Shadowrun',
+        'Catalyst Game Lab',
+        '6th Edition'
 );

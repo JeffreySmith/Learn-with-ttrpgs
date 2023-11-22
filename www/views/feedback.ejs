@@ -127,13 +127,16 @@
     </nav>
 
     <div class="container">
-        <form class="review-form" action="/submit-feedback" method="post">
+        <form class="review-form" action="/feedback" method="post">
             <div class="form-group">
+                <input type="hidden" name="id" value="<%= typeof id != 'undefined' ? id:"99999"%>">
                 <label for="member">Select Member:</label>
                 <select id="member" name="member">
-                    <option value="member1">Member 1</option>
-                    <option value="member2">Member 2</option>
-                    <option value="member3">Member 3</option>
+                    <%if(typeof members != 'undefined'){%>
+                        <% for(let member of members){ %>
+                            <option value="<%=member.id%>"><%=member.firstname+" "+member.lastname%></option>
+                        <%}%>
+                    <%}%>
                 </select>
             </div>
             <div class="form-group">
@@ -141,7 +144,7 @@
                 <select id="rating" name="rating">
                     <option value="1">1</option>
                     <option value="2">2</option>
-                    <option value="3">3</option>
+                    <option value="3" selected>3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
                 </select>

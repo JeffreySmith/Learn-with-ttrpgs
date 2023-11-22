@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
-const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup} = require('./groups.js');
+const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup,getGroupsByName, isGroupAdmin} = require('./groups.js');
 
-const {createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel,allRPGS} = require('./session.js');
+const {getSessions,createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel,allRPGS} = require('./session.js');
 
 
 
@@ -11,29 +11,47 @@ const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
 router
-  .get('/hi',(req,res)=>{
-    res.send("Hi there!");
-  })
   .get('/',(req,res)=>{
     res.render("home");
   })
-  .get('/check',(req,res)=>{
-    if(req.session.username){
-      res.send(`You're logged in as ${req.session.username}`);
+  .get('/register',(req,res)=>{
+    if(!req.session.username){
+      res.render("registration");
     }
     else{
-      res.send('Please log in');
+      res.redirect("/userprofile");
     }
   })
-  .get('/register',(req,res)=>{
-    res.render("registration");
-  })
   .get('/login',(req,res)=>{
-    res.render("login");
+    if(!req.session.username){
+      res.render("login");
+    }
+    else{
+      res.redirect("/userprofile");
+    }
+  })
+  .get('/logout',(req,res)=>{
+    if(req.session.username){
+      req.session.username = undefined;
+      req.session.role = undefined;
+      req.session.loggedIn = undefined;
+    }
+    else{
+      console.log("Trying to logout despite not being logged in...");
+    }
+    res.redirect("/");
+    
   })
   .get('/recovery',(req,res)=>{
     res.render("recovery");
   })
+
+  .get("/groups-data", (req, res) => {
+    let query = req.query.query;
+    const groups = getGroupsByName(query);
+    res.json(groups);
+  })
+
   .get("/recover/:id/",(req,res)=>{
     let id = req.params.id;
     let validRequest = global.resetUUIDS.find(u=>u.uuid === id);
@@ -63,6 +81,8 @@ router
   
   .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
+
+    let isAdmin = false;
     
     let username = req.session.username;
     if(req.params.id){
@@ -73,7 +93,7 @@ router
       req.session.previousPage=`/group/${req.params.id}/`;
       return res.redirect("/login");
     }
-   
+    
     console.log(req.body.username);
     
     if (groupid){
@@ -82,11 +102,14 @@ router
       if(group){
 	let members = getGroupMembers(group.name);
 	let admin = getUserById(group.owner);
-	console.log("Admin:");
-	console.log(admin);
-	console.log(members);
-	console.log(group);
-	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id});
+	let user = findUserSafe(req.session.username);
+	if(isGroupAdmin(user.email,group.name)){
+	  console.log(`User ${user.name} is the admin for ${group.name}`);
+	  isAdmin = true;
+	}
+
+
+	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin});
       }
       else{
 	res.redirect("/group");
@@ -132,28 +155,14 @@ router
     if(req.session.username){
       console.log(getRatings(req.session.username));
       let user = getUsers().find((user)=> user.email === req.session.username);
-      res.render("publicprofile",{user:user});
+      let ratings = getRatings(user.email);
+      res.render("publicprofile",{user:user,ratings:ratings});
     }
     else{
       res.redirect("/login");
     }
   })
-  .get("/session/:id/",(req,res)=>{
-    let id = req.params.id;
-    
-    let session = findSession(id);
-    let groups = getGroups();
-    
-    session.time = session.time.slice(0,session.time.length-3);
-    
-    if(session != undefined){
-      res.render("sessionpage",{session:session,groups:groups});
-    }
-    else{
-      //This should be changed to return an error? Or redirect back to where they came from?
-      res.render("sessionpage",{groups:groups});
-    }
-  })
+  
   .get("/sessioninfo/:groupid/",(req,res)=>{
     console.log("Trying to get resource...");
     res.set('Access-Control-Allow-Origin', '*');
@@ -172,6 +181,12 @@ router
     }
     res.json(sessionInfo);
     
+  })
+  .get("/session", (req, res) => {
+    let sessions = getSessions();
+    if (sessions.length > 0) {
+      res.render("sessionsList", { sessionList: sessions });
+    }
   })
   .get("/sessioninfo",(req,res)=>{
     res.status(401).send("Bad request");
@@ -224,8 +239,10 @@ router
   .get("/deletesession/:groupid/:sessionid/",(req,res)=>{
     let user = findUserSafe(req.session.username);
     let group = getGroupById(req.params.groupid);
+    console.log("GROUP:");
+    console.log(group);
     //Basically, you have to be logged in as well as a member of the group to delete something
-    if(user && isInGroup(user.email,group.groupName)){      
+    if(user && isInGroup(user.email,group.name)){      
       deleteSession(req.params.sessionid);
       console.log("Session deleted!");
       res.redirect(`/sessions/${req.params.groupid}`);
@@ -246,6 +263,21 @@ router
       res.redirect("/login");
     }
   })
-
+  .get("/feedback/:id/",(req,res)=>{
+    if (req.session.username){
+      let groupName = getGroupById(req.params.id).name;
+      let members = getGroupMembers(groupName);
+      let id = req.params.id;
+      console.log(members);     
+      res.render("feedback",{members:members,id:id});
+    }
+    else{
+      req.session.previousPage=`/feedback/${req.params.id}`;
+      res.redirect("/login");
+    }
+  })
+  .get("/test",(req,res)=>{
+    res.render("test");
+  })
 
 module.exports = router;

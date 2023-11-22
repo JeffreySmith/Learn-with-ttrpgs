@@ -34,7 +34,8 @@ function getGroupMembers(groupName){
 function isInGroup(email,groupName){
   let user = findUserSafe(email);
   let group = findGroup(undefined,groupName);
-  if(group.length === 1 && user){
+  
+  if(group && group.length === 1 && user){
     group = group[0];
     let expr = db.prepare("SELECT * FROM GroupMembers WHERE userid=? AND groupid=?");
     let info = expr.get(user.id,group.id);
@@ -45,6 +46,7 @@ function isInGroup(email,groupName){
       return false;
     }
   }
+  
   return false;
 }
 function createGroup(userEmail,groupName,groupDescription){
@@ -97,8 +99,10 @@ function leaveGroup(userEmail,groupName){
 
 function changeOwner(newOwnerEmail,groupName){
   let newOwner = findUserSafe(newOwnerEmail);
-  let group = findGroup(groupName);
-  if (group.length >= 1){
+  let group = findGroup(undefined,groupName);
+  console.log("Group is::::::");
+  console.log(group);
+  if (group.length == 1){
     group = group[0];
   }
   else{
@@ -107,7 +111,7 @@ function changeOwner(newOwnerEmail,groupName){
     
   if (newOwner && group){
     let expr = db.prepare("UPDATE Groups SET owner = ? WHERE id = ?");
-    let info = expr.run(user.id,group.id);
+    let info = expr.run(newOwner.id,group.id);
     console.log(info);
     
   }
@@ -176,6 +180,12 @@ function insertGroup(owner,name,description){
   console.log(`Insert group response: ${info}`);
 }
 
+function getGroupsByName(name) {
+  expr = db.prepare("SELECT * FROM Groups WHERE name LIKE ? ORDER BY name");
+matchingGroups = expr.all('%' + name + '%');
+return matchingGroups
+}
+
 function findGroup(ownerEmail,name){
   let user = findUserSafe(ownerEmail);
   let expr = "";
@@ -207,4 +217,4 @@ function getGroupById(id){
   return output;
 }
 
-module.exports = {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};
+module.exports = {getGroupsByName,getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};

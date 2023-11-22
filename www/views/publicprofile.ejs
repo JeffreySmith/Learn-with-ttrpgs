@@ -179,7 +179,8 @@
         </header>
 
         <nav>
-            <a href="#">Home</a>
+            <a href="/">Home</a>
+            <a href="/logout">Logout</a>
         </nav>
 
         <div class="container">
@@ -195,10 +196,12 @@
                 </div>
 
                 <!-- Language Level Graph Section -->
+                <!-- 
                 <div onload="createGraph()" class="graph-section">
                     <h2>Language Level</h2>
                     <div class="graph"></div>
                 </div>
+                -->
                 <canvas id="chart"  style="width:100%;max-width:250px"></canvas>
                 <!-- Ratings and Reviews Section -->
                 <div class="ratings-reviews-section">
@@ -227,7 +230,7 @@
              const nextBtn = document.querySelector('.next');
              const prevBtn = document.querySelector('.prev');
 
-             let counter = 1;
+             let counter = 0;
              const size = slides.clientWidth;
              let numberOfReviews = document.querySelectorAll('.review').length;
              console.log(numberOfReviews);

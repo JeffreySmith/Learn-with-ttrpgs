@@ -16,32 +16,32 @@ INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location,de
 (
 
        1,
-       "First Session",  
+       'First Session',  
        1,
        1,
-       "2023-12-16 18:30:00",
-       "testtranscript.txt",
-       "A17, Conestoga College, Guelph Campus",
-       "Our first in person session"
+       '2023-12-16 18:30:00',
+       'testtranscript.txt',
+       'A17, Conestoga College, Guelph Campus',
+       'Our first in person session'
 );
 INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,location,description) VALUES
 (
         2,
-        "Second Test Session",
+        'Second Test Session',
         1,
         2,
-        "2023-11-25 16:45:00",
-        "The library",
-        "We are going to learn a few things in the library this week"
+        '2023-11-25 16:45:00',
+        'The library',
+        'We are going to learn a few things in the library this week'
 );
 INSERT OR IGNORE INTO Sessions(id,name,rpgid,groupid,time,transcript,location,description) VALUES
 (
         3,
-        "Third Test Session",
+        'Third Test Session',
         1,
         1,
-        "2023-11-16 12:30:00",
-        "testtranscript2.txt",
-        "Online",
-        "This is an online session. This one will be on Zoom"
+        '2023-11-16 12:30:00',
+        'testtranscript2.txt',
+        'Online',
+        'This is an online session. This one will be on Zoom'
 );

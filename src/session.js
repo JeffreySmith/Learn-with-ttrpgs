@@ -93,6 +93,19 @@ function findSession(id){
   
 }
 
+function getSessions() {
+  const query = `SELECT G.name AS groupName, (U.firstname || ' ' || U.lastname) AS ownerName, S.* 
+  FROM Sessions S JOIN Groups G ON S.groupid = G.id JOIN RPG ON S.rpgid=RPG.id JOIN Users U ON U.id = G.owner;`;
+
+  const results = db.prepare(query).all();
+  let sessions = results.map(session => {
+    session.languageLevel = session.transcript ? getTranscriptAnalysis(session.transcript) : 0;
+    return session;
+  })
+  console.log(results);
+  return sessions;
+}
+
 function allGroupSessions(groupId){
   let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript,Sessions.location,Sessions.name,Sessions.description FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=? ORDER BY time");
   let results = expr.all(groupId);
@@ -104,4 +117,4 @@ function allRPGS(){
   return rows;
 }
 
-module.exports = {createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession,allRPGS};
+module.exports = {getSessions,createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession,allRPGS,round};

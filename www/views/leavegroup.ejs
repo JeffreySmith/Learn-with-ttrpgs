@@ -8,47 +8,20 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     </script>
+    
+    <script type="text/javascript" src="/www/js/searchbar.js" defer></script>
+    <script type="text/javascript" src="/www/js/creategraph.js" defer></script>
+    <link rel="stylesheet" type="text/css"  href="/www/css/searchdropdown.css">
+    <link rel="stylesheet" type="text/css" href="/www/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/www/css/styles.css">
     <script>
-     function createGraph(id){
+     
+     function onLoad(id) {
          createChart(id);
+
+         onLoadBar();
      }
-     function createChart(id){
-         fetch(`/sessioninfo/${id}/`)
-             .then((response)=>{
-                 return response.json();
-             })
-             .then((data)=>{
-                 let xVals = [];
-                 let yVals = [];
-                 
-                 for(let d of data){
-                     xVals.push(d.time);
-                     yVals.push(d.level);
-                 }
-                 new Chart("chart",{
-                     type:"line",
-                     data:{
-                         labels: xVals,
-                         datasets: [{
-                             fill: false,
-                             lineTension:0,
-                             backgroundColor: "rgba(255,255,255,1.0)",
-                             borderColor:"rgba(255,255,255,.5)",
-                             data:yVals
-                         }]
-                     },
-                     options: {
-                         legend: {display:false},
-                         scales:{
-                             yAxes: [{ticks: {min: 0, max:12}}],
-                         }
-                     }
-                 });
-             })
-             .catch((err)=>{
-                 console.log(err);
-             });
-     }
+     
     </script>
     <style>
      body {
@@ -61,30 +34,7 @@
          align-items: center;
      }
 
-     header {
-         background-color: #333;
-         color: white;
-         padding: 10px;
-         text-align: center;
-         width: 100%;
-     }
-
-     nav {
-         background-color: #555;
-         padding: 10px;
-         width: 100%;
-     }
-
-     nav a {
-         color: white;
-         text-decoration: none;
-         padding: 10px;
-         margin: 0 10px;
-     }
-
-     nav a:hover {
-         color: #f77062;
-     }
+  
 
      .container {
          display: flex;
@@ -173,26 +123,36 @@
          border-top: 2px solid #555;
          margin: 20px 0;
      }
+
+    
+
     </style>
 </head>
 
-<body onload="createGraph(<%= typeof('id') !='undefined' ? id : 1%>);">
+<body onload="onLoad(<%= typeof id !='undefined' ? id : 1%>);">
 
     <header>
         <h1>Group Dashboard</h1>
     </header>
 
-    <nav>
+    <nav style="display: flex;">
         <a href="/">Home</a>
         <a href="/groups">Groups</a>
+        <div class="dropdown">
+            <input type="text" onkeydown="search()" id="search-input" placeholder="Search" class="search-input">
+            <div class="dropdown-items" id="dropdown-items"></div>
+        </div>
+        <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
     </nav>
 
     <div class="container">
         <!-- Group Details Section -->
         <section id="groupDetailsSection">
             <h2>Group Details</h2>
+            
             <ul id="groupDetailsList">
                 <!-- Display group details dynamically here -->
+                
                 <li><strong>Name:</strong> <%=  typeof('group') !='undefined' ? group.name : "Group Name" %></li>
                 <li><strong>Description:</strong> <%= typeof('group') !='undefined' ? group.description : "Group Description" %></li>
                 <li class="group-members"><strong>Members:</strong>
@@ -213,8 +173,25 @@
                 
                 <button id="leaveGroupBtn">Leave Group</button>
             </form>
+            <% if(typeof isAdmin != 'undefined' && isAdmin==true){ %>
+                <form method="post" action="/changeowner" >
+                    <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
+                    <% if(typeof('members') != 'undefined'){ %>
+                        <select name="newowner">
+                            <% for(let member of members){ %>
+                                <% if(admin.email != member.email){ %>    
+                                    <option value="<%=member.email%>"><%=member.firstname%> <%= member.lastname%></option>
+                                <%}%>
+                            <%}%>
+                        </select>
+                    <%}%>
+                    <div>
+                        <button id="changeGroupBtn">Change Group Owner</button>
+                    </div>
+                </form>
+            <%}%>
         </section>
-
+        
         <div class="divider"></div>
 
         <!-- Graph Section -->

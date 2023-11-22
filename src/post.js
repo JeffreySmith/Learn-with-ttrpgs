@@ -2,13 +2,13 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
-const {insertUser,findUserSafe,rateUser,getUsers,getUserById} = require('./user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup} = require('./groups.js');
+const {insertUser,findUserSafe,rateUser,getUsers,getUserById, updateRating} = require('./user.js');
+const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup, getGroupById} = require('./groups.js');
 const {sendPasswordResetEmail, sendMail, sendMessage} = require('./email.js');
-const {createSession,findSession,allGroupSessions} = require('./session.js');
+const {createSession,findSession,allGroupSessions,addTranscript} = require('./session.js');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { getGroupMembers } = require("./groups.js");
+const { getGroupMembers,changeOwner } = require("./groups.js");
 const { groupSessionLevels } = require("./session.js");
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
@@ -317,6 +317,83 @@ router
     else{
       res.status(401).send("Bad info supplied");
     }
+  })
+  .post("/feedback",(req,res)=>{
+    let targetId = req.body.member;
+    let username = req.session.username;
+    let user = findUserSafe(username);
+    let feedback = req.body.feedback;
+    let rating = req.body.rating;
+    let target = getUserById(targetId);
+    console.log("Target id: "+targetId);
+    console.log("Username: "+username);
+    console.log("User:");
+    console.log(user);
+    console.log("Rating: "+rating);
+    console.log("Comment: "+feedback);
+    let expr = db.prepare("SELECT * FROM UserRatings WHERE raterid=? AND targetid=?");
+    let info = expr.get(user.id,target.id);
+    console.log(info);
+    if(info){
+      console.log("Already exists...");//update rating
+      updateRating(target.email,user.email,rating,feedback);
+    }
+    else if(user.id==targetId){
+      console.log("Can't rate yourself...");
+      return res.redirect(`/feedback/${req.body.id}/`);
+    }
+    else{
+      console.log("Creating a new rating");
+      rateUser(target.email,user.email,rating,feedback);
+    }
+    console.log(info);
+    res.redirect("/sessions/"+req.body.id);
+  })
+  .post("/uploadtranscript",(req,res)=>{
+    let id = req.body.id;
+    let groupid = req.body.groupid;
+    let filename = crypto.randomUUID()+".txt";
+    let transcript = undefined;
+    if(req.files){
+      //console.log(`Files: ${req.files}`);
+      console.log(req.files.transcript);
+      transcript = req.files.transcript;
+    }
+    else{
+      console.log(`Error: ${req.files}`);
+    }
+    if(transcript){
+      transcript.mv("./www/files/"+filename,(err)=>{
+	if(err){
+	  console.log(`Error: ${err}`);
+	}
+	else{
+	  addTranscript(id,filename);
+	}
+      });
+    }
+    else{
+      console.log("Why isn't there a file?");
+    }
+    res.redirect("/sessions/"+groupid);
+  })
+  .post("/changeowner",(req,res)=>{
+    let groupid = req.body.groupid;
+    let newOwner = req.body.newowner;
+    let group = undefined;
+    if(groupid){
+      group = getGroupById(groupid);
+    }
+    if(groupid && newOwner && group){
+      
+      console.log(`Group name is: ${group.name}`);
+      changeOwner(newOwner,group.name);
+    }
+    else{
+      console.log("Something went wrong...");
+    }
+    res.redirect(`/group/${groupid}/`);
+    
   })
 	
 module.exports = router;
