@@ -8,93 +8,16 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     </script>
+    <script type="text/javascript" src="/www/js/searchbar.js" defer></script>
+    <script type="text/javascript" src="/www/js/creategraph.js" defer></script>
     <script>
-        console.log("nike");
+       
    function onLoad(id) {
         createChart(id);
 
-        document.onclick = function () {
-            var dropDownItems = document.getElementById("dropdown-items");
-            if (dropDownItems) {
-                dropDownItems.style.display = 'none';
-            }
-        }
-    }
-     function search(e){
-         let keycode ;
-         if(window.event){
-             keycode = window.event.code;
-         }
-         else if(e){
-             keycode = e.code
-         }
-         if(keycode == "Enter"){
-             SearchSubmit();
-         }
+        onLoadBar(id);
      }
-    function SearchSubmit() {
-        var inputSearch = document.getElementById("search-input");
-        var query = inputSearch.value;
-
-        if (query !== '') {
-            fetch(`/groups-data?query=${query}`)
-                .then((response) => {
-                    return response.json();
-                })
-                .then((data) => {
-                    var dropDownItems = document.getElementById("dropdown-items");
-                    dropDownItems.innerHTML = `
-                            ${data.map((item) => {
-                        return `<a class="dropdown-item" href="/group/${item.id}">${item.name}</a>`
-                    }).join('')}
-                        `
-                    dropDownItems.style.display = "flex";
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-        }
-
-    }
-
-    function createChart(id) {
-        fetch(`/sessioninfo/${ id }/`)
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                let xVals = [];
-                let yVals = [];
-
-                for (let d of data) {
-                    xVals.push(d.time);
-                    yVals.push(d.level);
-                }
-                new Chart("chart", {
-                    type: "line",
-                    data: {
-                        labels: xVals,
-                        datasets: [{
-                            fill: false,
-                            lineTension: 0,
-                            backgroundColor: "rgba(255,255,255,1.0)",
-                            borderColor: "rgba(255,255,255,.5)",
-                            data: yVals
-                        }]
-                    },
-                    options: {
-                        legend: { display: false },
-                        scales: {
-                            yAxes: [{ ticks: { min: 0, max: 12 } }],
-                        }
-                    }
-                });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
+    
     </script>
     <style>
      body {
@@ -255,7 +178,7 @@
     </style>
 </head>
 
-<body onload="onLoad(<%= typeof('id') !='undefined' ? id : 1%>);">
+<body onload="onLoad(<%= typeof id !='undefined' ? id : 1%>);">
 
     <header>
         <h1>Group Dashboard</h1>
