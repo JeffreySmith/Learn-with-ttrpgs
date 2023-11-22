@@ -20,6 +20,18 @@ router
   .get('/login',(req,res)=>{
     res.render("login");
   })
+  .get('/logout',(req,res)=>{
+    if(req.session.username){
+      req.session.username = undefined;
+      req.session.role = undefined;
+      req.session.loggedIn = undefined;
+    }
+    else{
+      console.log("Trying to logout despite not being logged in...");
+    }
+    res.redirect("/");
+    
+  })
   .get('/recovery',(req,res)=>{
     res.render("recovery");
   })
@@ -128,7 +140,8 @@ router
     if(req.session.username){
       console.log(getRatings(req.session.username));
       let user = getUsers().find((user)=> user.email === req.session.username);
-      res.render("publicprofile",{user:user});
+      let ratings = getRatings(user.email);
+      res.render("publicprofile",{user:user,ratings:ratings});
     }
     else{
       res.redirect("/login");
