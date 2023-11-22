@@ -1,0 +1,37 @@
+.dropdown {
+    position: relative;
+}
+.divider {
+    border-top: 2px solid #555;
+    margin: 20px 0;
+}
+.dropdown-items {
+    position: absolute;
+    flex-direction: column;
+    background-color: white;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    top: 46px;
+    max-height: 180px;
+    overflow: auto;
+    display: none;
+}
+
+.dropdown-item {
+    color: black;
+}
+
+button.search {
+    margin-top: 0;
+    margin-left: 1rem;
+    padding: 10px 20px;
+}
+
+input.search-input {
+    width: 200px;
+    outline: none;
+}
+nav{
+    display:flex;
+}
