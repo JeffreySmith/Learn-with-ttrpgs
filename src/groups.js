@@ -99,8 +99,10 @@ function leaveGroup(userEmail,groupName){
 
 function changeOwner(newOwnerEmail,groupName){
   let newOwner = findUserSafe(newOwnerEmail);
-  let group = findGroup(groupName);
-  if (group.length >= 1){
+  let group = findGroup(undefined,groupName);
+  console.log("Group is::::::");
+  console.log(group);
+  if (group.length == 1){
     group = group[0];
   }
   else{
@@ -109,7 +111,7 @@ function changeOwner(newOwnerEmail,groupName){
     
   if (newOwner && group){
     let expr = db.prepare("UPDATE Groups SET owner = ? WHERE id = ?");
-    let info = expr.run(user.id,group.id);
+    let info = expr.run(newOwner.id,group.id);
     console.log(info);
     
   }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
-const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup,getGroupsByName} = require('./groups.js');
+const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup,getGroupsByName, isGroupAdmin} = require('./groups.js');
 
 const {getSessions,createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel,allRPGS} = require('./session.js');
 
@@ -71,6 +71,8 @@ router
   
   .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
+
+    let isAdmin = false;
     
     let username = req.session.username;
     if(req.params.id){
@@ -81,7 +83,7 @@ router
       req.session.previousPage=`/group/${req.params.id}/`;
       return res.redirect("/login");
     }
-   
+    
     console.log(req.body.username);
     
     if (groupid){
@@ -90,11 +92,14 @@ router
       if(group){
 	let members = getGroupMembers(group.name);
 	let admin = getUserById(group.owner);
-	console.log("Admin:");
-	console.log(admin);
-	console.log(members);
-	console.log(group);
-	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id});
+	let user = findUserSafe(req.session.username);
+	if(isGroupAdmin(user.email,group.name)){
+	  console.log(`User ${user.name} is the admin for ${group.name}`);
+	  isAdmin = true;
+	}
+
+
+	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin});
       }
       else{
 	res.redirect("/group");
