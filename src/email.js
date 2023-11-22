@@ -1,6 +1,7 @@
 const {findUserSafe} = require('./user');
 const nodemailer = require('nodemailer');
-const crypto = require('crypto')
+const crypto = require('crypto');
+const { getGroupMembers } = require('./groups');
 
 
 global.resetUUIDS = [];
@@ -87,5 +88,19 @@ function sendPasswordResetEmail(email){
   };
   sendMail(transporter,mailOptions);
 }
+function sendSessionToGroupMembers(text,groupName){
+  const transporter = getTransporter();
+  const members = getGroupMembers(groupName);
+  for(let member of members){
+    const mailOptions ={
+      from:process.env.email,
+      to:member.email,
+      subject:"New Session Scheduled",
+      text:text
+    };
+    sendMail(transporter,mailOptions);
+  }
+  
+}
 
-module.exports = {getTransporter,sendMail,sendPasswordResetEmail,sendMessage};
+module.exports = {getTransporter,sendMail,sendPasswordResetEmail,sendMessage,sendSessionToGroupMembers};
