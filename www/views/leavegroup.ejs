@@ -275,8 +275,10 @@
         <!-- Group Details Section -->
         <section id="groupDetailsSection">
             <h2>Group Details</h2>
+            
             <ul id="groupDetailsList">
                 <!-- Display group details dynamically here -->
+                
                 <li><strong>Name:</strong> <%=  typeof('group') !='undefined' ? group.name : "Group Name" %></li>
                 <li><strong>Description:</strong> <%= typeof('group') !='undefined' ? group.description : "Group Description" %></li>
                 <li class="group-members"><strong>Members:</strong>
@@ -297,8 +299,25 @@
                 
                 <button id="leaveGroupBtn">Leave Group</button>
             </form>
+            <% if(typeof isAdmin != 'undefined' && isAdmin==true){ %>
+                <form method="post" action="/changeowner" >
+                    <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
+                    <% if(typeof('members') != 'undefined'){ %>
+                        <select name="newowner">
+                            <% for(let member of members){ %>
+                                <% if(admin.email != member.email){ %>    
+                                    <option value="<%=member.email%>"><%=member.firstname%> <%= member.lastname%></option>
+                                <%}%>
+                            <%}%>
+                        </select>
+                    <%}%>
+                    <div>
+                        <button id="changeGroupBtn">Change Group Owner</button>
+                    </div>
+                </form>
+            <%}%>
         </section>
-
+        
         <div class="divider"></div>
 
         <!-- Graph Section -->

@@ -3,12 +3,12 @@ const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers,getUserById, updateRating} = require('./user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup} = require('./groups.js');
+const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup, getGroupById} = require('./groups.js');
 const {sendPasswordResetEmail, sendMail, sendMessage} = require('./email.js');
 const {createSession,findSession,allGroupSessions,addTranscript} = require('./session.js');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { getGroupMembers } = require("./groups.js");
+const { getGroupMembers,changeOwner } = require("./groups.js");
 const { groupSessionLevels } = require("./session.js");
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
@@ -376,6 +376,24 @@ router
       console.log("Why isn't there a file?");
     }
     res.redirect("/sessions/"+groupid);
+  })
+  .post("/changeowner",(req,res)=>{
+    let groupid = req.body.groupid;
+    let newOwner = req.body.newowner;
+    let group = undefined;
+    if(groupid){
+      group = getGroupById(groupid);
+    }
+    if(groupid && newOwner && group){
+      
+      console.log(`Group name is: ${group.name}`);
+      changeOwner(newOwner,group.name);
+    }
+    else{
+      console.log("Something went wrong...");
+    }
+    res.redirect(`/group/${groupid}/`);
+    
   })
 	
 module.exports = router;
