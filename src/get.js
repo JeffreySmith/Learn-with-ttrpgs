@@ -206,7 +206,10 @@ router
   .get("/createsession/:sessionid?/",(req,res)=>{
     const groups = getGroups();
     const rpgs = allRPGS();
-
+    if(!req.session.username){
+      req.session.previousPage=`/createsession`;
+      return res.redirect("/login");
+    }
     if(!req.params.sessionid){
       res.render("createSessions",{groups:groups,rpgs:rpgs});
     }
@@ -245,17 +248,22 @@ router
       
   })
   .get("/deletesession/:groupid/:sessionid/",(req,res)=>{
+    if(!req.session.username){
+      req.session.previousPage=`/sessions/${req.params.groupid}/`;
+      res.redirect("/login");
+    }
     let user = findUserSafe(req.session.username);
     let group = getGroupById(req.params.groupid);
     console.log("GROUP:");
     console.log(group);
     //Basically, you have to be logged in as well as a member of the group to delete something
-    if(user && isInGroup(user.email,group.name)){      
+    if(user && isGroupAdmin(user.email,group.name)){      
       deleteSession(req.params.sessionid);
       console.log("Session deleted!");
       res.redirect(`/sessions/${req.params.groupid}`);
     }
     else{
+      console.log("Not deleting session??");
       res.redirect(`/sessions/${req.params.groupid}`);
     }
     
