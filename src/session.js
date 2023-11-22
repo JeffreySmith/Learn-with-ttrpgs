@@ -113,4 +113,4 @@ function allRPGS(){
   return rows;
 }
 
-module.exports = {getSessions,createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession,allRPGS};
+module.exports = {getSessions,createSession,findSession,allGroupSessions,addTranscript,groupSessionLevels,getGradeLevel,getTranscriptAnalysis,deleteSession,allRPGS,round};
