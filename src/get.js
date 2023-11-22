@@ -101,15 +101,23 @@ router
       let sessionLevels = groupSessionLevels(groupid);
       if(group){
 	let members = getGroupMembers(group.name);
+	console.log(members);
+	let inGroup = false;
+	for(let member of members){
+	  if (req.session.username == member.email){
+	    inGroup = true;
+	  }
+	}
 	let admin = getUserById(group.owner);
 	let user = findUserSafe(req.session.username);
+	
 	if(isGroupAdmin(user.email,group.name)){
 	  console.log(`User ${user.name} is the admin for ${group.name}`);
 	  isAdmin = true;
 	}
 
 
-	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin});
+	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin,inGroup:inGroup});
       }
       else{
 	res.redirect("/group");

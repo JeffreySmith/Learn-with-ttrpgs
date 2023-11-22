@@ -395,5 +395,17 @@ router
     res.redirect(`/group/${groupid}/`);
     
   })
+  .post("/editgroup",(req,res)=>{
+    let groupid = req.body.groupid;
+    let name = req.body.name;
+    let description = req.body.description;
+
+    if(groupid && name && description){
+      let expr = db.prepare("UPDATE Groups SET name=?, description=? WHERE id=?");
+      let info = expr.run(name,description,groupid);
+      console.log(info);
+    }
+    res.redirect(`/group/${groupid}`);
+  })
 	
 module.exports = router;

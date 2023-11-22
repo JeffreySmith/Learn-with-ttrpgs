@@ -39,6 +39,7 @@ function isInGroup(email,groupName){
     group = group[0];
     let expr = db.prepare("SELECT * FROM GroupMembers WHERE userid=? AND groupid=?");
     let info = expr.get(user.id,group.id);
+    console.log(info);
     if(info.userid==user.id && info.groupid == group.id){
       return true;
     }
