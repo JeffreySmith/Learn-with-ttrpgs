@@ -50,7 +50,7 @@
 <body>
 
     <header>
-        <h1>Session Info List</h1>
+        <h1>Group-Session Info</h1>
     </header>
 
     <div class="container" style="display: flex; align-items: center; justify-content: center; padding: 16px;">
@@ -59,21 +59,33 @@
                 <table id="sessionTable">
                     <thead style="color: #f77062; font-size: 20px; border-bottom: 1px solid whitesmoke;">
                         <tr>
-                            <th onclick="sortTable(0)" data-order="asc">Name <span class="arrow-icon asc"></span><span
+                            <th onclick="sortTable(0)" data-order="asc">Group Name <span class="arrow-icon asc"></span><span
+                                class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(1)" data-order="asc">Group Owner <span class="arrow-icon asc"></span><span
+                                class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(2)" data-order="asc">Session Name <span class="arrow-icon asc"></span><span
                                     class="arrow-icon dsc"></span></th>
-                            <th onclick="sortTable(1)" data-order="asc">Location <span class="arrow-icon asc"></span><span
+                            <th onclick="sortTable(3)" data-order="asc">Location <span class="arrow-icon asc"></span><span
                                     class="arrow-icon dsc"></span></th>
-                            <th onclick="sortTable(2)" data-order="asc">Time <span class="arrow-icon asc"></span><span
+                            <th onclick="sortTable(4)" data-order="asc">Time <span class="arrow-icon asc"></span><span
                                     class="arrow-icon dsc"></span></th>
-                            <th onclick="sortTable(3)" data-order="asc">Description <span class="arrow-icon asc"></span><span
-                                    class="arrow-icon dsc"></span></th>
-                            <th onclick="sortTable(4)" data-order="asc">Language Level <span
+                            <th onclick="sortTable(5)" data-order="asc">Language Level <span
                                     class="arrow-icon asc"></span><span class="arrow-icon dsc"></span></th>
                         </tr>
                     </thead>
                     <tbody>
                         <% for (let session of sessionList) { %>
                             <tr style="color: white; font-size: 18px; border-bottom: 1px solid whitesmoke;">
+                                <td>
+                                <% if (session && session.groupid && session.groupName) { %>
+                                    <%= session.groupName %>
+                                <% } %>
+                                </td>
+                                <td>
+                                <% if (session && session.groupid && session.ownerName) { %>
+                                    <%= session.ownerName %>
+                                <% } %>
+                                </td>
                                 <td>
                                     <%= session.name %>
                                 </td>
@@ -82,9 +94,6 @@
                                 </td>
                                 <td>
                                     <%= session.time %>
-                                </td>
-                                <td>
-                                    <%= session.description %>
                                 </td>
                                 <td>
                                     <%= session.languageLevel %>
