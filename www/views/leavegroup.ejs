@@ -20,7 +20,18 @@
             }
         }
     }
-
+     function search(e){
+         let keycode ;
+         if(window.event){
+             keycode = window.event.code;
+         }
+         else if(e){
+             keycode = e.code
+         }
+         if(keycode == "Enter"){
+             SearchSubmit();
+         }
+     }
     function SearchSubmit() {
         var inputSearch = document.getElementById("search-input");
         var query = inputSearch.value;
@@ -254,10 +265,10 @@
         <a href="/">Home</a>
         <a href="/groups">Groups</a>
         <div class="dropdown">
-            <input type="text" id="search-input" placeholder="search" class="search-input">
+            <input type="text" onkeydown="search()" id="search-input" placeholder="Search" class="search-input">
             <div class="dropdown-items" id="dropdown-items"></div>
         </div>
-        <button class="search" onclick="SearchSubmit()" id="search-submit">submit</button>
+        <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
     </nav>
 
     <div class="container">
