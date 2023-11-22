@@ -28,10 +28,22 @@
             cursor: pointer;
         }
 
-        .search-icon{
+        .search-icon {
             color: #f77062;
         }
 
+        .arrow-icon {
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .asc::before {
+            content: '\2191'; 
+        }
+
+        .dsc::before {
+            content: '\2193'; 
+        }
     </style>
 </head>
 
@@ -43,27 +55,20 @@
 
     <div class="container" style="display: flex; align-items: center; justify-content: center; padding: 16px;">
         <section>
-            <% if (sessionList.length> 0) { %>
+            <% if (sessionList.length > 0) { %>
                 <table id="sessionTable">
                     <thead style="color: #f77062; font-size: 20px; border-bottom: 1px solid whitesmoke;">
                         <tr>
-                            
-
-                                <th onclick="sortTable(0)">Name <i class="fas fa-sort"></i></th>
-                                
-                            
-                                <th onclick="sortTable(1)">Location <i class="fas fa-sort"></i></th>
-                                
-
-                            
-
-                                <th onclick="sortTable(2)">Time <i class="fas fa-sort"></i></th>
-                                
-                            
-                                <th onclick="sortTable(3)">Description <i class="fas fa-sort"></i></th>
-                                <th onclick="sortTable(4)">Language Level <i class="fas fa-sort"></i></th>
-                                
-
+                            <th onclick="sortTable(0)" data-order="asc">Name <span class="arrow-icon asc"></span><span
+                                    class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(1)" data-order="asc">Location <span class="arrow-icon asc"></span><span
+                                    class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(2)" data-order="asc">Time <span class="arrow-icon asc"></span><span
+                                    class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(3)" data-order="asc">Description <span class="arrow-icon asc"></span><span
+                                    class="arrow-icon dsc"></span></th>
+                            <th onclick="sortTable(4)" data-order="asc">Language Level <span
+                                    class="arrow-icon asc"></span><span class="arrow-icon dsc"></span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,28 +90,29 @@
                                     <%= session.languageLevel %>
                                 </td>
                             </tr>
-                            <% } %>
+                        <% } %>
                     </tbody>
                 </table>
-                <% } else { %>
-                    <p>No sessions available</p>
-                    <% } %>
+            <% } else { %>
+                <p>No sessions available</p>
+            <% } %>
         </section>
     </div>
 
     <script>
         function sortTable(columnIndex) {
-            var table, rows, switching, i, x, y, shouldSwitch;
+            var table, rows, switching, i, x, y, shouldSwitch, isAsc;
             table = document.getElementById("sessionTable");
             switching = true;
+            isAsc = table.rows[0].cells[columnIndex].getAttribute("data-order") === "asc"; 
             while (switching) {
                 switching = false;
                 rows = table.rows;
                 for (i = 1; i < rows.length - 1; i++) {
-                    shouldSwitch = false;
+                    shouldSwitch = false; // assuming initially there is no swapping
                     x = rows[i].getElementsByTagName("td")[columnIndex];
                     y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    if (isAsc ? x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase() : x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
                         shouldSwitch = true;
                         break;
                     }
@@ -115,6 +121,23 @@
                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                     switching = true;
                 }
+            }
+            isAsc = !isAsc;
+
+            resetArrowIcons();
+
+            var arrowIcons = table.rows[0].cells[columnIndex].getElementsByClassName('arrow-icon');
+            for (var i = 0; i < arrowIcons.length; i++) {
+                arrowIcons[i].classList.add(isAsc ? 'asc' : 'dsc');
+            }
+
+            table.rows[0].cells[columnIndex].setAttribute("data-order", isAsc ? "asc" : "dsc");
+        }
+
+        function resetArrowIcons() {
+            var arrowIcons = document.getElementsByClassName('arrow-icon');
+            for (var i = 0; i < arrowIcons.length; i++) {
+                arrowIcons[i].classList.remove('asc', 'dsc');
             }
         }
     </script>
