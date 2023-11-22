@@ -94,11 +94,15 @@ function findSession(id){
 }
 
 function getSessions() {
-  let results = db.prepare("SELECT * FROM Sessions").all();
+  const query = `SELECT G.name AS groupName, (U.firstname || ' ' || U.lastname) AS ownerName, S.* 
+  FROM Sessions S JOIN Groups G ON S.groupid = G.id JOIN RPG ON S.rpgid=RPG.id JOIN Users U ON U.id = G.owner;`;
+
+  const results = db.prepare(query).all();
   let sessions = results.map(session => {
     session.languageLevel = session.transcript ? getTranscriptAnalysis(session.transcript) : 0;
     return session;
   })
+  console.log(results);
   return sessions;
 }
 
