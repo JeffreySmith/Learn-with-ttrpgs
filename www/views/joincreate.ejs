@@ -1,83 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Group or Join Group Page</title>
-    <link  rel="stylesheet" type="text/css" href="/www/css/normalize.css" >
-    <link rel="stylesheet" type="text/css" href="/www/css/styles.css">
-    <link  rel="stylesheet" type="text/css" href="/www/css/joincreate.css">
-    <link rel="stylesheet" type="text/css"  href="/www/css/searchdropdown.css">
-    
+    <link rel="stylesheet" type="text/css" href="/www/css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="/www/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/www/css/joincreate.css" />
+    <link rel="stylesheet" type="text/css" href="/www/css/searchdropdown.css" />
+
     <script type="text/javascript" src="/www/js/searchbar.js" defer></script>
 
     <script>
-        function onLoad(){
-            onLoadBar();
-        }
+      function onLoad() {
+        onLoadBar();
+      }
     </script>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <header>
-        <h1>Create Group or Join Group Page</h1>
+      <h1>Create Group or Join Group Page</h1>
     </header>
 
     <nav>
-        <a href="/">Home</a>
-        <a href="/group">Create/Join</a>
-        <a href="/groupsettings">Group Settings</a>
-         <div class="dropdown">
 
-            <input type="text" onkeydown="search()" id="search-input" placeholder="Search for a Group" class="search-input">
-            <div class="dropdown-items" id="dropdown-items"></div>
-        </div>
-        <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
+      <a href="/">Home</a>
+      <a href="/group">Create/Join</a>
+      <a href="/groupsettings">Group Settings</a>
+      <div class="dropdown">
+        <input
+          type="text"
+          onkeydown="search()"
+          id="search-input"
+          placeholder="Search for a Group"
+          class="search-input"
+        />
+        <div class="dropdown-items" id="dropdown-items"></div>
+      </div>
+      <button class="search" onclick="SearchSubmit()" id="search-submit">
+        Search
+      </button>
+
     </nav>
 
     <div class="container">
-        <!-- Create Group Section -->
-        <section id="createGroupSection">
-            <h2>Create a New Group</h2>
-            <form method="POST" action="/creategroup" id="addGroupForm">
-                <label for="name">Group Name:</label>
-                <input type="text" id="name" name="name" required>
+      <!-- Create Group Section -->
+      <section id="createGroupSection">
+        <h2>Create a New Group</h2>
+        <form method="POST" action="/creategroup" id="addGroupForm">
+          <label for="name">Group Name:</label>
+          <input type="text" id="name" name="name" required />
 
-                <label for="description">Group Description:</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
+          <label for="description">Group Description:</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="4"
+            required
+          ></textarea>
 
-                <button type="submit">Create Group</button>
-            </form>
-        </section>
+          <button type="submit">Create Group</button>
+        </form>
+      </section>
 
-        <div class="divider"></div>
+      <div class="divider"></div>
 
-        <!-- Join Group Section -->
-        <section id="joinGroupSection">
-            <h2>Join an Existing Group</h2>
-            <form method="POST" action="/joingroup" id="joinGroupForm">
-                <%if(typeof('username')!='undefined'){%>
-                    <input type="hidden" name="username" value="<%= username%>">
-                <%}%>
-                <label for="groups">Groups:
-                <select name="group" id="groups">
-                    <% if(typeof('groups')!='undefined'){ %>
-                        <% for(let group of groups) {%>
-                            <option value="<%= group.name%>"><%=group.name%></option>
-                        <%}%>
-                    <%}%>
-                </select>
-                </label>
-                
-                <button type="submit">Join</button>
-            </form>
-        </section>
+      <!-- Join Group Section -->
+      <section id="joinGroupSection">
+        <h2>Join an Existing Group</h2>
+        <form method="POST" action="/joingroup" id="joinGroupForm">
+          <%if(typeof('username')!='undefined'){%>
+          <input type="hidden" name="username" value="<%= username%>" />
+          <%}%>
+          <label for="groups"
+            >Groups:
+            <select name="group" id="groups">
+              <% if(typeof('groups')!='undefined'){ %> <% for(let group of
+              groups) {%>
+              <option value="<%= group.name%>"><%=group.name%></option>
+              <%}%> <%}%>
+            </select>
+          </label>
+
+          <button type="submit">Join</button>
+        </form>
+      </section>
     </div>
-    
-    
-
-</body>
-
+  </body>
 </html>
