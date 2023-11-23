@@ -87,7 +87,7 @@ function sendPasswordResetEmail(email){
     from:process.env.email,
     to:email, //Address to which you want to send
     subject:'Password Reset', //subject
-    html:`Click <a href="${url}/recover/${uuid}">here</a> to reset your password` //body of email
+    html:`Click <a href="${url}/recover/${uuid}/${email}">here</a> to reset your password` //body of email
   };
   sendMail(transporter,mailOptions);
 }

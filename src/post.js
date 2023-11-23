@@ -42,14 +42,16 @@ router
       bcrypt
 	.hash(password,10)
 	.then(hash=>{
-	  
+	  console.log(hash);
+	  console.log(email);
 	  let expr = db.prepare("UPDATE Users SET password = ? WHERE email=?");
 	  let info = expr.run(hash,email);
 	  console.log(info);
+	  console.log("Password should be updated...");
 	})
 	.catch(err=>console.error(err.message));
       
-      res.redirect("userpage");
+      res.redirect("userprofile");
     }
     
   })

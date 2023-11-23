@@ -52,7 +52,7 @@ router
     res.json(groups);
   })
 
-  .get("/recover/:id/",(req,res)=>{
+  .get("/recover/:id/:email/",(req,res)=>{
     let id = req.params.id;
     let validRequest = global.resetUUIDS.find(u=>u.uuid === id);
     let index = undefined;
@@ -69,7 +69,7 @@ router
       console.log("Allow password resetting");
       console.log(Date.now() - validRequest.time);
       //global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
-      res.render("newpassword",{user:user});
+      res.render("newpassword",{user:user,email:req.params.email});
     }
     else{
       console.log("Password reset not valid");
