@@ -14,6 +14,7 @@ const {
   getGroupMembers,
   isInGroup,
   getGroupsByName,
+  isGroupAdmin
 } = require("./groups.js");
 
 const {
@@ -26,6 +27,7 @@ const {
   groupSessionLevels,
   getGradeLevel,
   allRPGS,
+  getUserAverage
 } = require("./session.js");
 
 const db = require("better-sqlite3")(global.db_string);
@@ -380,6 +382,27 @@ router
     }
   })
 
+  .get("/dashboard",(req,res)=>{
+    if(req.session.username){
+      let user = findUserSafe(req.session.username);
+      let level = getUserAverage(user.id);
+      let groups = getGroups();
+      groups = groups.filter((group)=>{
+	let expr = db.prepare("SELECT * FROM GroupMembers WHERE userid=? AND groupid=?").get(user.id,group.id);
+	console.log(expr);
+	if(expr!=undefined){
+	  return expr;
+	}
+	
+      });
+     
+      res.render("userLandingPage",{username:req.session.username,level:level,groups:groups});
 
+    }
+    else{
+      req.session.previousPage="/dashboard";
+      res.redirect("/login");
+    }
+  })
 
 module.exports = router;
