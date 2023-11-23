@@ -166,15 +166,31 @@
                 </li>
                 <li><strong>Admin:</strong> <%= typeof('admin') !='undefined' ? admin.email : "Admin user"%></li>
             </ul>
-            <form method="post" action="/group" >
+            <!-- <div class="join" style="display:flex; justify-content:space-between;"> -->
+            <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==true){ %>
+                <form method="post" action="/group" >
                 <input type="hidden" value="<%= typeof('username') !='undefined' ? username:'username'%>" name="username">
                 <input type="hidden" name="groupname" value="<%= typeof('group') !='undefined' ? group.name:''%>">
                 <input type="hidden" name="id" value="<%= typeof('id') !='undefined' ? id :'id'%>">
-                <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==true){ %>
-                    <button id="leaveGroupBtn">Leave Group</button>
-                <%}%>
+                
+                <button id="leaveGroupBtn">Leave Group</button>
+                
+
+                </form>
+            <%}%>
+            <!-- Join the group, if you aren't already in it -->
+            <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==false){ %>
+            <form method="post" action="/joingroup" >
+                <input type="hidden" value="<%= typeof('username') !='undefined' ? username:'username'%>" name="username">
+                <input type="hidden" name="group" value="<%= typeof('group') !='undefined' ? group.name:''%>">
+                <input type="hidden" name="id" value="<%= typeof('id') !='undefined' ? id :'id'%>">
+                
+                <button id="leaveGroupBtn">Join Group</button>
+                
 
             </form>
+            <%}%>
+            
             <% if(typeof isAdmin != 'undefined' && isAdmin==true){ %>
                 
                 <form method="POST" action="/editgroup" id="addGroupForm">
