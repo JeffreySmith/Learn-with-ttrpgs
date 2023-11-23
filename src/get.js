@@ -387,17 +387,33 @@ router
       let user = findUserSafe(req.session.username);
       let level = getUserAverage(user.id);
       let groups = getGroups();
+      let sessions = [];
+      let nextSession = "3000-10-25 16:30:00";
+      let sessionToSend = undefined;
       groups = groups.filter((group)=>{
 	let expr = db.prepare("SELECT * FROM GroupMembers WHERE userid=? AND groupid=?").get(user.id,group.id);
 	console.log(expr);
 	if(expr!=undefined){
+	  let session = db.prepare("SELECT * FROM Sessions WHERE time>=datetime('now') AND groupid=? ORDER BY TIME LIMIT 1").get(group.id);
+	  if(session){
+	    sessions.push(session)
+	  }
+	  
 	  return expr;
 	}
 	
       });
-     
-      res.render("userLandingPage",{username:req.session.username,level:level,groups:groups});
-
+      for (let session of sessions){
+	let newDate = new Date(session.time);
+	if (newDate <= new Date(nextSession)){
+	  nextSession = session.time;
+	}
+      }
+      sessionToSend = sessions.filter((s)=> s.time==nextSession);
+      console.log(sessionToSend);
+      console.log(sessions);
+      res.render("userLandingPage",{username:req.session.username,level:level,groups:groups,nextSession:nextSession,sessionToShow:sessionToSend[0]});
+      
     }
     else{
       req.session.previousPage="/dashboard";

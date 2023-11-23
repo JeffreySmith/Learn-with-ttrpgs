@@ -243,11 +243,11 @@
             <div class="card">
                 <h2>Upcoming Sessions/Meetups Dashboard</h2> 
                  <!-- show these details if there is upcoming seesion is scheduled or just print "No Sessions/Meet-up Scheduled" Messege-->
-                <p><strong>Date:</strong> November 25, 2023</p>
-                <p><strong>Time:</strong> 8:00PM - 11:00PM </p>
-                <p><strong>Type:</strong> In-Person </p>
+                <p><strong>Date:</strong> <%=nextSession.substring(0,10)%></p>
+                <p><strong>Time:</strong> <%=nextSession.substring(11,16)%> </p>
+                <p><strong>Type:</strong> <%= sessionToShow.location.toLowerCase() == 'online' ? 'Online' : 'In-Person'%> </p>
                 <div class="card-button">
-                    <a class="button">View Dashboard</a>
+                    <a href="/sessions/<%=sessionToShow.id%>" class="button">View Dashboard</a>
                 </div>
             </div>
 
