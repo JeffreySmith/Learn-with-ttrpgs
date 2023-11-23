@@ -210,16 +210,22 @@ function findGroup(ownerEmail,name){
 }
 
 function deleteGroupByID(id){
-  let expr = db.prepare("DELETE FROM GroupMembers WHERE groupid=?");
-  let info = expr.run(id);
+  //Start a transaction so that if something goes wrong, we don't break things too badly
+  const deleteTheGroup = db.transaction(()=>{
+    let groupMembers = db.prepare("DELETE FROM GroupMembers WHERE groupid=?");
+    let info = groupMembers.run(id);
+    console.log(info);
+    
+    let sessions = db.prepare("DELETE FROM Sessions WHERE groupid=?");
+    info = sessions.run(id);
+    console.log(info);
+    let groups = db.prepare("DELETE FROM Groups where id=?");
+    info = groups.run(id);
+    console.log(info);
+  });
+  let info = deleteTheGroup();
   console.log(info);
-  
-  expr = db.prepare("DELETE FROM Sessions WHERE groupid=?");
-  info = expr.run(id);
-  
-  expr = db.prepare("DELETE FROM Groups where id=?");
-  info = expr.run(id);
-  console.log(info);
+
 
 
 }
