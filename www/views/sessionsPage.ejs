@@ -1,258 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sessions/Meet-ups</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #000000;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: snow;
-      }
 
-      header {
-        background-color: #333;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        width: 100%;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sessions/Meet-ups</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: snow;
+    }
 
-      nav {
-        background-color: #555;
-        padding: 10px;
-        width: 100%;
-        transition: color 0.3s ease;
-      }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      width: 100%;
+    }
 
-      nav a {
-        color: white;
-        text-decoration: none;
-        padding: 10px;
-        margin: 0 10px;
-      }
+    nav {
+      background-color: #555;
+      padding: 10px;
+      width: 100%;
+      transition: color 0.3s ease;
+    }
 
-      nav a:hover {
-        color: #f77062;
-      }
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin: 0 10px;
+    }
 
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        max-width: 1200px;
-        background-color: #131313;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin-top: 20px;
-      }
+    nav a:hover {
+      color: #f77062;
+    }
 
-      .dashboard-container {
-        display: flex;
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 1200px;
+      background-color: #131313;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-top: 20px;
+    }
 
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
+    .dashboard-container {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
 
-      .dashboard {
-        width: 48%;
-        padding: 20px;
-        box-sizing: border-box;
-        background-color: #333;
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-      }
+    .dashboard {
+      width: 48%;
+      padding: 20px;
+      box-sizing: border-box;
+      background-color: #333;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .dashboard-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin-bottom: 20px;
-        color: #fff;
-      }
+    .dashboard-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #fff;
+    }
 
-      .session {
-        background-color: #555;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-      }
+    .session {
+      background-color: #555;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .session-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 10px;
-      }
+    .session-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-      .session-details {
-        margin-bottom: 10px;
-      }
+    .session-details {
+      margin-bottom: 10px;
+    }
 
-      .session-description {
-        margin-bottom: 10px;
-      }
+    .session-description {
+      margin-bottom: 10px;
+    }
 
-      .session-activities {
-        margin-bottom: 10px;
-      }
+    .session-activities {
+      margin-bottom: 10px;
+    }
 
-      .completed-sessions {
-        width: 48%;
-        padding: 20px;
-        box-sizing: border-box;
-        background-color: #333;
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-      }
+    .completed-sessions {
+      width: 48%;
+      padding: 20px;
+      box-sizing: border-box;
+      background-color: #333;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .completed-session {
-        background-color: #555;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-      }
+    .completed-session {
+      background-color: #555;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
 
-      .completed-session-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 10px;
-      }
+    .completed-session-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-      .completed-session-details {
-        margin-bottom: 10px;
-      }
+    .completed-session-details {
+      margin-bottom: 10px;
+    }
 
-      .completed-session-description {
-        margin-bottom: 10px;
-      }
+    .completed-session-description {
+      margin-bottom: 10px;
+    }
 
-      label.button {
-        background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
-        padding: 10px 15px;
-        border: none;
-        border-radius: 4px;
-        color: #fff;
-        cursor: pointer;
-        transition: all 0.35s;
-        outline: none;
-        text-decoration: none;
-        margin-right: 10px;
-        display: inline-block;
-      }
+    label.button {
+      background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.35s;
+      outline: none;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 10px;
+    }
 
-      label.button:hover {
-        background: #4837ff;
-        transition: all 0.3s ease;
-      }
+    label.button:hover {
+      background: #4837ff;
+      transition: all 0.3s ease;
+    }
 
-      label.button.rating {
-        background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
-        padding: 10px 15px;
-        border: none;
-        border-radius: 4px;
-        color: #fff;
-        cursor: pointer;
-        transition: all 0.35s;
-        outline: none;
-        text-decoration: none;
-        margin-right: 10px;
-        display: inline-block;
-      }
+    label.button.rating {
+      background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.35s;
+      outline: none;
+      text-decoration: none;
+      margin-right: 10px;
+      display: inline-block;
+    }
 
-      label.button.rating:hover {
-        background: #4837ff;
-        transition: all 0.3s ease;
-      }
-    </style>
-  </head>
+    label.button.rating:hover {
+      background: #4837ff;
+      transition: all 0.3s ease;
+    }
 
-  <body>
-    <header>
-      <h1>Sessions/Meet-ups Dashboard</h1>
-    </header>
+    label.button.submit {
+      background-color: #4CAF50; 
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.35s;
+      outline: none;
+      text-decoration: none;
+      margin-left: 10px;
+    }
 
-    <nav>
-      <a href="/">Home</a>
-      <a href="/groups">Groups</a>
-    </nav>
+    label.button.submit:hover {
+      background: #45A049; 
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
 
-    <div class="container">
-      <div class="dashboard-container">
-        <div class="dashboard">
-          <div class="dashboard-title" style="text-align: center">
-            <%= typeof name !='undefined' ? name : "Group"%> Sessions
-          </div>
-          <% if(typeof sessions !=undefined){ %> <% let counter = 0; %> <%
-          for(let session of sessions){ %> <% counter +=1; %>
-          <div class="session">
-            <div class="session-title"><%=session.name%></div>
-            <div class="session-details">
-              <p><strong>Date: </strong><%=session.date%></p>
-              <p><strong>Time: </strong><%=session.onlyTime%></p>
-              <p><strong>Location: </strong><%=session.location%></p>
-              <p><strong>Description: </strong><%=session.description%></p>
-              <form
-                action="/uploadtranscript"
-                method="post"
-                enctype="multipart/form-data"
-              >
-                <input type="hidden" name="id" value="<%=session.id%>" />
-                <input
-                  type="hidden"
-                  name="groupid"
-                  value="<%=session.groupid%>"
-                />
-                <label for="transcriptFile<%=counter%>" class="button"
-                  >Upload Transcript File</label
-                >
-                <input
-                  type="file"
-                  id="transcriptFile<%=counter%>"
-                  name="transcript"
-                  accept=".txt"
-                  style="display: none"
-                  required
-                />
+<body>
+  <header>
+    <h1>Sessions/Meet-ups Dashboard</h1>
+  </header>
 
-                <div><input class="button" type="submit" /></div>
-              </form>
-              <a
-                style="color: white; text-decoration: none"
-                href="/feedback/<%=session.groupid%>"
-                ><label for="ratingFeedback1" class="button rating">
-                  Rating/Feedback</label
-                ></a
-              >
-              <a
-                style="color: white; text-decoration: none"
-                href="/createsession/<%=session.id%>"
-                ><label class="button rating"> Edit Session</label></a
-              >
-              <a
-                style="color: white; text-decoration: none"
-                href="/deletesession/<%=session.groupid%>/<%=session.id%>"
-                ><label class="button rating"> Delete Session</label></a
-              >
-            </div>
-          </div>
-          <%}%> <%}%>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/groups">Groups</a>
+  </nav>
+
+  <div class="container">
+    <div class="dashboard-container">
+      <div class="dashboard">
+        <div class="dashboard-title" style="text-align: center">
+          <%= typeof name !='undefined' ? name : "Group"%> Sessions
         </div>
+        <% if(typeof sessions !=undefined){ %> <% let counter = 0; %> <%
+        for(let session of sessions){ %> <% counter +=1; %>
+        <div class="session">
+          <div class="session-title"><%=session.name%></div>
+          <div class="session-details">
+            <p><strong>Date: </strong><%=session.date%></p>
+            <p><strong>Time: </strong><%=session.onlyTime%></p>
+            <p><strong>Location: </strong><%=session.location%></p>
+            <p><strong>Description: </strong><%=session.description%></p>
+            <form action="/uploadtranscript" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="id" value="<%=session.id%>" />
+              <input type="hidden" name="groupid" value="<%=session.groupid%>" />
+
+              <label for="transcriptFile<%=counter%>" class="button">Upload Transcript File</label>
+              <input type="file" id="transcriptFile<%=counter%>" name="transcript" accept=".txt" style="display: none" required />
+             
+              <label for="submitButton<%=counter%>" class="button submit">Submit</label>
+            </form>
+
+            <a style="color: white; text-decoration: none" href="/feedback/<%=session.groupid%>">
+              <label for="ratingFeedback1" class="button rating">Rating/Feedback</label>
+            </a>
+            <a style="color: white; text-decoration: none" href="/createsession/<%=session.id%>">
+              <label class="button rating">Edit Session</label>
+            </a>
+            <a style="color: white; text-decoration: none" href="/deletesession/<%=session.groupid%>/<%=session.id%>">
+              <label class="button rating">Delete Session</label>
+            </a>
+          </div>
+        </div>
+        <%}%> <%}%>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
