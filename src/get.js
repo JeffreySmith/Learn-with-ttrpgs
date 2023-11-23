@@ -56,7 +56,10 @@ router
     let id = req.params.id;
     let validRequest = global.resetUUIDS.find(u=>u.uuid === id);
     let index = undefined;
-    let user = findUserSafe(validRequest.email);
+    let user = undefined;
+    if(validRequest){
+      user = findUserSafe(validRequest.email);
+    }
     if(validRequest){
       index = global.resetUUIDS.findIndex(u=>u.uuid === id);
     }
@@ -77,6 +80,15 @@ router
       res.status(401).send("Link not valid");
     }
   
+  })
+  .get("/changeuserpassword",(req,res)=>{
+    if(req.session.username){
+      let user = findUserSafe(req.session.username);
+      res.render("newpassword",{user:user,email:req.session.username});
+    }
+    else{
+      res.redirect("/userprofile");
+    }
   })
   
   .get("/group/:id/",(req,res)=>{
@@ -169,7 +181,7 @@ router
       console.log(getRatings(req.session.username));
       let user = getUsers().find((user)=> user.email === req.session.username);
       let ratings = getRatings(user.email);
-      res.render("publicprofile",{user:user,ratings:ratings});
+      res.render("publicprofile",{user:user,ratings:ratings,userPage:true});
     }
     else{
       res.redirect("/login");
