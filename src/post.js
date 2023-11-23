@@ -3,7 +3,9 @@ const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers,getUserById, updateRating} = require('./user.js');
-const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,leaveGroup,createGroup, getGroupById} = require('./groups.js');
+
+const {getGroups,joinGroup,insertGroup,findGroup,leaveGroup,createGroup, getGroupById, deleteGroupByID} = require('./groups.js');
+
 const {sendPasswordResetEmail, sendMail, sendMessage} = require('./email.js');
 const {createSession,findSession,allGroupSessions,addTranscript} = require('./session.js');
 const bcrypt = require('bcrypt');
@@ -124,7 +126,8 @@ router
     }
   
     insertUser(name,lastName,email,password,"user");
-    res.render("registration",{message:"User account created!"});
+    res.redirect("/login");
+    //res.render("registration",{message:"User account created!"});
   })
   .post("/login",[
     query('email').isEmail()], (req, res) => {
@@ -191,7 +194,7 @@ router
     }
     
   })
-  .post("/deletegroup",(req,res)=>{
+/*  .post("/deletegroup",(req,res)=>{
     let groups = getGroups();
     let groupName = req.body.name;
     let group = groups.find((group)=> group.name === groupName);
@@ -199,7 +202,7 @@ router
       return res.render("group",{message:"No such group exists"});
     }
     deleteGroup(group);
-  })
+  })*/
   .post("/joingroup",(req,res)=>{
     let groupName = req.body.group;
     if(groupName && req.session.username){
@@ -300,9 +303,7 @@ router
     res.redirect(`/sessions/${group[0].id}`);
     
   })
-  .post("/addtranscript/:transcript/",(req,res)=>{
-    
-  })
+
   .post("/sendmessage",(req,res)=>{
     let from = req.session.username;
     let to = req.body.toemail;
@@ -393,6 +394,48 @@ router
       console.log("Something went wrong...");
     }
     res.redirect(`/group/${groupid}/`);
+    
+  })
+
+  .post("/editgroup",(req,res)=>{
+    let groupid = req.body.groupid;
+    let name = req.body.name;
+    let description = req.body.description;
+
+    if(groupid && name && description){
+      let expr = db.prepare("UPDATE Groups SET name=?, description=? WHERE id=?");
+      let info = expr.run(name,description,groupid);
+      console.log(info);
+    }
+    res.redirect(`/group/${groupid}`);
+  })
+  .post("/removeuser",(req,res)=>{
+    let groupid = req.body.groupid;
+    let remove = req.body.usertoremove;
+    let user = findUserSafe(remove);
+    let group = getGroupById(groupid);
+
+    if(group && remove && user){
+      leaveGroup(user.email,group.name);
+      console.log("User removed successfully");
+    }
+    else{
+      console.log(`Something went wrong trying to remove ${remove}`);
+    }
+    res.redirect(`/group/${groupid}`);
+  })
+  .post("/deletegroup",(req,res)=>{
+    let id = req.body.groupid;
+    let group = getGroupById(id);
+    if(group){
+      deleteGroupByID(id);
+      console.log(`Group with id:${id} should be deleted`);
+      res.redirect(`/group`);
+    }
+    else{
+      console.log("Something went wrong deleting the group");
+      res.redirect(`/group/${id}`);
+    }
     
   })
 	

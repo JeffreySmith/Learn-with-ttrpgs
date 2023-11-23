@@ -2,6 +2,7 @@ const FleschKincaid = require('flesch-kincaid');
 const {insertUser,findUserSafe,rateUser,getUsers} = require('./user.js');
 const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup} = require('./groups.js');
 const fs = require('fs');
+const { sendSessionToGroupMembers } = require('./email.js');
 const db = require('better-sqlite3')(global.db_string);
 db.pragma('foreign_keys=ON');
 
@@ -50,6 +51,9 @@ function createSession(groupName,time,transcript,name,description,location,rpgid
   }
   expr = db.prepare("SELECT id FROM Sessions WHERE groupid=? AND time=?");
   let info = expr.get(group.id,time);
+  sendSessionToGroupMembers(`You have a new session scheduled for ${groupName} at ${time.substring(0,time.length-3)}`,groupName);
+
+  
   return info;
 }
 function deleteSession(id){

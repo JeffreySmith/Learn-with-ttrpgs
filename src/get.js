@@ -101,15 +101,27 @@ router
       let sessionLevels = groupSessionLevels(groupid);
       if(group){
 	let members = getGroupMembers(group.name);
+
+	console.log(members);
+	let inGroup = false;
+	for(let member of members){
+	  if (req.session.username == member.email){
+	    inGroup = true;
+	  }
+	}
 	let admin = getUserById(group.owner);
 	let user = findUserSafe(req.session.username);
+	
+
 	if(isGroupAdmin(user.email,group.name)){
 	  console.log(`User ${user.name} is the admin for ${group.name}`);
 	  isAdmin = true;
 	}
 
 
-	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin});
+
+	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin,inGroup:inGroup});
+
       }
       else{
 	res.redirect("/group");
@@ -191,14 +203,17 @@ router
   .get("/sessioninfo",(req,res)=>{
     res.status(401).send("Bad request");
   })
-  .get("/groups",(req,res)=>{
+/*  .get("/groups",(req,res)=>{
     const groups = getGroups();
     res.render("groups",{groups:groups});
-  })
+  })*/
   .get("/createsession/:sessionid?/",(req,res)=>{
     const groups = getGroups();
     const rpgs = allRPGS();
-
+    if(!req.session.username){
+      req.session.previousPage=`/createsession`;
+      return res.redirect("/login");
+    }
     if(!req.params.sessionid){
       res.render("createSessions",{groups:groups,rpgs:rpgs});
     }
@@ -237,17 +252,23 @@ router
       
   })
   .get("/deletesession/:groupid/:sessionid/",(req,res)=>{
+    if(!req.session.username){
+      req.session.previousPage=`/sessions/${req.params.groupid}/`;
+      res.redirect("/login");
+    }
     let user = findUserSafe(req.session.username);
     let group = getGroupById(req.params.groupid);
     console.log("GROUP:");
     console.log(group);
     //Basically, you have to be logged in as well as a member of the group to delete something
-    if(user && isInGroup(user.email,group.name)){      
+
+    if(user && isGroupAdmin(user.email,group.name)){      
       deleteSession(req.params.sessionid);
       console.log("Session deleted!");
       res.redirect(`/sessions/${req.params.groupid}`);
     }
     else{
+      console.log("Not deleting session??");
       res.redirect(`/sessions/${req.params.groupid}`);
     }
     
