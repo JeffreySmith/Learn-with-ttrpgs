@@ -241,8 +241,9 @@
             </div>
 
             <div class="card">
-                <h2>Upcoming Sessions/Meetups Dashboard</h2> 
-                 <!-- show these details if there is upcoming seesion is scheduled or just print "No Sessions/Meet-up Scheduled" Messege-->
+                <h2>Next Session</h2> 
+                <!-- show these details if there is upcoming seesion is scheduled or just print "No Sessions/Meet-up Scheduled" Messege-->
+                <p><strong>Group:</strong> <%=groupName.name%></p>
                 <p><strong>Date:</strong> <%=nextSession.substring(0,10)%></p>
                 <p><strong>Time:</strong> <%=nextSession.substring(11,16)%> </p>
                 <p><strong>Type:</strong> <%= sessionToShow.location.toLowerCase() == 'online' ? 'Online' : 'In-Person'%> </p>
