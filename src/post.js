@@ -3,7 +3,9 @@ const fileUpload = require('express-fileupload');
 const router = express.Router();
 const {check,query,validationResult} = require( 'express-validator');
 const {insertUser,findUserSafe,rateUser,getUsers,getUserById, updateRating} = require('./user.js');
+
 const {getGroups,joinGroup,insertGroup,findGroup,leaveGroup,createGroup, getGroupById, deleteGroupByID} = require('./groups.js');
+
 const {sendPasswordResetEmail, sendMail, sendMessage} = require('./email.js');
 const {createSession,findSession,allGroupSessions,addTranscript} = require('./session.js');
 const bcrypt = require('bcrypt');
@@ -394,6 +396,7 @@ router
     res.redirect(`/group/${groupid}/`);
     
   })
+
   .post("/editgroup",(req,res)=>{
     let groupid = req.body.groupid;
     let name = req.body.name;

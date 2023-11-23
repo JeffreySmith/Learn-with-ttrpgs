@@ -101,6 +101,7 @@ router
       let sessionLevels = groupSessionLevels(groupid);
       if(group){
 	let members = getGroupMembers(group.name);
+
 	console.log(members);
 	let inGroup = false;
 	for(let member of members){
@@ -111,13 +112,16 @@ router
 	let admin = getUserById(group.owner);
 	let user = findUserSafe(req.session.username);
 	
+
 	if(isGroupAdmin(user.email,group.name)){
 	  console.log(`User ${user.name} is the admin for ${group.name}`);
 	  isAdmin = true;
 	}
 
 
+
 	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin,inGroup:inGroup});
+
       }
       else{
 	res.redirect("/group");
@@ -257,6 +261,7 @@ router
     console.log("GROUP:");
     console.log(group);
     //Basically, you have to be logged in as well as a member of the group to delete something
+
     if(user && isGroupAdmin(user.email,group.name)){      
       deleteSession(req.params.sessionid);
       console.log("Session deleted!");

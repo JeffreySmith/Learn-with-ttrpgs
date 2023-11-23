@@ -139,7 +139,9 @@
         <a href="/">Home</a>
         <a href="/groups">Groups</a>
         <div class="dropdown">
+
             <input type="text" onkeydown="search()" id="search-input" placeholder="Search for a group" class="search-input">
+
             <div class="dropdown-items" id="dropdown-items"></div>
         </div>
         <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
@@ -189,6 +191,7 @@
                 
 
             </form>
+
             <%}%>
             
             <% if(typeof isAdmin != 'undefined' && isAdmin==true){ %>
@@ -203,6 +206,7 @@
 
                     <button type="submit">Save Info</button>
                 </form>
+
                 <form method="post" action="/changeowner" >
                     <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
                     <% if(typeof('members') != 'undefined'){ %>
@@ -218,6 +222,7 @@
                         <button id="changeGroupBtn">Change Group Owner</button>
                     </div>
                 </form>
+
                 <form method="post" action="/removeuser">
                     <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
                     <% if(typeof('members') != 'undefined'){ %>
@@ -247,6 +252,7 @@
                         </div>
                     <%}%>
                  </form>
+
             <%}%>
         </section>
         

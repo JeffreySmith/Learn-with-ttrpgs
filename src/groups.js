@@ -235,4 +235,6 @@ function getGroupById(id){
   return output;
 }
 
+
 module.exports = {getGroupsByName,getGroups,joinGroup,insertGroup,findGroup,deleteGroupByID,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};
+
