@@ -73,6 +73,9 @@ function sendPasswordResetEmail(email){
   }
   //let url = "http://localhost:8000";
   let url = process.env.url;
+  if(!url){
+    url = "http://localhost:8000";
+  }
   global.resetUUIDS.push(reset_request);
   setTimeout(()=>{
     global.resetUUIDS = global.resetUUIDS.filter(u=>u!=uuid);
