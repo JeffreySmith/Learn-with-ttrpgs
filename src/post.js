@@ -194,7 +194,7 @@ router
           console.log("User login correct");
           //res.render("login",{message:"You've logged in successfully!"});
           if (!req.session.previousPage) {
-            res.redirect("/userprofile");
+            res.redirect("/dashboard");
           } else {
             let previous = req.session.previousPage;
             req.session.previousPage = undefined;
