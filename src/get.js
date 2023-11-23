@@ -35,7 +35,12 @@ db.pragma("foreign_keys=ON");
 
 router
   .get("/", (req, res) => {
-    res.render("home");
+    if(!req.session.username){
+      res.render("home");
+    }
+    else{
+      res.redirect("/dashboard");
+    }
   })
 
   .get("/search-data", (req, res) => {
@@ -85,7 +90,7 @@ router
     if (!req.session.username) {
       res.render("login");
     } else {
-      res.redirect("/userprofile");
+      res.redirect("/dashboard");
     }
   })
   .get("/logout", (req, res) => {
