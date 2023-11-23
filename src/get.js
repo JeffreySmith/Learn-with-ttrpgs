@@ -68,7 +68,8 @@ router
   })
 
   .get("/search", (req, res) => {
-    res.render("searchPage");
+    let groups = getGroups();
+    res.render("searchPage",{groups:groups});
   })
 
   .get("/register", (req, res) => {
