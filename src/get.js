@@ -298,9 +298,7 @@ router
       res.redirect("/login");
     }
   })
-  .get("/test/",(req,res)=>{
-    res.render("passordrecoverysent",{email:"ttrpglearning@gmail.com"});
-  })
+
   .get("/passwordrecoverysent/",(req,res)=>{
     let email = req.session.recoveryemail;
     if(email){
