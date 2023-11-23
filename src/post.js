@@ -58,32 +58,33 @@ router
 
 
     
-    if(password.length< password_len){
-      localErrors.push(`Your password must be at least ${password_len} characters long`);
-    }
-    if(errors.length>0 || localErrors.length > 0){
-      res.render("newpassword",{errors:errors.array().concat(localErrors)});
-    }
-    else{
-      //Need to figure out how to do this securely
-      bcrypt
-	.hash(password,10)
-	.then(hash=>{
-	  console.log(hash);
-	  console.log(email);
-	  let expr = db.prepare("UPDATE Users SET password = ? WHERE email=?");
-	  let info = expr.run(hash,email);
-	  console.log(info);
-	  console.log("Password should be updated...");
-	})
-	.catch(err=>console.error(err.message));
-      req.session.username=undefined;
-      req.session.role=undefined;
-      req.session.loggedIn = undefined;
-      res.redirect("/userprofile");
-
-    }
-  )
+      if(password.length< password_len){
+	localErrors.push(`Your password must be at least ${password_len} characters long`);
+      }
+      if(errors.length>0 || localErrors.length > 0){
+	res.render("newpassword",{errors:errors.array().concat(localErrors)});
+      }
+      else{
+	//Need to figure out how to do this securely
+	bcrypt
+	  .hash(password,10)
+	  .then(hash=>{
+	    console.log(hash);
+	    console.log(email);
+	    let expr = db.prepare("UPDATE Users SET password = ? WHERE email=?");
+	    let info = expr.run(hash,email);
+	    console.log(info);
+	    console.log("Password should be updated...");
+	  })
+	  .catch(err=>console.error(err.message));
+	req.session.username=undefined;
+	req.session.role=undefined;
+	req.session.loggedIn = undefined;
+	res.redirect("/userprofile");
+	
+      }
+    })
+    
   //This needs some checking, probably
   .post("/session", (req, res) => {
     let file = "";
@@ -160,9 +161,7 @@ router
 
 
       if (password.length < password_len) {
-        localErrors.push(
-          `Your password must be at least ${password_len} characters long`
-        );
+        localErrors.push(`Your password must be at least ${password_len} characters long`);
       }
 
       if (!errors.isEmpty()) {
