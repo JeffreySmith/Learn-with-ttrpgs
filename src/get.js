@@ -415,9 +415,10 @@ router
 	}
       }
       sessionToSend = sessions.filter((s)=> s.time==nextSession);
-      
-      let groupName = db.prepare('SELECT Groups.name FROM Groups JOIN Sessions ON Sessions.groupid = Groups.id WHERE Sessions.id = ?').get(sessionToSend[0].id);
-      
+      let groupName = "";
+      if(sessionToSend.length>0){
+	groupName = db.prepare('SELECT Groups.name FROM Groups JOIN Sessions ON Sessions.groupid = Groups.id WHERE Sessions.id = ?').get(sessionToSend[0].id);
+      }
       console.log(sessionToSend);
       console.log(sessions);
       res.render("userLandingPage",{username:req.session.username,level:level,groups:groups,nextSession:nextSession,sessionToShow:sessionToSend[0],groupName:groupName});
