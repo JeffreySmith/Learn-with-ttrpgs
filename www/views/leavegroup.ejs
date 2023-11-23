@@ -230,9 +230,23 @@
                         </select>
                     <%}%>
                      <div>
-                         <button id="changeGroupBtn">Remove User From Group</button>
+                         <button id="removeGroupBtn">Remove User From Group</button>
                      </div>
                 </form>
+                <form method="post" action="/deletegroup">
+                    <% if(typeof group != 'undefined'){ %>
+                        <input type="hidden" value="<%=group.id%>" name="groupid">
+                        <div>
+                            <input style="display:inline;width:20px" type="checkbox" id="delete" name="delete" required>
+                            <label style="display:inline-block;" for="delete">I understand this cannot be undone</label>
+                            
+                            
+                        </div>
+                        <div>
+                            <button id="deleteGroupBtn">Delete Group</button>
+                        </div>
+                    <%}%>
+                 </form>
             <%}%>
         </section>
         
