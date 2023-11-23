@@ -185,13 +185,16 @@
 
         <div class="container">
             <div class="profile-section">
-                <img class="profile-picture" src="profilepic.jpg" alt="Profile Picture">
+                <img class="profile-picture" src="/www/images/blank-profile-picture.webp" alt="Profile Picture">
                 <div class="user-details">
                     <% if (typeof(user)!='undefined'){%>
                         <h2><%=user.firstname%> <%=user.lastname%></h2>
-                        <p>ID: <%=user.id%></p>
+                        
                         <p>Email: <%=user.email%></p>
-                        <p>Joined on: November 11, 2023</p> <!--If we want to include that, not necessary though -->
+                        <% if(typeof user.joined != 'undefined'){ %>
+                            
+                            <p>Joined on: <%= user.joined%></p>
+                        <%}%>
                     <%}%>
                 </div>
 
