@@ -1,12 +1,6 @@
 const FleschKincaid = require("flesch-kincaid");
-const { insertUser, findUserSafe, rateUser, getUsers } = require("./user.js");
-const {
-  getGroups,
-  joinGroup,
-  insertGroup,
-  findGroup,
-  deleteGroup,
-} = require("./groups.js");
+const { insertUser, findUserSafe, rateUser, getUsers, getUserById } = require("./user.js");
+const {getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup} = require("./groups.js");
 const fs = require("fs");
 const { sendSessionToGroupMembers } = require("./email.js");
 const db = require("better-sqlite3")(global.db_string);
@@ -48,16 +42,36 @@ function groupSessionLevels(groupID) {
   }
   return sessionInfo;
 }
+function getAverageSessionLevel(groupID){
+  let sessionInfo = groupSessionLevels(groupID);
+  let sum = 0;
+  let numberOfElements = 0;
+  for (let session of sessionInfo){
+    if(session.transcript){
+      sum += getGradeLevel(session.id);
+      numberOfElements += 1;
+    }
+  }
+  let avg = sum/numberOfElements;
+  return avg;
+}
 
-function createSession(
-  groupName,
-  time,
-  transcript,
-  name,
-  description,
-  location,
-  rpgid
-) {
+function getUserAverage(userid){
+  let user = getUserById(userid);
+  let groups = db.prepare("SELECT * FROM GroupMembers INNER JOIN Users ON GroupMembers.userid=Users.id WHERE userid=?").all(userid);
+  let sum = 0;
+  let elems = 0;
+  for(let group of groups){
+    let temp_sum = getAverageSessionLevel(group.id);
+    if(temp_sum>0){
+      sum += temp_sum;
+      elems +=1;
+    }
+  }
+  return (sum/elems);
+}
+
+function createSession(groupName,time,transcript,name,description,location,rpgid) {
   let group = findGroup(undefined, groupName);
   group = group[0];
   let expr = "";
@@ -75,13 +89,9 @@ function createSession(
   }
   expr = db.prepare("SELECT id FROM Sessions WHERE groupid=? AND time=?");
   let info = expr.get(group.id, time);
-  sendSessionToGroupMembers(
-    `You have a new session scheduled for ${groupName} at ${time.substring(
-      0,
-      time.length - 3
-    )}`,
-    groupName
-  );
+
+  const charactersToRemove = 3;
+  sendSessionToGroupMembers(`You have a new session scheduled for ${groupName} at ${time.substring(0,time.length - charactersToRemove)}`,groupName);
 
   return info;
 }
@@ -162,15 +172,12 @@ function getSessions() {
 }
 
 function allGroupSessions(groupId) {
-  let expr = db.prepare(
-    "SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript,Sessions.location,Sessions.name,Sessions.description FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=? ORDER BY time"
-  );
+  let expr = db.prepare("SELECT Sessions.id,Sessions.groupid,Sessions.time,RPG.name,RPG.edition,Sessions.transcript,Sessions.location,Sessions.name,Sessions.description FROM Sessions INNER JOIN RPG ON rpgid=RPG.id WHERE groupid=? ORDER BY time");
   let results = expr.all(groupId);
   return results;
 }
 function allRPGS() {
   let rows = db.prepare("SELECT * FROM RPG").all();
-
   return rows;
 }
 
@@ -187,4 +194,6 @@ module.exports = {
   deleteSession,
   allRPGS,
   round,
+  getAverageSessionLevel,
+  getUserAverage
 };

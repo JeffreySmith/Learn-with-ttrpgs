@@ -34,14 +34,20 @@ function isInGroup(email, groupName) {
   let user = findUserSafe(email);
   let group = findGroup(undefined, groupName);
 
+
   if (group && group.length === 1 && user) {
     group = group[0];
-    let expr = db.prepare(
-      "SELECT * FROM GroupMembers WHERE userid=? AND groupid=?"
-    );
+    if (!user.id || group.id){
+      return false;
+    }
+    let expr = db.prepare("SELECT * FROM GroupMembers INNER JOIN Users ON GroupMembers.userid = Users.id WHERE groupid=?");
     let info = expr.get(user.id, group.id);
+    
     console.log(info);
-    if (info.userid == user.id && info.groupid == group.id) {
+    
+    //console.log(`The userid should be ${info.userid}`);
+    console.log(info);
+    if (typeof info !== undefined && typeof info !== null && Object.keys(info).length == 2 && info.userid == user.id && info.groupid == group.id) {
       return true;
     } else {
       return false;
