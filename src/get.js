@@ -199,10 +199,10 @@ router
   .get("/sessioninfo",(req,res)=>{
     res.status(401).send("Bad request");
   })
-  .get("/groups",(req,res)=>{
+/*  .get("/groups",(req,res)=>{
     const groups = getGroups();
     res.render("groups",{groups:groups});
-  })
+  })*/
   .get("/createsession/:sessionid?/",(req,res)=>{
     const groups = getGroups();
     const rpgs = allRPGS();

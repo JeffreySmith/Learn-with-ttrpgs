@@ -209,10 +209,19 @@ function findGroup(ownerEmail,name){
   return matchingGroups;
 }
 
-function deleteGroup(group){
-  let expr = db.prepare("DELETE FROM Groups where id=?");
-  let info = expr.run(group.id);
+function deleteGroupByID(id){
+  let expr = db.prepare("DELETE FROM GroupMembers WHERE groupid=?");
+  let info = expr.run(id);
   console.log(info);
+  
+  expr = db.prepare("DELETE FROM Sessions WHERE groupid=?");
+  info = expr.run(id);
+  
+  expr = db.prepare("DELETE FROM Groups where id=?");
+  info = expr.run(id);
+  console.log(info);
+
+
 }
 function getGroupById(id){
   let expr = db.prepare("SELECT * FROM Groups where id=?");
@@ -220,4 +229,4 @@ function getGroupById(id){
   return output;
 }
 
-module.exports = {getGroupsByName,getGroups,joinGroup,insertGroup,findGroup,deleteGroup,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};
+module.exports = {getGroupsByName,getGroups,joinGroup,insertGroup,findGroup,deleteGroupByID,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};
