@@ -50,8 +50,10 @@ router
 	  console.log("Password should be updated...");
 	})
 	.catch(err=>console.error(err.message));
-      
-      res.redirect("userprofile");
+      req.session.username=undefined;
+      req.session.role=undefined;
+      req.session.loggedIn = undefined;
+      res.redirect("/userprofile");
     }
     
   })
