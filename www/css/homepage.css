@@ -4,10 +4,12 @@
   padding: 0;
   font-family: 'Kumbh Sans', sans-serif;
 }
-.footer__link--item a:hover{
+
+.footer__link--item a:hover {
   color: #f77062;
   transition: all 0.3s ease;
 }
+
 .navbar {
   background: #131313;
   height: 80px;
@@ -37,8 +39,10 @@
   background-color: #ff8177;
   background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
   background-size: 100%;
-  -webkit-background-clip: text; /* If we are adding a video clip ( just in case) */
-  -moz-background-clip: text;    /* If we are adding a video clip ( just in case) */
+  -webkit-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
+  -moz-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
   display: flex;
@@ -231,8 +235,10 @@
   background-color: #ff8177;
   background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
   background-size: 100%;
-  -webkit-background-clip: text; /* If we are adding a video clip ( just in case) */
-  -moz-background-clip: text;/* If we are adding a video clip ( just in case) */
+  -webkit-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
+  -moz-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
 }
@@ -243,8 +249,10 @@
   background-color: #ff8177;
   background-image: linear-gradient(-20deg, #b721ff 0%, #21d4fd 100%);
   background-size: 100%;
-  -webkit-background-clip: text;/* If we are adding a video clip ( just in case) */
-  -moz-background-clip: text;/* If we are adding a video clip ( just in case) */
+  -webkit-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
+  -moz-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
 }
@@ -370,18 +378,18 @@
 
 .services h1 {
   background-color: #ff8177;
-  background-image: linear-gradient(
-    to right,
-    #ff8177 0%,
-    #ff867a 0%,
-    #ff8c7f 21%,
-    #f99185 52%,
-    #cf556c 78%,
-    #b12a5b 100%
-  );
+  background-image: linear-gradient(to right,
+      #ff8177 0%,
+      #ff867a 0%,
+      #ff8c7f 21%,
+      #f99185 52%,
+      #cf556c 78%,
+      #b12a5b 100%);
   background-size: 100%;
-  -webkit-background-clip: text;  /* If we are adding a video clip ( just in case) */
-  -moz-background-clip: text;  /* If we are adding a video clip ( just in case) */
+  -webkit-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
+  -moz-background-clip: text;
+  /* If we are adding a video clip ( just in case) */
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
   margin-bottom: 5rem;
@@ -399,11 +407,9 @@
   height: 525px;
   width: 400px;
   border-radius: 4px;
-  background-image: linear-gradient(
-      to bottom,
+  background-image: linear-gradient(to bottom,
       rgba(0, 0, 0, 0) 0%,
-      rgba(17, 17, 17, 0.6) 100%
-    ),
+      rgba(17, 17, 17, 0.6) 100%),
     url('/images/pic3.jpg');
   background-size: cover;
   position: relative;
@@ -415,11 +421,9 @@
 }
 
 .services__card:nth-child(2) {
-  background-image: linear-gradient(
-      to bottom,
+  background-image: linear-gradient(to bottom,
       rgba(0, 0, 0, 0) 0%,
-      rgba(17, 17, 17, 0.9) 100%
-    ),
+      rgba(17, 17, 17, 0.9) 100%),
     url('/images/pic4.jpg');
 }
 
@@ -527,7 +531,7 @@
   margin-bottom: 16px;
 }
 
-.footer__link--items > h2 {
+.footer__link--items>h2 {
   color: #fff;
 }
 
