@@ -106,7 +106,9 @@ router
       let email = req.body.email;
       
       sendPasswordResetEmail(email);
-      res.send("A password reset email has been sent FiX THIS LATER");
+      //res.send("A password reset email has been sent FiX THIS LATER");
+      req.session.recoveryemail = email;
+      res.redirect(`/passwordrecoverysent/`);
     }
   })
   .post("/register",[check('name',"Please enter a first name").notEmpty(),check('lastname',"Please enter a last name").notEmpty(),check('email',"Please enter a valid email").isEmail(),check('password',"Please enter a password").notEmpty(),check('confirmPassword',"Please confirm your password").notEmpty()],(req,res)=>{

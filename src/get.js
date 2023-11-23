@@ -138,6 +138,7 @@ router
       res.render("joincreate",{groups:groups,username:username});
     }
     else{
+      req.session.previousPage = "/group";
       res.redirect("/login");
     }
   })
@@ -297,8 +298,20 @@ router
       res.redirect("/login");
     }
   })
-  .get("/test",(req,res)=>{
-    res.render("test");
+  .get("/test/",(req,res)=>{
+    res.render("passordrecoverysent",{email:"ttrpglearning@gmail.com"});
   })
+  .get("/passwordrecoverysent/",(req,res)=>{
+    let email = req.session.recoveryemail;
+    if(email){
+      req.session.recoveryemail = undefined;
+      res.render("passordrecoverysent",{email:email});
+      
+    }
+    else{
+      res.redirect("/recovery");
+    }
+  })
+
 
 module.exports = router;
