@@ -1,6 +1,7 @@
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const router = express.Router();
+
 const { check, query, validationResult } = require("express-validator");
 const {
   insertUser,
@@ -29,6 +30,7 @@ const {
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { getGroupMembers } = require("./groups.js");
+
 const { groupSessionLevels } = require("./session.js");
 const db = require("better-sqlite3")(global.db_string);
 db.pragma("foreign_keys=ON");
@@ -54,30 +56,32 @@ router
         localErrors.push("Your passwords do not match");
       }
 
-      if (password.length < password_len) {
-        localErrors.push(
-          `Your password must be at least ${password_len} characters long`
-        );
-      }
-      if (errors.length > 0 || localErrors.length > 0) {
-        res.render("newpassword", {
-          errors: errors.array().concat(localErrors),
-        });
-      } else {
-        //Need to figure out how to do this securely
-        bcrypt
-          .hash(password, 10)
-          .then((hash) => {
-            let expr = db.prepare(
-              "UPDATE Users SET password = ? WHERE email=?"
-            );
-            let info = expr.run(hash, email);
-            console.log(info);
-          })
-          .catch((err) => console.error(err.message));
 
-        res.redirect("userpage");
-      }
+    
+    if(password.length< password_len){
+      localErrors.push(`Your password must be at least ${password_len} characters long`);
+    }
+    if(errors.length>0 || localErrors.length > 0){
+      res.render("newpassword",{errors:errors.array().concat(localErrors)});
+    }
+    else{
+      //Need to figure out how to do this securely
+      bcrypt
+	.hash(password,10)
+	.then(hash=>{
+	  console.log(hash);
+	  console.log(email);
+	  let expr = db.prepare("UPDATE Users SET password = ? WHERE email=?");
+	  let info = expr.run(hash,email);
+	  console.log(info);
+	  console.log("Password should be updated...");
+	})
+	.catch(err=>console.error(err.message));
+      req.session.username=undefined;
+      req.session.role=undefined;
+      req.session.loggedIn = undefined;
+      res.redirect("/userprofile");
+
     }
   )
   //This needs some checking, probably
@@ -100,7 +104,8 @@ router
         if (err) {
           console.log(`Error:${err}`);
           return res.render("sessionpage", { error: err });
-        } else {
+        } 
+        else {
           console.log(`File, ${file}, uploaded`);
         }
       });
@@ -123,11 +128,14 @@ router
 
       if (!errors.isEmpty()) {
         res.render("recovery");
-      } else {
+      } 
+      else {
         let email = req.body.email;
 
         sendPasswordResetEmail(email);
-        res.send("A password reset email has been sent FiX THIS LATER");
+        //res.send("A password reset email has been sent FiX THIS LATER");
+        req.session.recoveryemail = email;
+        res.redirect(`/passwordrecoverysent/`);
       }
     }
   )
@@ -147,7 +155,9 @@ router
       let name = req.body.name;
       let lastName = req.body.lastname;
       let email = req.body.email;
+
       let password = req.body.password;
+
 
       if (password.length < password_len) {
         localErrors.push(
@@ -224,7 +234,8 @@ router
       console.log(group);
     }
   })
-  .post("/deletegroup", (req, res) => {
+
+/*  .post("/deletegroup",(req,res)=>{
     let groups = getGroups();
     let groupName = req.body.name;
     let group = groups.find((group) => group.name === groupName);
@@ -232,8 +243,10 @@ router
       return res.render("group", { message: "No such group exists" });
     }
     deleteGroup(group);
-  })
-  .post("/joingroup", (req, res) => {
+
+  })*/
+  .post("/joingroup",(req,res)=>{
+
     let groupName = req.body.group;
     if (groupName && req.session.username) {
       let group = findGroup(undefined, groupName);
@@ -398,7 +411,68 @@ router
     } else {
       console.log("Why isn't there a file?");
     }
-    res.redirect("/sessions/" + groupid);
-  });
 
+    res.redirect("/sessions/"+groupid);
+  })
+  .post("/changeowner",(req,res)=>{
+    let groupid = req.body.groupid;
+    let newOwner = req.body.newowner;
+    let group = undefined;
+    if(groupid){
+      group = getGroupById(groupid);
+    }
+    if(groupid && newOwner && group){
+      
+      console.log(`Group name is: ${group.name}`);
+      changeOwner(newOwner,group.name);
+    }
+    else{
+      console.log("Something went wrong...");
+    }
+    res.redirect(`/group/${groupid}/`);
+    
+  })
+
+  .post("/editgroup",(req,res)=>{
+    let groupid = req.body.groupid;
+    let name = req.body.name;
+    let description = req.body.description;
+
+    if(groupid && name && description){
+      let expr = db.prepare("UPDATE Groups SET name=?, description=? WHERE id=?");
+      let info = expr.run(name,description,groupid);
+      console.log(info);
+    }
+    res.redirect(`/group/${groupid}`);
+  })
+  .post("/removeuser",(req,res)=>{
+    let groupid = req.body.groupid;
+    let remove = req.body.usertoremove;
+    let user = findUserSafe(remove);
+    let group = getGroupById(groupid);
+
+    if(group && remove && user){
+      leaveGroup(user.email,group.name);
+      console.log("User removed successfully");
+    }
+    else{
+      console.log(`Something went wrong trying to remove ${remove}`);
+    }
+    res.redirect(`/group/${groupid}`);
+  })
+  .post("/deletegroup",(req,res)=>{
+    let id = req.body.groupid;
+    let group = getGroupById(id);
+    if(group){
+      deleteGroupByID(id);
+      console.log(`Group with id:${id} should be deleted`);
+      res.redirect(`/group`);
+    }
+    else{
+      console.log("Something went wrong deleting the group");
+      res.redirect(`/group/${id}`);
+    }
+    
+  })
+	
 module.exports = router;

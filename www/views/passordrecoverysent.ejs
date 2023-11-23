@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sent</title>
+    <link rel="stylesheet" href="www/css/normalize.css">
+    <link rel="stylesheet" href="www/css/styles.css">
+    <link rel="stylesheet" href="/www/css/login.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar__container">
+            <a href="/" id="navbar__logo"><i class="fas fa-gem"></i>TTRPGs</a>
+            <ul class="navbar__menu">
+                <li class="navbar__item">
+                    <a href="/" class="navbar__links">Home</a>
+                </li>
+                <li class="navbar__item">
+                    <a href="/AboutUs.html" class="navbar__links">About Us</a>
+                </li>
+                <li class="navbar__btn">
+                    <a href="/register" class="button">Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <div style="text-align:center;margin-top:100px" class="form__group">
+        <h2>A password reset email has been sent to <%=email%></h2>
+        <p>This link will expire in 15 minutes</p>
+    </div>
+
+   
+</body>
+</html>

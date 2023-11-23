@@ -137,9 +137,11 @@
 
     <nav style="display: flex;">
         <a href="/">Home</a>
-        <a href="/groups">Groups</a>
+        <a href="/group">Groups</a>
         <div class="dropdown">
+
             <input type="text" onkeydown="search()" id="search-input" placeholder="Search for a group" class="search-input">
+
             <div class="dropdown-items" id="dropdown-items"></div>
         </div>
         <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
@@ -166,15 +168,32 @@
                 </li>
                 <li><strong>Admin:</strong> <%= typeof('admin') !='undefined' ? admin.email : "Admin user"%></li>
             </ul>
-            <form method="post" action="/group" >
+            <!-- <div class="join" style="display:flex; justify-content:space-between;"> -->
+            <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==true){ %>
+                <form method="post" action="/group" >
                 <input type="hidden" value="<%= typeof('username') !='undefined' ? username:'username'%>" name="username">
                 <input type="hidden" name="groupname" value="<%= typeof('group') !='undefined' ? group.name:''%>">
                 <input type="hidden" name="id" value="<%= typeof('id') !='undefined' ? id :'id'%>">
-                <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==true){ %>
-                    <button id="leaveGroupBtn">Leave Group</button>
-                <%}%>
+                
+                <button id="leaveGroupBtn">Leave Group</button>
+                
+
+                </form>
+            <%}%>
+            <!-- Join the group, if you aren't already in it -->
+            <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==false){ %>
+            <form method="post" action="/joingroup" >
+                <input type="hidden" value="<%= typeof('username') !='undefined' ? username:'username'%>" name="username">
+                <input type="hidden" name="group" value="<%= typeof('group') !='undefined' ? group.name:''%>">
+                <input type="hidden" name="id" value="<%= typeof('id') !='undefined' ? id :'id'%>">
+                
+                <button id="leaveGroupBtn">Join Group</button>
+                
 
             </form>
+
+            <%}%>
+            
             <% if(typeof isAdmin != 'undefined' && isAdmin==true){ %>
                 
                 <form method="POST" action="/editgroup" id="addGroupForm">
@@ -187,6 +206,7 @@
 
                     <button type="submit">Save Info</button>
                 </form>
+
                 <form method="post" action="/changeowner" >
                     <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
                     <% if(typeof('members') != 'undefined'){ %>
@@ -202,6 +222,7 @@
                         <button id="changeGroupBtn">Change Group Owner</button>
                     </div>
                 </form>
+
                 <form method="post" action="/removeuser">
                     <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
                     <% if(typeof('members') != 'undefined'){ %>
@@ -214,9 +235,24 @@
                         </select>
                     <%}%>
                      <div>
-                         <button id="changeGroupBtn">Remove User From Group</button>
+                         <button id="removeGroupBtn">Remove User From Group</button>
                      </div>
                 </form>
+                <form method="post" action="/deletegroup">
+                    <% if(typeof group != 'undefined'){ %>
+                        <input type="hidden" value="<%=group.id%>" name="groupid">
+                        <div>
+                            <input style="display:inline;width:20px" type="checkbox" id="delete" name="delete" required>
+                            <label style="display:inline-block;" for="delete">I understand this cannot be undone</label>
+                            
+                            
+                        </div>
+                        <div>
+                            <button id="deleteGroupBtn">Delete Group</button>
+                        </div>
+                    <%}%>
+                 </form>
+
             <%}%>
         </section>
         

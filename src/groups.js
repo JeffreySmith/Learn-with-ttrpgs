@@ -203,10 +203,26 @@ function findGroup(ownerEmail, name) {
   return matchingGroups;
 }
 
-function deleteGroup(group) {
-  let expr = db.prepare("DELETE FROM Groups where id=?");
-  let info = expr.run(group.id);
+
+function deleteGroupByID(id){
+  //Start a transaction so that if something goes wrong, we don't break things too badly
+  const deleteTheGroup = db.transaction(()=>{
+    let groupMembers = db.prepare("DELETE FROM GroupMembers WHERE groupid=?");
+    let info = groupMembers.run(id);
+    console.log(info);
+    
+    let sessions = db.prepare("DELETE FROM Sessions WHERE groupid=?");
+    info = sessions.run(id);
+    console.log(info);
+    let groups = db.prepare("DELETE FROM Groups where id=?");
+    info = groups.run(id);
+    console.log(info);
+  });
+  let info = deleteTheGroup();
   console.log(info);
+
+
+
 }
 function getGroupById(id) {
   let expr = db.prepare("SELECT * FROM Groups where id=?");
@@ -214,20 +230,7 @@ function getGroupById(id) {
   return output;
 }
 
-module.exports = {
-  getGroupsByName,
-  getGroups,
-  joinGroup,
-  insertGroup,
-  findGroup,
-  deleteGroup,
-  isInGroup,
-  isGroupAdmin,
-  getGroupMembers,
-  leaveGroup,
-  changeOwner,
-  removeByModeration,
-  updateGroupInfo,
-  getGroupById,
-  createGroup,
-};
+
+
+module.exports = {getGroupsByName,getGroups,joinGroup,insertGroup,findGroup,deleteGroupByID,isInGroup,isGroupAdmin,getGroupMembers,leaveGroup,changeOwner,removeByModeration,updateGroupInfo,getGroupById,createGroup};
+

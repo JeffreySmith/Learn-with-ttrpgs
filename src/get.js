@@ -105,14 +105,21 @@ router
     res.json(groups);
   })
 
-  .get("/recover/:id/", (req, res) => {
+
+  .get("/recover/:id/:email/",(req,res)=>{
+
     let id = req.params.id;
     let validRequest = global.resetUUIDS.find((u) => u.uuid === id);
     let index = undefined;
-    let user = findUserSafe(validRequest.email);
-    if (validRequest) {
-      index = global.resetUUIDS.findIndex((u) => u.uuid === id);
-    } else {
+
+    let user = undefined;
+    if(validRequest){
+      user = findUserSafe(validRequest.email);
+    }
+    if(validRequest){
+      index = global.resetUUIDS.findIndex(u=>u.uuid === id);
+    }
+    else{
       res.status(400).send("Invalid link");
     }
     console.log(validRequest);
@@ -121,15 +128,28 @@ router
       console.log("Allow password resetting");
       console.log(Date.now() - validRequest.time);
       //global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
-      res.render("newpassword", { user: user });
-    } else {
+
+      res.render("newpassword",{user:user,email:req.params.email});
+    }
+    else{
+
       console.log("Password reset not valid");
       global.resetUUIDS = global.resetUUIDS.filter((u) => u.uuid !== id);
       res.status(401).send("Link not valid");
     }
   })
 
-  .get("/group/:id/", (req, res) => {
+  .get("/changeuserpassword",(req,res)=>{
+    if(req.session.username){
+      let user = findUserSafe(req.session.username);
+      res.render("newpassword",{user:user,email:req.session.username});
+    }
+    else{
+      res.redirect("/userprofile");
+    }
+  })
+  
+  .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
 
     let username = req.session.username;
@@ -147,30 +167,31 @@ router
     if (groupid) {
       let group = getGroupById(groupid);
       let sessionLevels = groupSessionLevels(groupid);
-      if (group) {
-        let members = getGroupMembers(group.name);
-        console.log(members);
-        let inGroup = false;
-        for (let member of members) {
-          if (req.session.username == member.email) {
-            inGroup = true;
-          }
-        }
-        let admin = getUserById(group.owner);
-        console.log("Admin:");
-        console.log(admin);
-        console.log(members);
-        console.log(group);
-        res.render("leavegroup", {
-          members: members,
-          group: group,
-          username: username,
-          sessioninfo: sessionLevels,
-          admin: admin,
-          id: req.params.id,
-        });
-      } else {
-        res.redirect("/group");
+
+      if(group){
+	let members = getGroupMembers(group.name);
+
+	console.log(members);
+	let inGroup = false;
+	for(let member of members){
+	  if (req.session.username == member.email){
+	    inGroup = true;
+	  }
+	}
+	let admin = getUserById(group.owner);
+	let user = findUserSafe(req.session.username);
+	
+
+	if(isGroupAdmin(user.email,group.name)){
+	  console.log(`User ${user.name} is the admin for ${group.name}`);
+	  isAdmin = true;
+	}
+
+
+
+	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin,inGroup:inGroup});
+
+
       }
     } else {
       res.redirect("/group");
@@ -180,8 +201,11 @@ router
     let groups = getGroups();
     if (req.session.username) {
       let username = req.session.username;
-      res.render("joincreate", { groups: groups, username: username });
-    } else {
+
+      res.render("joincreate",{groups:groups,username:username});
+    }
+    else{
+      req.session.previousPage = "/group";
       res.redirect("/login");
     }
   })
@@ -213,8 +237,10 @@ router
       console.log(getRatings(req.session.username));
       let user = getUsers().find((user) => user.email === req.session.username);
       let ratings = getRatings(user.email);
-      res.render("publicprofile", { user: user, ratings: ratings });
-    } else {
+
+      res.render("publicprofile",{user:user,ratings:ratings,userPage:true});
+    }
+    else{
       res.redirect("/login");
     }
   })
@@ -246,11 +272,12 @@ router
   .get("/sessioninfo", (req, res) => {
     res.status(401).send("Bad request");
   })
-  .get("/groups", (req, res) => {
+
+/*  .get("/groups",(req,res)=>{
     const groups = getGroups();
-    res.render("groups", { groups: groups });
-  })
-  .get("/createsession/:sessionid?/", (req, res) => {
+    res.render("groups",{groups:groups});
+  })*/
+  .get("/createsession/:sessionid?/",(req,res)=>{
     const groups = getGroups();
     const rpgs = allRPGS();
     if (!req.session.username) {
@@ -304,7 +331,10 @@ router
     console.log("GROUP:");
     console.log(group);
     //Basically, you have to be logged in as well as a member of the group to delete something
-    if (user && isGroupAdmin(user.email, group.name)) {
+
+
+    if(user && isGroupAdmin(user.email,group.name)){      
+
       deleteSession(req.params.sessionid);
       console.log("Session deleted!");
       res.redirect(`/sessions/${req.params.groupid}`);
@@ -335,8 +365,20 @@ router
       res.redirect("/login");
     }
   })
-  .get("/test", (req, res) => {
-    res.render("test");
-  });
+
+
+  .get("/passwordrecoverysent/",(req,res)=>{
+    let email = req.session.recoveryemail;
+    if(email){
+      req.session.recoveryemail = undefined;
+      res.render("passordrecoverysent",{email:email});
+      
+    }
+    else{
+      res.redirect("/recovery");
+    }
+  })
+
+
 
 module.exports = router;

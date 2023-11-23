@@ -69,6 +69,9 @@ function sendPasswordResetEmail(email) {
   };
   //let url = "http://localhost:8000";
   let url = process.env.url;
+  if(!url){
+    url = "http://localhost:8000";
+  }
   global.resetUUIDS.push(reset_request);
   setTimeout(() => {
     global.resetUUIDS = global.resetUUIDS.filter((u) => u != uuid);
@@ -77,10 +80,10 @@ function sendPasswordResetEmail(email) {
     url = global.url;
   }
   const mailOptions = {
-    from: process.env.email,
-    to: email, //Address to which you want to send
-    subject: "Password Reset", //subject
-    html: `Click <a href="${url}/recover/${uuid}">here</a> to reset your password`, //body of email
+    from:process.env.email,
+    to:email, //Address to which you want to send
+    subject:'Password Reset', //subject
+    html:`Click <a href="${url}/recover/${uuid}/${email}">here</a> to reset your password` //body of email
   };
   sendMail(transporter, mailOptions);
 }
