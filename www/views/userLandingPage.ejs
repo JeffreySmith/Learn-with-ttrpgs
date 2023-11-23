@@ -200,9 +200,7 @@
          let select = document.getElementById("groupnames").value;
          let link = document.getElementById("link").href=`/group/${select}`;
      }
-     function setToJoinCreate(){
-         let link = document.getElementById("link").text="Join/Create a Group!";
-     }
+     
     </script>
 </head>
 
@@ -237,12 +235,12 @@
                         </select>
                     </p>
                 <%}else{%>
-                    <p onload="setToJoinCreate()"><strong>Not in a group? Join or create your own!</strong></p>
+                    <p><strong>Not in a group? Join or create your own!</strong></p>
 
                 <%}%>
                 
                 <div class="card-button">
-                    <a id="link" href="/group" class="button" onclick="changeProp()"><%= typeof groups!='undefined' && groups.length>0 ? "View Dashboard" : "Create a Group"%></a>
+                    <a id="link" href="/group" class="button" onclick="changeProp()"><%= typeof groups!='undefined' && groups.length>0 ? "View Dashboard" : "Join or Create a Group"%></a>
                 </div>
             </div>
 
@@ -271,9 +269,14 @@
                         <p><strong>Make sure to upload transcripts of your sessions!</strong></p>
                     <%}%>
                 </div>
-                <div class="card-button">
-                    <a href="#" class="button">View Details</a>
-                </div>
+                <%if(typeof level != 'undefined' && !isNaN(level)){%>
+                    <div class="card-button">
+                        <a href="#" class="button">View Details</a>
+                    </div>
+                <%}%>
+                   
+
+                
             </div>
         </div>
     </div>

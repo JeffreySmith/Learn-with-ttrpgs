@@ -159,7 +159,7 @@ router
   
   .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
-
+    let isAdmin = false;
     let username = req.session.username;
     if (req.params.id) {
       groupid = req.params.id;
