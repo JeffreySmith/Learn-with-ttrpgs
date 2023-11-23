@@ -140,6 +140,8 @@ function updateGroupInfo(groupName,newGroupName,description){
     
 }
 
+
+
 function removeByModeration(userEmail,groupName,adminUserEmail){
   let admin = findUserSafe(adminUserEmail);
   let user = findUserSafe(userEmail);

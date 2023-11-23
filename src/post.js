@@ -124,7 +124,8 @@ router
     }
   
     insertUser(name,lastName,email,password,"user");
-    res.render("registration",{message:"User account created!"});
+    res.redirect("/login");
+    //res.render("registration",{message:"User account created!"});
   })
   .post("/login",[
     query('email').isEmail()], (req, res) => {
@@ -300,9 +301,7 @@ router
     res.redirect(`/sessions/${group[0].id}`);
     
   })
-  .post("/addtranscript/:transcript/",(req,res)=>{
-    
-  })
+
   .post("/sendmessage",(req,res)=>{
     let from = req.session.username;
     let to = req.body.toemail;
@@ -404,6 +403,21 @@ router
       let expr = db.prepare("UPDATE Groups SET name=?, description=? WHERE id=?");
       let info = expr.run(name,description,groupid);
       console.log(info);
+    }
+    res.redirect(`/group/${groupid}`);
+  })
+  .post("/removeuser",(req,res)=>{
+    let groupid = req.body.groupid;
+    let remove = req.body.usertoremove;
+    let user = findUserSafe(remove);
+    let group = getGroupById(groupid);
+
+    if(group && remove && user){
+      leaveGroup(user.email,group.name);
+      console.log("User removed successfully");
+    }
+    else{
+      console.log("Something went wrong removing "+user.email+" from the group "+group.name);
     }
     res.redirect(`/group/${groupid}`);
   })
