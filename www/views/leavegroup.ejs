@@ -202,6 +202,21 @@
                         <button id="changeGroupBtn">Change Group Owner</button>
                     </div>
                 </form>
+                <form method="post" action="/removeuser">
+                    <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
+                    <% if(typeof('members') != 'undefined'){ %>
+                        <select name="usertoremove">
+                            <% for(let member of members){ %>
+                                <% if(admin.email != member.email){ %>    
+                                    <option value="<%=member.email%>"><%=member.firstname%> <%= member.lastname%></option>
+                                <%}%>
+                            <%}%>
+                        </select>
+                    <%}%>
+                     <div>
+                         <button id="changeGroupBtn">Remove User From Group</button>
+                     </div>
+                </form>
             <%}%>
         </section>
         
