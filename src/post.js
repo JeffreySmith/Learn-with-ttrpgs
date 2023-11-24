@@ -186,7 +186,7 @@ router
 
     if (!user) {
       console.log("User not found");
-      return res.render("login");
+      return res.render("login",{message:"Incorrect login info"});
     }
 
     bcrypt
