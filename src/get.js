@@ -290,23 +290,30 @@ router
     
     const rpgs = allRPGS();
     if (!req.session.username) {
-      req.session.previousPage = `/createsession`;
+      if(!req.params.sessionid){
+	req.session.previousPage = `/createsession`;
+      }
+      else{
+	req.session.previousPage = `/createsession/${req.params.sessionid}`;
+      }
       return res.redirect("/login");
     }
     let user = findUserSafe(req.session.username);
-
+    groups = groups.filter((group)=> group.owner == user.id);
+    
     if (!req.params.sessionid) {
-      groups = groups.filter((group)=> group.owner == user.id);
+      
       if(groups.length==0){
 	return res.redirect(`/group`);
       }
       else{
 	res.render("createSessions", { groups: groups, rpgs: rpgs });
       }
-    } else {
+    }
+    else {
       const session = findSession(req.params.sessionid);
       groups = groups.filter((group)=> group.id==session.groupid);
-      groups = groups.filter((group)=> group.owner == user.id);
+      
 
       if (!session || groups.length==0) {
         return res.redirect(`/sessions/${req.params.sessionid}`);
@@ -335,7 +342,7 @@ router
     console.log(sessions);
     if (sessions.length === 0) {
       //res.redirect(`/group/${req.params.groupid}`);
-      res.redirect("/createsession");
+      res.redirect(`/group/${req.params.groupid}`);
     } else {
       console.log(sessions);
       res.render("sessionsPage", { sessions: sessions, name: name });
