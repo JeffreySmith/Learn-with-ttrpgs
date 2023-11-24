@@ -286,18 +286,27 @@ router
     res.render("groups",{groups:groups});
   })*/
   .get("/createsession/:sessionid?/",(req,res)=>{
-    const groups = getGroups();
+    let groups = getGroups();
+    
     const rpgs = allRPGS();
     if (!req.session.username) {
       req.session.previousPage = `/createsession`;
       return res.redirect("/login");
     }
+    let user = findUserSafe(req.session.username);
+
     if (!req.params.sessionid) {
+      groups = groups.filter((group)=> group.owner == user.id);
+      if(groups.length===0){
+	return res.redirect("/group");
+      }
       res.render("createSessions", { groups: groups, rpgs: rpgs });
     } else {
       const session = findSession(req.params.sessionid);
+      groups = groups.filter((group)=> group.id==session.groupid);
+      groups = groups.filter((group)=> group.owner == user.id);
 
-      if (!session) {
+      if (!session || groups.length==0) {
         return res.redirect("/group");
       }
 

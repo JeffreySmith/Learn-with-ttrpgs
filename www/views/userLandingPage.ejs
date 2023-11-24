@@ -273,7 +273,10 @@
                 <%}%>
                 
                 <div class="card-button">
-                    <a id="link" href="/group" class="button" onclick="changeProp()"><%= typeof groups!='undefined' && groups.length>0 ? "View Dashboard" : "Join or Create a Group"%></a>
+                    <a style="margin-bottom:10px" id="link" href="/group" class="button" onclick="changeProp()"><%= typeof groups!='undefined' && groups.length>0 ? "View Group" : "Join or Create a Group"%></a>
+                    <% if(typeof groups!='undefined' && groups.length>0){ %>
+                        <a  href="/group" class="button">Create New Group</a>
+                    <%}%>
                 </div>
             </div>
 
@@ -286,8 +289,12 @@
                     <p><strong>Time:</strong> <%=nextSession.substring(11,16)%> </p>
                     <p><strong>Type:</strong> <%= sessionToShow.location.toLowerCase() == 'online' ? 'Online' : 'In-Person'%> </p>
                     <div class="card-button">
-                        <a href="/sessions/<%=sessionToShow.id%>" class="button">View Dashboard</a>
+                        <a href="/sessions/<%=sessionToShow.id%>" class="button">View Session</a>
                     </div>
+                     <div class="card-button">
+                         <a style="margin-top:10px" href="/createsession/" class="button">Create a Session</a>
+                     </div>
+                     
                 <%}else{%>
                     <p><strong>No upcoming sessions? Try joining or creating a group!</strong></p>
                 <%}%>
@@ -302,12 +309,13 @@
                         <p><strong>Make sure to upload transcripts of your sessions!</strong></p>
                     <%}%>
                 </div>
+                <!-- 
                 <%if(typeof level != 'undefined' && !isNaN(level)){%>
                     <div class="card-button">
                         <a href="#" class="button">View Details</a>
                     </div>
                 <%}%>
-                   
+                -->
 
                 
             </div>
