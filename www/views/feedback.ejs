@@ -132,12 +132,14 @@
           id:"99999"%>">
           <label for="member">Select Member:</label>
           <select id="member" name="member">
-            <%if(typeof members != 'undefined'){%> <% for(let member of
-            members){ %>
-            <option value="<%=member.id%>">
-              <%=member.firstname+" "+member.lastname%>
-            </option>
-            <%}%> <%}%>
+              <%if(typeof members != 'undefined'){%>
+                  <% for(let member of members){ %>
+                      <%if(id!=member.id){%>
+                      <option value="<%=member.id%>">
+                          <%=member.firstname+" "+member.lastname%>
+                      </option>
+                      <%}%>
+              <%}}%>
           </select>
         </div>
         <div class="form-group">
