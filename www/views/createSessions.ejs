@@ -193,7 +193,8 @@
     </div>
     <%}%> <% if(typeof session != 'undefined'){%>
     <div class="container">
-      <form action="/updatesession" method="post">
+        <form action="/updatesession" method="post">
+            <input type="hidden" name="sessionid" value="<%=session.id%>">
         <div class="form-group">
           <label for="sessionTitle">Session Title</label>
           <input
