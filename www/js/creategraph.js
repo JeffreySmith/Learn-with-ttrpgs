@@ -1,6 +1,9 @@
 function createChart(id) {
   fetch(`/sessioninfo/${id}/`)
     .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       return response.json();
     })
     .then((data) => {
@@ -11,9 +14,9 @@ function createChart(id) {
         xVals.push(d.time);
         yVals.push(d.level);
       }
-      /*if(xVals.length===0 && yVals.length===0){
+      if(xVals.length===0 && yVals.length===0){
 	document.getElementById("graphSection").style="display:none;";
-      }*/
+      }
       new Chart("chart", {
         type: "line",
         data: {
@@ -31,7 +34,7 @@ function createChart(id) {
         options: {
           legend: { display: false },
           scales: {
-            yAxes: [{ ticks: { min: 0, max: 12 } }],
+            yAxes: [{ ticks: { min: 0, max: 20 } }],
           },
         },
       });
