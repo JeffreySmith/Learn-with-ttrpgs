@@ -290,28 +290,20 @@ router
     
     const rpgs = allRPGS();
     if (!req.session.username) {
-<<<<<<< HEAD
 
-=======
->>>>>>> 3075148f211a8d923340bf8c2011847449b7797a
       if(!req.params.sessionid){
 	req.session.previousPage = `/createsession`;
       }
       else{
-<<<<<<< HEAD
 
-=======
->>>>>>> 3075148f211a8d923340bf8c2011847449b7797a
+
+
 	req.session.previousPage = `/createsession/${req.params.sessionid}`;
       }
       return res.redirect("/login");
     }
     let user = findUserSafe(req.session.username);
-<<<<<<< HEAD
 
-=======
-    groups = groups.filter((group)=> group.owner == user.id);
->>>>>>> 3075148f211a8d923340bf8c2011847449b7797a
     
     if (!req.params.sessionid) {
       
@@ -325,11 +317,7 @@ router
     else {
       const session = findSession(req.params.sessionid);
       groups = groups.filter((group)=> group.id==session.groupid);
-<<<<<<< HEAD
-      //groups = groups.filter((group)=> group.owner == user.id);
-=======
-      
->>>>>>> 3075148f211a8d923340bf8c2011847449b7797a
+
 
       if (!session || groups.length==0) {
         return res.redirect(`/sessions/${req.params.sessionid}`);
