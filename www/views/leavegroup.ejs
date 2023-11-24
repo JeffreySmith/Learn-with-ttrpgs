@@ -139,6 +139,11 @@
      .profilelink:hover{
          color:#f77062;
      }
+     .movetoright{
+         margin-left:auto;
+         display:flex;
+         margin-right:10px;
+     }
      @media only screen and (max-width:800px){
          .container{
              flex-direction:column-reverse;
@@ -151,6 +156,13 @@
              display:flex;
              align-items:center;
              justify-content:center;
+         }
+         nav{
+             flex-direction:column;
+             text-align:center;
+         }
+         .movetoright{
+             margin:auto;
          }
      }
     
@@ -168,13 +180,15 @@
         <a href="/">Home</a>
         <a href="/group">Groups</a>
         <a href="/createsession">Create New Session</a>
-        <div class="dropdown">
+        <div class="movetoright">
+            <div class="dropdown">
 
-            <input type="text" onkeydown="search()" id="search-input" placeholder="Search for a group" class="search-input">
+                <input type="text" onkeydown="search()" id="search-input" placeholder="Search for a group" class="search-input">
 
-            <div class="dropdown-items" id="dropdown-items"></div>
+                <div class="dropdown-items" id="dropdown-items"></div>
+            </div>
+            <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
         </div>
-        <button class="search" onclick="SearchSubmit()" id="search-submit">Search</button>
     </nav>
 
     <div class="container">
