@@ -263,7 +263,7 @@
             <div class="card">
                 <h2>Language Level</h2>
                 <div class="graph">
-                    <%if(typeof level != 'undefined' && !isNaN(level)){%>
+                    <%if(typeof level != 'undefined' && !Number.isNaN(level)){%>
                         <p>Grade <%=level%></p>
                     <%}else{%>
                         <p><strong>Make sure to upload transcripts of your sessions!</strong></p>
