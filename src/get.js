@@ -323,7 +323,8 @@ router
 
     console.log(sessions);
     if (sessions.length === 0) {
-      res.redirect(`/group/${req.params.groupid}`);
+      //res.redirect(`/group/${req.params.groupid}`);
+      res.redirect("/createsession");
     } else {
       console.log(sessions);
       res.render("sessionsPage", { sessions: sessions, name: name });
