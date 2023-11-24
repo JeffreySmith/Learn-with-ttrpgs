@@ -11,9 +11,9 @@ function createChart(id) {
         xVals.push(d.time);
         yVals.push(d.level);
       }
-      if(xVals.length===0 && yVals.length===0){
+      /*if(xVals.length===0 && yVals.length===0){
 	document.getElementById("graphSection").style="display:none;";
-      }
+      }*/
       new Chart("chart", {
         type: "line",
         data: {
