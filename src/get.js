@@ -297,17 +297,19 @@ router
 
     if (!req.params.sessionid) {
       groups = groups.filter((group)=> group.owner == user.id);
-      if(groups.length===0){
-	return res.redirect("/group");
+      if(groups.length==0){
+	return res.redirect(`/group`);
       }
-      res.render("createSessions", { groups: groups, rpgs: rpgs });
+      else{
+	res.render("createSessions", { groups: groups, rpgs: rpgs });
+      }
     } else {
       const session = findSession(req.params.sessionid);
       groups = groups.filter((group)=> group.id==session.groupid);
       groups = groups.filter((group)=> group.owner == user.id);
 
       if (!session || groups.length==0) {
-        return res.redirect("/group");
+        return res.redirect(`/sessions/${req.params.sessionid}`);
       }
 
       res.render("createSessions", {
@@ -321,7 +323,7 @@ router
     let sessions = allGroupSessions(req.params.groupid);
     let group = getGroupById(req.params.groupid);
     let name = "";
-    if (typeof name != undefined) {
+    if (typeof group.name != undefined) {
       name = group.name;
     }
     console.log(`Name: ${name}`);
