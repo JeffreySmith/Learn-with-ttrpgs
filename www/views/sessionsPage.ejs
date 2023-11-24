@@ -171,7 +171,8 @@
         outline: none;
         text-decoration: none;
         margin-right: 10px;
-        display: inline-block;
+          display: inline-block;
+          max-width:100%;
       }
 
       label.button.rating:hover {
@@ -255,7 +256,7 @@
                           </form>
                           <a style="color: white; text-decoration: none" href="/feedback/<%=session.groupid%>">
                               <label for="ratingFeedback1" class="button rating">
-                                  Rating/Feedback
+                                  Review
                               </label>
                           </a>
                           <a style="color: white; text-decoration: none" href="/createsession/<%=session.id%>">
