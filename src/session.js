@@ -95,6 +95,13 @@ function createSession(groupName,time,transcript,name,description,location,rpgid
 
   return info;
 }
+
+function updateSession(time,name,description,location,rpgid,sessionid){
+  let expr = db.prepare("UPDATE Sessions SET time=?,name=?,description=?,location=?,rpgid=? WHERE id=?");
+  let info = expr.run(time,name,description,location,rpgid,sessionid);
+  console.log(info);
+}
+
 function deleteSession(id) {
   let expr = db.prepare("DELETE FROM Sessions WHERE id=?");
   let info = expr.run(id);
@@ -195,5 +202,6 @@ module.exports = {
   allRPGS,
   round,
   getAverageSessionLevel,
-  getUserAverage
+  getUserAverage,
+  updateSession
 };

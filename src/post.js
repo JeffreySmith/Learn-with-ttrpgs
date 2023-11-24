@@ -26,6 +26,7 @@ const {
   findSession,
   allGroupSessions,
   addTranscript,
+  updateSession
 } = require("./session.js");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -341,6 +342,33 @@ router
       location,
       rpgid
     );
+    let group = findGroup(undefined, groupName);
+
+    console.log(groupName);
+    res.redirect(`/sessions/${group[0].id}`);
+  })
+  .post("/updatesession", (req, res) => {
+    let sessionid = req.body.sessionid;
+    let name = req.body.name;
+    let description = req.body.description;
+    let location = req.body.location;
+    let date = req.body.date;
+    let time = req.body.time;
+    let groupName = req.body.groupName;
+    let rpgid = req.body.rpgid;
+    let dateTime = date + " " + time + ":00";
+
+    updateSession(dateTime,name,description,location,rpgid,sessionid);
+    /*let response = createSession(
+      groupName,
+      dateTime,
+      undefined,
+      name,
+      description,
+      location,
+      rpgid
+    );*/
+    
     let group = findGroup(undefined, groupName);
 
     console.log(groupName);
