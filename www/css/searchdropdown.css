@@ -1,10 +1,12 @@
 .dropdown {
     position: relative;
 }
+
 .divider {
     border-top: 2px solid #555;
     margin: 20px 0;
 }
+
 .dropdown-items {
     position: absolute;
     flex-direction: column;
@@ -30,8 +32,9 @@ button.search {
 
 input.search-input {
     width: 200px;
-    outline: none;
+    outline: none;
 }
-nav{
-    display:flex;
+
+nav {
+    display: flex;
 }

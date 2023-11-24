@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Group Search</title>
+    <link rel="stylesheet" type="text/css" href="/www/css/searchPage.css" />
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid whitesmoke;
+        position: relative;
+      }
+     .nostyle{
+         text-decoration:none;
+         cursor:pointer;
+         color:inherit;
+     }
+     .nostyle:hover{
+         color:#f77062;
+     }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Group Search</h1>
+    </header>
+
+    <nav>
+      <a href="/">Home</a>
+      <a href="/group">Groups</a>
+    </nav>
+
+    <div id="searchSection">
+      <input type="text" id="searchInput" placeholder="Search..." />
+      <div id="filters">
+        <div>
+          <input type="radio" id="online" name="location" value="Online" />
+          <label for="online">Online</label>
+          <input type="radio" id="inPerson" name="location" value="In-Person" />
+          <label for="inPerson">In-Person</label>
+        </div>
+        <div>
+          <label for="languageLevel">Language Level:</label>
+          <select id="languageLevel">
+            <option value="select">--Select--</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+        <div>
+          <label for="gamesPlayed">Games Played:</label>
+          <select id="gamesPlayed">
+            <option value="select">--Select--</option>
+            <option value="Dungeons & Dragons">Dungeons & Dragons</option>
+            <option value="Vampire the Masquerade">
+              Vampire the Masquerade
+            </option>
+            <option value="Shadowrun">Shadowrun</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="sorting">
+        <label for="sortingOptions">Sort By:</label>
+        <select id="sortingOptions">
+          <option value="name">Name</option>
+          <option value="location">Location</option>
+        </select>
+        <label for="sortingOrder">Order:</label>
+        <select id="sortingOrder">
+          <option value="ascending">Ascending</option>
+          <option value="descending">Descending</option>
+        </select>
+      </div>
+      <button id="searchButton" onclick="search()">Search</button>
+    </div>
+
+    <div
+      id="searchResults"
+      style="
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        display: none;
+      "
+    >
+      <table>
+        <thead
+          style="
+            color: #f77062;
+            font-size: 20px;
+            border-bottom: 1px solid whitesmoke;
+          "
+        >
+          <tr>
+            <th>Group Name</th>
+            <th>Game Name</th>
+            <th>Location</th>
+            <th>Language Level</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div id="noDataFound"></div>
+    <script>
+      function search() {
+        const searchInput = document.getElementById("searchInput").value;
+        const resultsDiv = document.getElementById("searchResults");
+        const noDataEle = document.getElementById("noDataFound");
+        const locationFilter = document.querySelector(
+          'input[name="location"]:checked'
+        );
+
+        if (searchInput != undefined) {
+          fetch("/search-data?search=" + searchInput)
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              if (data.length > 0) {
+                resultsDiv.style = "display:flex";
+                data = applyFilters(data);
+                let sortedData = applySorting(data);
+                showData(sortedData);
+              } else {
+                resultsDiv.style = "display:none";
+                noDataEle.innerHTML =
+                  '<h2 style="text-align:center;color: #f77062">No Data Found</h2>';
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+
+        // displaySearchResults(sortedResults);
+        function showData(data) {
+          let outputEle = document.getElementById("tbody");
+          let result = data
+            .map((item) => {
+              return `
+                    <tr style="color: white; font-size: 18px; border-bottom: 1px solid whitesmoke;">
+                        <td><a class='nostyle' href='/group/${item.id}'>${item.groupName}</a></td>
+                        <td>${item.name}</td>
+                        <td>${item.location}</td>
+                        <td>${item.languageLevel}</td>
+                        </tr>
+                `;
+            })
+            .join("");
+          outputEle.innerHTML = result;
+        }
+      }
+
+      function applyFilters(results) {
+        const locationFilter = document.querySelector(
+          'input[name="location"]:checked'
+        );
+        const languageLevelFilter = document.getElementById("languageLevel");
+        const gamesPlayedFilter = document.getElementById("gamesPlayed");
+
+        return results.filter((result) => {
+          let valid = true;
+
+          if (locationFilter != null) {
+            if (
+              locationFilter.value === "Online" &&
+              result.location !== "Online"
+            ) {
+              valid = false;
+            }
+
+            if (
+              locationFilter.value !== "Online" &&
+              result.location === "Online"
+            ) {
+              valid = false;
+            }
+          }
+
+          if (languageLevelFilter.value !== "select") {
+            if (result.languageLevel != languageLevelFilter.value) {
+              valid = false;
+            }
+          }
+
+          if (gamesPlayedFilter.value !== "select") {
+            if (result.name !== gamesPlayedFilter.value) {
+              valid = false;
+            }
+          }
+
+          return valid;
+        });
+      }
+
+      function applySorting(results) {
+        const sortingOption = document.getElementById("sortingOptions").value;
+        const sortingOrder = document.getElementById("sortingOrder").value;
+
+        return results.sort((a, b) => {
+          if (sortingOrder === "ascending") {
+            return b[sortingOption].localeCompare(a[sortingOption]);
+          } else {
+            return a[sortingOption].localeCompare(b[sortingOption]);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

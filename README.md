@@ -3,6 +3,8 @@ Capstone Project for INFO8105
 
 This application is known to run on Linux, MacOS, OpenBSD, and Windows.
 
+To see this application in action, click <a href="https://learn-with-ttrpgs-dev-nrtq.4.us-1.fl0.io">here</a>
+
 It runs on JavaScript, node, Express, and EJS and uses SQLite for its database.
 Make sure to run
 ```
@@ -53,4 +55,4 @@ pass="your gmail password here"
 url="the url for the application"
 email="your gmail address that matches the password"
 ```
-This will allow you to send password recovery emails. Without the above variables defined, you will get a warning message in the console.
+This will allow you to send password recovery emails. Without the above variables defined, you will get a warning message in the console. Make sure your url does not have a trailing slash, otherwise password recovery won't work.

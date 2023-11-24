@@ -195,6 +195,9 @@
                             
                             <p>Joined on: <%= user.joined%></p>
                         <%}%>
+                        <%if(typeof userPage != 'undefined'){%>
+                            <p>Click <a href="/changeuserpassword">here</a> to change your password</p>
+                        <%}%>
                     <%}%>
                 </div>
 

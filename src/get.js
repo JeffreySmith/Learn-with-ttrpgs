@@ -1,48 +1,109 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const {findUserSafe,rateUser,getUsers,getUserById,getRatings} = require('./user.js');
-const {getGroups,findGroup,getGroupById,getGroupMembers, isInGroup,getGroupsByName, isGroupAdmin} = require('./groups.js');
+const {
+  findUserSafe,
+  rateUser,
+  getUsers,
+  getUserById,
+  getRatings,
+} = require("./user.js");
+const {
+  getGroups,
+  findGroup,
+  getGroupById,
+  getGroupMembers,
+  isInGroup,
+  getGroupsByName,
+  isGroupAdmin
+} = require("./groups.js");
 
-const {getSessions,createSession,deleteSession,findSession,allGroupSessions,groupSessionLevels, getGradeLevel,allRPGS} = require('./session.js');
+const {
+  getSessions,
+  searchByNameorGroupName,
+  createSession,
+  deleteSession,
+  findSession,
+  allGroupSessions,
+  groupSessionLevels,
+  getGradeLevel,
+  allRPGS,
+  getUserAverage
+} = require("./session.js");
 
-
-
-const db = require('better-sqlite3')(global.db_string);
-db.pragma('foreign_keys=ON');
+const db = require("better-sqlite3")(global.db_string);
+db.pragma("foreign_keys=ON");
 
 router
-  .get('/',(req,res)=>{
-    res.render("home");
-  })
-  .get('/register',(req,res)=>{
+  .get("/", (req, res) => {
     if(!req.session.username){
+      res.render("home");
+    }
+    else{
+      res.redirect("/dashboard");
+    }
+  })
+
+  .get("/search-data", (req, res) => {
+    let searchValue = req.query.search;
+    let result = searchByNameorGroupName(searchValue);
+    // let fake = [ {
+    // groupName: 'Heroes of the Abyss',
+    //   ownerName: 'Amelia Miller',
+    //   id: 2,
+    //   name: 'Shadowrun',
+    //   rpgid: 2,
+    //   groupid: 2,
+    //   description: 'We are going to learn a few things in the library this week',
+    //   time: '2023-11-25 16:45:00',
+    //   transcript: null,
+    //   location: 'The library',
+    //   languageLevel:2
+    // }, {
+    //   groupName: 'Heroes of the Abyss',
+    //   ownerName: 'Amelia Miller',
+    //   id: 2,
+    //   name: 'Vampire the Masquerade',
+    //   rpgid: 2,
+    //   groupid: 2,
+    //   description: 'We are going to learn a few things in the library this week',
+    //   time: '2023-11-25 16:45:00',
+    //   transcript: null,
+    //   languageLevel:1,
+    //   location: 'Online'
+    // }]
+    res.json(result);
+  })
+
+  .get("/search", (req, res) => {
+    let groups = getGroups();
+    res.render("searchPage",{groups:groups});
+  })
+
+  .get("/register", (req, res) => {
+    if (!req.session.username) {
       res.render("registration");
-    }
-    else{
+    } else {
       res.redirect("/userprofile");
     }
   })
-  .get('/login',(req,res)=>{
-    if(!req.session.username){
+  .get("/login", (req, res) => {
+    if (!req.session.username) {
       res.render("login");
-    }
-    else{
-      res.redirect("/userprofile");
+    } else {
+      res.redirect("/dashboard");
     }
   })
-  .get('/logout',(req,res)=>{
-    if(req.session.username){
+  .get("/logout", (req, res) => {
+    if (req.session.username) {
       req.session.username = undefined;
       req.session.role = undefined;
       req.session.loggedIn = undefined;
-    }
-    else{
+    } else {
       console.log("Trying to logout despite not being logged in...");
     }
     res.redirect("/");
-    
   })
-  .get('/recovery',(req,res)=>{
+  .get("/recovery", (req, res) => {
     res.render("recovery");
   })
 
@@ -52,11 +113,17 @@ router
     res.json(groups);
   })
 
-  .get("/recover/:id/",(req,res)=>{
+
+  .get("/recover/:id/:email/",(req,res)=>{
+
     let id = req.params.id;
-    let validRequest = global.resetUUIDS.find(u=>u.uuid === id);
+    let validRequest = global.resetUUIDS.find((u) => u.uuid === id);
     let index = undefined;
-    let user = findUserSafe(validRequest.email);
+
+    let user = undefined;
+    if(validRequest){
+      user = findUserSafe(validRequest.email);
+    }
     if(validRequest){
       index = global.resetUUIDS.findIndex(u=>u.uuid === id);
     }
@@ -64,41 +131,51 @@ router
       res.status(400).send("Invalid link");
     }
     console.log(validRequest);
-    console.log("Index is: "+index);
-    if(validRequest && Date.now()-validRequest.time <= 900000){
+    console.log("Index is: " + index);
+    if (validRequest && Date.now() - validRequest.time <= 900000) {
       console.log("Allow password resetting");
       console.log(Date.now() - validRequest.time);
       //global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
-      res.render("newpassword",{user:user});
+
+      res.render("newpassword",{user:user,email:req.params.email});
     }
     else{
+
       console.log("Password reset not valid");
-      global.resetUUIDS = global.resetUUIDS.filter(u=>u.uuid !== id);
+      global.resetUUIDS = global.resetUUIDS.filter((u) => u.uuid !== id);
       res.status(401).send("Link not valid");
     }
-  
+  })
+
+  .get("/changeuserpassword",(req,res)=>{
+    if(req.session.username){
+      let user = findUserSafe(req.session.username);
+      res.render("newpassword",{user:user,email:req.session.username});
+    }
+    else{
+      res.redirect("/userprofile");
+    }
   })
   
   .get("/group/:id/",(req,res)=>{
     let groupid = undefined;
-
     let isAdmin = false;
-    
     let username = req.session.username;
-    if(req.params.id){
+    if (req.params.id) {
       groupid = req.params.id;
     }
-    if(req.session.username==undefined){
+    if (req.session.username == undefined) {
       //username = "ttrpglearning@gmail.com";
-      req.session.previousPage=`/group/${req.params.id}/`;
+      req.session.previousPage = `/group/${req.params.id}/`;
       return res.redirect("/login");
     }
-    
+
     console.log(req.body.username);
-    
-    if (groupid){
+
+    if (groupid) {
       let group = getGroupById(groupid);
       let sessionLevels = groupSessionLevels(groupid);
+
       if(group){
 	let members = getGroupMembers(group.name);
 
@@ -122,77 +199,77 @@ router
 
 	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin,inGroup:inGroup});
 
+
       }
-      else{
-	res.redirect("/group");
-      }
-    }
-    else{
+    } else {
       res.redirect("/group");
     }
   })
-  .get("/group",(req,res)=>{
+  .get("/group", (req, res) => {
     let groups = getGroups();
-    if (req.session.username){
+    if (req.session.username) {
       let username = req.session.username;
+
       res.render("joincreate",{groups:groups,username:username});
     }
     else{
+      req.session.previousPage = "/group";
       res.redirect("/login");
     }
   })
-  .get("/userprofile/:id/",(req,res)=>{
+  .get("/userprofile/:id/", (req, res) => {
     let user = getUserById(req.params.id);
-    
-    if(user){
+
+    if (user) {
       let ratings = getRatings(user.email);
-      if(req.session.username){
-	let loggedIn = findUserSafe(req.session.username);
-	if(loggedIn != user){
-	  res.render("publicprofile",{user:user,ratings:ratings,loggedInUser:loggedIn});
-	}
-	else{
-	  res.render("publicprofile",{user:user,ratings:ratings});
-	}
+      if (req.session.username) {
+        let loggedIn = findUserSafe(req.session.username);
+        if (loggedIn != user) {
+          res.render("publicprofile", {
+            user: user,
+            ratings: ratings,
+            loggedInUser: loggedIn,
+          });
+        } else {
+          res.render("publicprofile", { user: user, ratings: ratings });
+        }
+      } else {
+        res.render("publicprofile", { user: user, ratings: ratings });
       }
-      else{
-	res.render("publicprofile",{user:user,ratings:ratings});
-      }
-    }
-    else{
+    } else {
       res.redirect("/userprofile");
     }
   })
-  .get("/userprofile",(req,res)=>{
-    if(req.session.username){
+  .get("/userprofile", (req, res) => {
+    if (req.session.username) {
       console.log(getRatings(req.session.username));
-      let user = getUsers().find((user)=> user.email === req.session.username);
+      let user = getUsers().find((user) => user.email === req.session.username);
       let ratings = getRatings(user.email);
-      res.render("publicprofile",{user:user,ratings:ratings});
+
+      res.render("publicprofile",{user:user,ratings:ratings,userPage:true});
     }
     else{
       res.redirect("/login");
     }
   })
-  
-  .get("/sessioninfo/:groupid/",(req,res)=>{
+
+  .get("/sessioninfo/:groupid/", (req, res) => {
     console.log("Trying to get resource...");
-    res.set('Access-Control-Allow-Origin', '*');
+    res.set("Access-Control-Allow-Origin", "*");
     let sessions = allGroupSessions(req.params.groupid);
     console.log(sessions);
     let sessionInfo = [];
-    for(let session of sessions){
-      if(session.transcript){
-	let info = {
-	  id:session.id,
-	  level:getGradeLevel(session.id),
-	  time:session.time.substring(0,10).replaceAll("-","/")
-	}
-	sessionInfo.push(info);
+    for (let session of sessions) {
+      if (session.transcript) {
+        let info = {
+          id: session.id,
+          level: getGradeLevel(session.id),
+          time: session.time.substring(0, 10).replaceAll("-", "/"),
+        };
+        sessionInfo.push(info);
       }
     }
     res.json(sessionInfo);
-    
   })
   .get("/session", (req, res) => {
     let sessions = getSessions();
@@ -200,9 +277,10 @@ router
       res.render("sessionsList", { sessionList: sessions });
     }
   })
-  .get("/sessioninfo",(req,res)=>{
+  .get("/sessioninfo", (req, res) => {
     res.status(401).send("Bad request");
   })
+
 /*  .get("/groups",(req,res)=>{
     const groups = getGroups();
     res.render("groups",{groups:groups});
@@ -210,50 +288,51 @@ router
   .get("/createsession/:sessionid?/",(req,res)=>{
     const groups = getGroups();
     const rpgs = allRPGS();
-    if(!req.session.username){
-      req.session.previousPage=`/createsession`;
+    if (!req.session.username) {
+      req.session.previousPage = `/createsession`;
       return res.redirect("/login");
     }
-    if(!req.params.sessionid){
-      res.render("createSessions",{groups:groups,rpgs:rpgs});
-    }
-    else{
+    if (!req.params.sessionid) {
+      res.render("createSessions", { groups: groups, rpgs: rpgs });
+    } else {
       const session = findSession(req.params.sessionid);
 
-      if(!session){
-	return res.redirect("/group");
+      if (!session) {
+        return res.redirect("/group");
       }
-      
-      res.render("createSessions",{groups:groups,rpgs:rpgs,session:session});
+
+      res.render("createSessions", {
+        groups: groups,
+        rpgs: rpgs,
+        session: session,
+      });
     }
   })
-  .get("/sessions/:groupid/",(req,res)=>{
+  .get("/sessions/:groupid/", (req, res) => {
     let sessions = allGroupSessions(req.params.groupid);
     let group = getGroupById(req.params.groupid);
     let name = "";
-    if(typeof(name) != undefined){
+    if (typeof name != undefined) {
       name = group.name;
     }
     console.log(`Name: ${name}`);
-    for (let session of sessions){
-      session.date = session.time.substring(0,9);
-      session.onlyTime = session.time.substring(11,16);
-      
+    for (let session of sessions) {
+      session.date = session.time.substring(0, 9);
+      session.onlyTime = session.time.substring(11, 16);
     }
-    
+
     console.log(sessions);
-    if (sessions.length===0){
-      res.redirect(`/group/${req.params.groupid}`);
-    }
-    else{
+    if (sessions.length === 0) {
+      //res.redirect(`/group/${req.params.groupid}`);
+      res.redirect("/createsession");
+    } else {
       console.log(sessions);
-      res.render("sessionsPage",{sessions:sessions,name:name});
+      res.render("sessionsPage", { sessions: sessions, name: name });
     }
-      
   })
-  .get("/deletesession/:groupid/:sessionid/",(req,res)=>{
-    if(!req.session.username){
-      req.session.previousPage=`/sessions/${req.params.groupid}/`;
+  .get("/deletesession/:groupid/:sessionid/", (req, res) => {
+    if (!req.session.username) {
+      req.session.previousPage = `/sessions/${req.params.groupid}/`;
       res.redirect("/login");
     }
     let user = findUserSafe(req.session.username);
@@ -262,43 +341,94 @@ router
     console.log(group);
     //Basically, you have to be logged in as well as a member of the group to delete something
 
+
     if(user && isGroupAdmin(user.email,group.name)){      
+
       deleteSession(req.params.sessionid);
       console.log("Session deleted!");
       res.redirect(`/sessions/${req.params.groupid}`);
-    }
-    else{
+    } else {
       console.log("Not deleting session??");
       res.redirect(`/sessions/${req.params.groupid}`);
     }
-    
   })
-  .get("/sendmessage",(req,res)=>{
-    if(req.session.username){
+  .get("/sendmessage", (req, res) => {
+    if (req.session.username) {
       let user = findUserSafe(req.session.username);
       let users = getUsers();
-      res.render("message",{user:user,users:users});
-    }
-    else{
-      req.session.previousPage="/sendmessage";
+      res.render("message", { user: user, users: users });
+    } else {
+      req.session.previousPage = "/sendmessage";
       res.redirect("/login");
     }
   })
-  .get("/feedback/:id/",(req,res)=>{
-    if (req.session.username){
+  .get("/feedback/:id/", (req, res) => {
+    if (req.session.username) {
       let groupName = getGroupById(req.params.id).name;
       let members = getGroupMembers(groupName);
       let id = req.params.id;
-      console.log(members);     
-      res.render("feedback",{members:members,id:id});
-    }
-    else{
-      req.session.previousPage=`/feedback/${req.params.id}`;
+      console.log(members);
+      res.render("feedback", { members: members, id: id });
+    } else {
+      req.session.previousPage = `/feedback/${req.params.id}`;
       res.redirect("/login");
     }
   })
-  .get("/test",(req,res)=>{
-    res.render("test");
+
+
+  .get("/passwordrecoverysent/",(req,res)=>{
+    let email = req.session.recoveryemail;
+    if(email){
+      req.session.recoveryemail = undefined;
+      res.render("passordrecoverysent",{email:email});
+      
+    }
+    else{
+      res.redirect("/recovery");
+    }
+  })
+
+  .get("/dashboard",(req,res)=>{
+    if(req.session.username){
+      let user = findUserSafe(req.session.username);
+      let level = getUserAverage(user.id);
+      let groups = getGroups();
+      let sessions = [];
+      let nextSession = "3000-10-25 16:30:00";
+      let sessionToSend = undefined;
+      groups = groups.filter((group)=>{
+	let expr = db.prepare("SELECT * FROM GroupMembers WHERE userid=? AND groupid=?").get(user.id,group.id);
+	console.log(expr);
+	if(expr!=undefined){
+	  let session = db.prepare("SELECT * FROM Sessions WHERE time>=datetime('now') AND groupid=? ORDER BY TIME LIMIT 1").get(group.id);
+	  if(session){
+	    sessions.push(session)
+	  }
+	  
+	  return expr;
+	}
+	
+      });
+      for (let session of sessions){
+	let newDate = new Date(session.time);
+	if (newDate <= new Date(nextSession)){
+	  nextSession = session.time;
+	}
+      }
+      sessionToSend = sessions.filter((s)=> s.time==nextSession);
+      let groupName = "";
+      if(sessionToSend.length>0){
+	groupName = db.prepare('SELECT Groups.name FROM Groups JOIN Sessions ON Sessions.groupid = Groups.id WHERE Sessions.id = ?').get(sessionToSend[0].id);
+      }
+      console.log(sessionToSend);
+      console.log(sessions);
+      res.render("userLandingPage",{username:req.session.username,level:level,groups:groups,nextSession:nextSession,sessionToShow:sessionToSend[0],groupName:groupName});
+      
+    }
+    else{
+      req.session.previousPage="/dashboard";
+      res.redirect("/login");
+    }
   })
 
 module.exports = router;

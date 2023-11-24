@@ -21,7 +21,8 @@
         "express-session": "^1.17.3",
         "express-validator": "^7.0.1",
         "flesch-kincaid": "github:daveross/flesch-kincaid",
-        "nodemailer": "^6.9.6"
+        "nodemailer": "^6.9.6",
+        "nodemon": "^3.0.1"
     },
     "devDependencies": {
         "jest": "^29.7.0"
