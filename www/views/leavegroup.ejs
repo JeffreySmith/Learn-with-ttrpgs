@@ -132,6 +132,13 @@
      .sessionslink:hover{
          color:#f77062;
      }
+     .profilelink{
+         text-decoration:none;
+         color:black;
+     }
+     .profilelink:hover{
+         color:#f77062;
+     }
      @media only screen and (max-width:800px){
          .container{
              flex-direction:column-reverse;
@@ -183,7 +190,7 @@
                     <ul>
                         <% if(typeof('members') != 'undefined'){ %>
                             <% for(let member of members){ %>
-                                <ul><%=member.firstname%> <%= member.lastname%></ul>
+                                <ul><a class="profilelink" href="/userprofile/<%=member.id%>"><%=member.firstname%> <%= member.lastname%></a></ul>
                             <%}%>
                         <%}%>
                     </ul>
