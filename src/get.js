@@ -363,18 +363,14 @@ router
     
     console.log(`Name: ${name}`);
     for (let session of sessions) {
-      session.date = session.time.substring(0, 9);
+      session.date = session.time.substring(0, 10);
       session.onlyTime = session.time.substring(11, 16);
     }
 
-    console.log(sessions);
-    if (sessions.length === 0) {
-      //res.redirect(`/group/${req.params.groupid}`);
-      res.redirect(`/group/${req.params.groupid}`);
-    } else {
+   
       console.log(sessions);
       res.render("sessionsPage", { sessions: sessions, name: name,userInGroup:userInGroup,group:group });
-    }
+    
   })
   .get("/deletesession/:groupid/:sessionid/", (req, res) => {
     if (!req.session.username) {
@@ -464,7 +460,7 @@ router
       sessionToSend = sessions.filter((s)=> s.time==nextSession);
       let groupName = "";
       if(sessionToSend.length>0){
-	groupName = db.prepare('SELECT Groups.name FROM Groups JOIN Sessions ON Sessions.groupid = Groups.id WHERE Sessions.id = ?').get(sessionToSend[0].id);
+	groupName = db.prepare('SELECT Groups.name,Groups.id FROM Groups JOIN Sessions ON Sessions.groupid = Groups.id WHERE Sessions.id = ?').get(sessionToSend[0].id);
       }
       console.log(sessionToSend);
       console.log(sessions);
