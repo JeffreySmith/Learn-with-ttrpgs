@@ -226,7 +226,7 @@
       <a href="/">Home</a>
       <a href="/group">Groups</a>
       <a href="/createsession">Create New Session</a>
-      <% if(typeof sessions!='undefined'){ %>
+      <% if(typeof sessions!='undefined' && typeof sessions[0] != 'undefined'){ %>
           <a href="/group/<%=sessions[0].groupid%>">Back to Group Page</a>
       <%}%>
     </nav>
