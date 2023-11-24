@@ -175,7 +175,7 @@ router
     if (groupid) {
       let group = getGroupById(groupid);
       let sessionLevels = groupSessionLevels(groupid);
-
+      let numOfSessions = allGroupSessions(groupid).length;
       if(group){
 	let members = getGroupMembers(group.name);
 
@@ -197,7 +197,7 @@ router
 
 
 
-	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin,inGroup:inGroup});
+	res.render("leavegroup",{members:members,group:group,username:username,sessioninfo:sessionLevels,admin:admin,id:req.params.id,isAdmin:isAdmin,inGroup:inGroup,numOfSessions:numOfSessions});
 
 
       }

@@ -189,7 +189,11 @@
                     </ul>
                 </li>
                 <li><strong>Admin:</strong> <%= typeof('admin') !='undefined' ? admin.email : "Admin user"%></li>
-                <a class="sessionslink" href="/sessions/<%=id%>"><strong>Click here for this Group's Sessions</strong></a>
+                <% if(typeof numOfSessions !='undefined' && numOfSessions > 0){ %>
+                    <a class="sessionslink" href="/sessions/<%=id%>"><strong>Click here for this Group's Sessions</strong></a>
+                <%}else if(numOfSessions <= 0 && inGroup){%>
+                    <a class="sessionslink" href="/createsession"><strong>Click here to create a session</strong></a>
+                <%}%>
             </ul>
             <!-- <div class="join" style="display:flex; justify-content:space-between;"> -->
             <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==true){ %>
