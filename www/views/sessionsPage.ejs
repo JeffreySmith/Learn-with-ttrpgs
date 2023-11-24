@@ -196,7 +196,13 @@
          transition: all 0.35s;
          outline: none;
      }
-
+     #grouplink{
+         text-decoration:none;
+         color:inherit;
+     }
+     #grouplink:hover{
+         color:#f77062;
+     }
      input[type="submit"]:hover {
          background: #4837ff;
          transition: all 0.3s ease;
@@ -225,7 +231,7 @@
       <div class="dashboard-container">
         <div class="dashboard">
           <div class="dashboard-title" style="text-align: center">
-            <%= typeof name !='undefined' ? name : "Group"%> Sessions
+              <a id="grouplink" href="/group/<%=group.id%>"><%= typeof name !='undefined' ? name : "Group"%></a> Sessions
           </div>
           <% if(typeof sessions !=undefined){ %>
               <% let counter = 0; %>
@@ -239,6 +245,7 @@
                           <p><strong>Time: </strong><%=session.onlyTime%></p>
                           <p><strong>Location: </strong><%=session.location%></p>
                           <p><strong>Description: </strong><%=session.description%></p>
+                          <%if(typeof userInGroup !='undefined' && userInGroup){%>
                           <form action="/uploadtranscript" method="post" enctype="multipart/form-data">
                               <input type="hidden" name="id" value="<%=session.id%>" />
                               <input type="hidden" name="groupid" value="<%=session.groupid%>"/>
@@ -264,6 +271,7 @@
                           <a style="color: white; text-decoration: none" href="/deletesession/<%=session.groupid%>/<%=session.id%>">
                               <label class="button rating"> Delete Session</label>
                           </a>
+                          <%}%>
                       </div>
                   </div>
               <%}}%>

@@ -290,16 +290,20 @@ router
     
     const rpgs = allRPGS();
     if (!req.session.username) {
+
       if(!req.params.sessionid){
 	req.session.previousPage = `/createsession`;
       }
       else{
+
+
+
 	req.session.previousPage = `/createsession/${req.params.sessionid}`;
       }
       return res.redirect("/login");
     }
     let user = findUserSafe(req.session.username);
-    groups = groups.filter((group)=> group.owner == user.id);
+
     
     if (!req.params.sessionid) {
       
@@ -313,26 +317,50 @@ router
     else {
       const session = findSession(req.params.sessionid);
       groups = groups.filter((group)=> group.id==session.groupid);
-      
+
 
       if (!session || groups.length==0) {
         return res.redirect(`/sessions/${req.params.sessionid}`);
       }
-
-      res.render("createSessions", {
-        groups: groups,
-        rpgs: rpgs,
-        session: session,
-      });
+      else if(session && groups.length==0){
+	return res.redirect(`/group/${session.groupid}`);
+      }
+      else{
+	res.render("createSessions", {
+          groups: groups,
+          rpgs: rpgs,
+          session: session,
+	});
+      }
     }
   })
   .get("/sessions/:groupid/", (req, res) => {
+    let user = "";
+    let userInGroup = false;
+    
+    if(!req.session.username){
+      req.session.previousPage=`/sessions/${req.params.groupid}`;
+      res.redirect("/login");
+      
+    }
+    else{
+      user = findUserSafe(req.session.username);
+    }
+      
+    
+
     let sessions = allGroupSessions(req.params.groupid);
     let group = getGroupById(req.params.groupid);
     let name = "";
     if (typeof group.name != undefined) {
       name = group.name;
     }
+
+    let result = db.prepare("SELECT * FROM GroupMembers WHERE groupid=? AND userid=?").get(group.id,user.id);
+    if(result){
+      userInGroup = true;
+    }
+    
     console.log(`Name: ${name}`);
     for (let session of sessions) {
       session.date = session.time.substring(0, 9);
@@ -345,7 +373,7 @@ router
       res.redirect(`/group/${req.params.groupid}`);
     } else {
       console.log(sessions);
-      res.render("sessionsPage", { sessions: sessions, name: name });
+      res.render("sessionsPage", { sessions: sessions, name: name,userInGroup:userInGroup,group:group });
     }
   })
   .get("/deletesession/:groupid/:sessionid/", (req, res) => {
