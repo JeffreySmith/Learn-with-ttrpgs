@@ -156,20 +156,25 @@ router
       let name = req.body.name;
       let lastName = req.body.lastname;
       let email = req.body.email;
-
+      let localErrors = [];
       let password = req.body.password;
-
+      if(findUserSafe(email)){
+	console.log("That user already exists");
+	localErrors.push("A user with that email already exists");
+      }
 
       if (password.length < password_len) {
         localErrors.push(`Your password must be at least ${password_len} characters long`);
       }
 
-      if (!errors.isEmpty()) {
-        return res.render("registration", { errors: errors.array() });
+      if (!errors.isEmpty() || localErrors.length>0) {
+        return res.render("registration", { errors: errors.array().concat(localErrors) });
       }
+      else{
 
-      insertUser(name, lastName, email, password, "user");
-      res.redirect("/login");
+	insertUser(name, lastName, email, password, "user");
+	res.redirect("/login");
+      }
       //res.render("registration",{message:"User account created!"});
     }
   )
@@ -194,7 +199,7 @@ router
           console.log("User login correct");
           //res.render("login",{message:"You've logged in successfully!"});
           if (!req.session.previousPage) {
-            res.redirect("/userprofile");
+            res.redirect("/dashboard");
           } else {
             let previous = req.session.previousPage;
             req.session.previousPage = undefined;

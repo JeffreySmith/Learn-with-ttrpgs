@@ -194,12 +194,46 @@
         .profile-link:hover {
             color:  #4837ff;
         }
+
+
+     @media only screen and (max-width: 800px){
+         .card-container{
+             flex-direction:column;
+             align-items:center;
+             min-width:600px;
+         }
+         .welcome-section{
+             max-width:400px;
+         }
+         .welcome-heading{
+             max-width:350px;
+             font-size:1.4rem;
+         }
+         .welcome-message{
+             
+             font-size:1rem;
+             margin-left:10px;
+             max-width:350px;
+             
+         }
+         .container{
+             display:flex;
+             justify-content:center;
+             align-items:center;
+             max-width:750px;
+         }
+         select{
+             text-align:center;
+         }
+         
+     }
     </style>
     <script>
      function changeProp(){
          let select = document.getElementById("groupnames").value;
          let link = document.getElementById("link").href=`/group/${select}`;
      }
+     
     </script>
 </head>
 
@@ -225,7 +259,7 @@
         <div class="card-container">
             <div class="card">
                 <h2>Group Dashboard</h2>
-                <%if(typeof groups != 'undefined'){%>
+                <%if(typeof groups != 'undefined' && groups.length>0){%>
                     <p><strong>Group Name:</strong>
                         <select id="groupnames" onchange="changeProp()" onload="changeProp()">
                         <% for(let group of groups){ %>
@@ -233,34 +267,49 @@
                         <%}%>
                         </select>
                     </p>
+                <%}else{%>
+                    <p><strong>Not in a group? Join or create your own!</strong></p>
+
                 <%}%>
                 
                 <div class="card-button">
-                    <a id="link" href="/group" class="button" onclick="changeProp()">View Dashboard</a>
+                    <a id="link" href="/group" class="button" onclick="changeProp()"><%= typeof groups!='undefined' && groups.length>0 ? "View Dashboard" : "Join or Create a Group"%></a>
                 </div>
             </div>
 
             <div class="card">
-                <h2>Upcoming Sessions/Meetups Dashboard</h2> 
-                 <!-- show these details if there is upcoming seesion is scheduled or just print "No Sessions/Meet-up Scheduled" Messege-->
-                <p><strong>Date:</strong> November 25, 2023</p>
-                <p><strong>Time:</strong> 8:00PM - 11:00PM </p>
-                <p><strong>Type:</strong> In-Person </p>
-                <div class="card-button">
-                    <a class="button">View Dashboard</a>
-                </div>
+                <h2>Next Session</h2> 
+                <!-- show these details if there is upcoming seesion is scheduled or just print "No Sessions/Meet-up Scheduled" Messege-->
+                <%if(typeof groupName!='undefined' && typeof nextSession!='undefined' && typeof sessionToShow!='undefined'){%>
+                    <p><strong>Group:</strong> <%=groupName.name%></p>
+                    <p><strong>Date:</strong> <%=nextSession.substring(0,10)%></p>
+                    <p><strong>Time:</strong> <%=nextSession.substring(11,16)%> </p>
+                    <p><strong>Type:</strong> <%= sessionToShow.location.toLowerCase() == 'online' ? 'Online' : 'In-Person'%> </p>
+                    <div class="card-button">
+                        <a href="/sessions/<%=sessionToShow.id%>" class="button">View Dashboard</a>
+                    </div>
+                <%}else{%>
+                    <p><strong>No upcoming sessions? Try joining or creating a group!</strong></p>
+                <%}%>
             </div>
 
             <div class="card">
                 <h2>Language Level</h2>
                 <div class="graph">
-                    <%if(typeof level != 'undefined'){%>
+                    <%if(typeof level != 'undefined' && !Number.isNaN(level)){%>
                         <p>Grade <%=level%></p>
+                    <%}else{%>
+                        <p><strong>Make sure to upload transcripts of your sessions!</strong></p>
                     <%}%>
                 </div>
-                <div class="card-button">
-                    <a href="#" class="button">View Details</a>
-                </div>
+                <%if(typeof level != 'undefined' && !isNaN(level)){%>
+                    <div class="card-button">
+                        <a href="#" class="button">View Details</a>
+                    </div>
+                <%}%>
+                   
+
+                
             </div>
         </div>
     </div>
