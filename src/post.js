@@ -26,6 +26,7 @@ const {
   findSession,
   allGroupSessions,
   addTranscript,
+  updateSession
 } = require("./session.js");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -58,32 +59,33 @@ router
 
 
     
-    if(password.length< password_len){
-      localErrors.push(`Your password must be at least ${password_len} characters long`);
-    }
-    if(errors.length>0 || localErrors.length > 0){
-      res.render("newpassword",{errors:errors.array().concat(localErrors)});
-    }
-    else{
-      //Need to figure out how to do this securely
-      bcrypt
-	.hash(password,10)
-	.then(hash=>{
-	  console.log(hash);
-	  console.log(email);
-	  let expr = db.prepare("UPDATE Users SET password = ? WHERE email=?");
-	  let info = expr.run(hash,email);
-	  console.log(info);
-	  console.log("Password should be updated...");
-	})
-	.catch(err=>console.error(err.message));
-      req.session.username=undefined;
-      req.session.role=undefined;
-      req.session.loggedIn = undefined;
-      res.redirect("/userprofile");
-
-    }
-  )
+      if(password.length< password_len){
+	localErrors.push(`Your password must be at least ${password_len} characters long`);
+      }
+      if(errors.length>0 || localErrors.length > 0){
+	res.render("newpassword",{errors:errors.array().concat(localErrors)});
+      }
+      else{
+	//Need to figure out how to do this securely
+	bcrypt
+	  .hash(password,10)
+	  .then(hash=>{
+	    console.log(hash);
+	    console.log(email);
+	    let expr = db.prepare("UPDATE Users SET password = ? WHERE email=?");
+	    let info = expr.run(hash,email);
+	    console.log(info);
+	    console.log("Password should be updated...");
+	  })
+	  .catch(err=>console.error(err.message));
+	req.session.username=undefined;
+	req.session.role=undefined;
+	req.session.loggedIn = undefined;
+	res.redirect("/userprofile");
+	
+      }
+    })
+    
   //This needs some checking, probably
   .post("/session", (req, res) => {
     let file = "";
@@ -155,22 +157,25 @@ router
       let name = req.body.name;
       let lastName = req.body.lastname;
       let email = req.body.email;
-
+      let localErrors = [];
       let password = req.body.password;
-
+      if(findUserSafe(email)){
+	console.log("That user already exists");
+	localErrors.push("A user with that email already exists");
+      }
 
       if (password.length < password_len) {
-        localErrors.push(
-          `Your password must be at least ${password_len} characters long`
-        );
+        localErrors.push(`Your password must be at least ${password_len} characters long`);
       }
 
-      if (!errors.isEmpty()) {
-        return res.render("registration", { errors: errors.array() });
+      if (!errors.isEmpty() || localErrors.length>0) {
+        return res.render("registration", { errors: errors.array().concat(localErrors) });
       }
+      else{
 
-      insertUser(name, lastName, email, password, "user");
-      res.redirect("/login");
+	insertUser(name, lastName, email, password, "user");
+	res.redirect("/login");
+      }
       //res.render("registration",{message:"User account created!"});
     }
   )
@@ -182,7 +187,7 @@ router
 
     if (!user) {
       console.log("User not found");
-      return res.render("login");
+      return res.render("login",{message:"Incorrect login info"});
     }
 
     bcrypt
@@ -195,7 +200,7 @@ router
           console.log("User login correct");
           //res.render("login",{message:"You've logged in successfully!"});
           if (!req.session.previousPage) {
-            res.redirect("/userprofile");
+            res.redirect("/dashboard");
           } else {
             let previous = req.session.previousPage;
             req.session.previousPage = undefined;
@@ -337,6 +342,33 @@ router
       location,
       rpgid
     );
+    let group = findGroup(undefined, groupName);
+
+    console.log(groupName);
+    res.redirect(`/sessions/${group[0].id}`);
+  })
+  .post("/updatesession", (req, res) => {
+    let sessionid = req.body.sessionid;
+    let name = req.body.name;
+    let description = req.body.description;
+    let location = req.body.location;
+    let date = req.body.date;
+    let time = req.body.time;
+    let groupName = req.body.groupName;
+    let rpgid = req.body.rpgid;
+    let dateTime = date + " " + time + ":00";
+
+    updateSession(dateTime,name,description,location,rpgid,sessionid);
+    /*let response = createSession(
+      groupName,
+      dateTime,
+      undefined,
+      name,
+      description,
+      location,
+      rpgid
+    );*/
+    
     let group = findGroup(undefined, groupName);
 
     console.log(groupName);

@@ -132,9 +132,9 @@
     </header>
 
     <nav>
-      <a href="#">Home</a>
-      <a href="#">My Group</a>
-      <a href="#">My Sessions</a>
+      <a href="/">Home</a>
+      <a href="/group">Groups</a>
+
       <!--Sessions/Meet-ups Dashboard-->
     </nav>
     <% if(typeof session =='undefined'){ %>
@@ -193,7 +193,8 @@
     </div>
     <%}%> <% if(typeof session != 'undefined'){%>
     <div class="container">
-      <form action="/updatesession" method="post">
+        <form action="/updatesession" method="post">
+            <input type="hidden" name="sessionid" value="<%=session.id%>">
         <div class="form-group">
           <label for="sessionTitle">Session Title</label>
           <input

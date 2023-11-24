@@ -18,6 +18,14 @@
         border-bottom: 1px solid whitesmoke;
         position: relative;
       }
+     .nostyle{
+         text-decoration:none;
+         cursor:pointer;
+         color:inherit;
+     }
+     .nostyle:hover{
+         color:#f77062;
+     }
     </style>
   </head>
 
@@ -28,7 +36,7 @@
 
     <nav>
       <a href="/">Home</a>
-      <a href="/groups">Groups</a>
+      <a href="/group">Groups</a>
     </nav>
 
     <div id="searchSection">
@@ -151,7 +159,7 @@
             .map((item) => {
               return `
                     <tr style="color: white; font-size: 18px; border-bottom: 1px solid whitesmoke;">
-                        <td>${item.groupName}</td>
+                        <td><a class='nostyle' href='/group/${item.id}'>${item.groupName}</a></td>
                         <td>${item.name}</td>
                         <td>${item.location}</td>
                         <td>${item.languageLevel}</td>
