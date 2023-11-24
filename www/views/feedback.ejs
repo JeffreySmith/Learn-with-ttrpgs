@@ -61,7 +61,8 @@
         box-sizing: border-box;
         background-color: #444;
         border-radius: 8px;
-        margin-top: 20px;
+          margin-top: 20px;
+          margin-bottom:20px;
       }
 
       .form-group {
@@ -86,14 +87,17 @@
       }
 
       .form-group textarea {
-        resize: vertical;
+          resize: vertical;
+          max-width:96%;
       }
 
       .form-actions {
         display: flex;
         justify-content: flex-end;
       }
-
+     textarea{
+         
+     }
       .button {
         background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
         padding: 10px 15px;
@@ -143,7 +147,7 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="rating">Rating (out of 5):</label>
+          <label for="rating">Your rating out of 5:</label>
           <select id="rating" name="rating">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -155,10 +159,11 @@
         <div class="form-group">
           <label for="feedback">Feedback:</label>
           <textarea
-            id="feedback"
-            name="feedback"
-            rows="4"
-            placeholder="Enter your feedback..."
+              id="feedback"
+              name="feedback"
+              rows="5"
+
+              placeholder="Enter your feedback..."
           ></textarea>
         </div>
         <div class="form-actions">
