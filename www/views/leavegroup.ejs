@@ -39,7 +39,7 @@
      .container {
          display: flex;
          width: 100%;
-         max-width: 1000px;
+         max-width: 800px;
          background-color: #131313;
          border-radius: 8px;
          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -111,7 +111,7 @@
          margin: 0;
      }
 
-     li {
+     li,.sessionslink {
          background-color: #ddd;
          margin: 5px 0;
          padding: 10px;
@@ -123,7 +123,29 @@
          border-top: 2px solid #555;
          margin: 20px 0;
      }
+     .sessionslink{
+         display:block;
+         text-decoration:none;
+         
+         cursor:pointer;
+     }
+     .sessionslink:hover{
+         color:#f77062;
+     }
+     @media only screen and (max-width:800px){
+         .container{
+             flex-direction:column-reverse;
 
+         }
+         .divider{
+             display:none;
+         }
+         #graph{
+             display:flex;
+             align-items:center;
+             justify-content:center;
+         }
+     }
     
 
     </style>
@@ -167,6 +189,7 @@
                     </ul>
                 </li>
                 <li><strong>Admin:</strong> <%= typeof('admin') !='undefined' ? admin.email : "Admin user"%></li>
+                <a class="sessionslink" href="/sessions/<%=id%>"><strong>Click here for this Group's Sessions</strong></a>
             </ul>
             <!-- <div class="join" style="display:flex; justify-content:space-between;"> -->
             <% if(typeof isAdmin != 'undefined' && isAdmin == false && typeof inGroup !='undefined' && inGroup==true){ %>

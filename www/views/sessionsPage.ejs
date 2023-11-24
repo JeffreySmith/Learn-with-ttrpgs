@@ -171,13 +171,43 @@
         outline: none;
         text-decoration: none;
         margin-right: 10px;
-        display: inline-block;
+          display: inline-block;
+          max-width:100%;
       }
 
       label.button.rating:hover {
         background: #4837ff;
         transition: all 0.3s ease;
       }
+     form{
+         margin-bottom:20px;
+     }
+      input[type="submit"] {
+         font-size: 1rem;
+         background-image: linear-gradient(to top, #f77062 0%, #fe5196 100%);
+         padding: 10px 15px;
+         border: none;
+         border-radius: 4px;
+         color: #fff;
+          margin-top:5px;
+          margin-bottom:5px;
+         cursor: pointer;
+         
+         transition: all 0.35s;
+         outline: none;
+     }
+
+     input[type="submit"]:hover {
+         background: #4837ff;
+         transition: all 0.3s ease;
+     }
+     @media only screen and (max-width:800px){
+         .dashboard a,label,input[type="submit"]{
+             margin-top:5px;
+             margin-bottom:5px;
+             
+         }
+     }
     </style>
   </head>
 
@@ -188,7 +218,7 @@
 
     <nav>
       <a href="/">Home</a>
-      <a href="/groups">Groups</a>
+      <a href="/group">Groups</a>
     </nav>
 
     <div class="container">
@@ -213,6 +243,7 @@
                               <input type="hidden" name="id" value="<%=session.id%>" />
                               <input type="hidden" name="groupid" value="<%=session.groupid%>"/>
                               <label for="transcriptFile<%=counter%>" class="button">Upload Transcript File</label>
+                              
                               <input type="file"
                                   id="transcriptFile<%=counter%>"
                                   name="transcript"
@@ -221,10 +252,11 @@
                                   required/>
 
                               <div><input class="button" type="submit" /></div>
+                              
                           </form>
                           <a style="color: white; text-decoration: none" href="/feedback/<%=session.groupid%>">
                               <label for="ratingFeedback1" class="button rating">
-                                  Rating/Feedback
+                                  Review
                               </label>
                           </a>
                           <a style="color: white; text-decoration: none" href="/createsession/<%=session.id%>">
