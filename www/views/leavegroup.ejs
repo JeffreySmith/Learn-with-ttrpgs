@@ -166,7 +166,7 @@
 
     <nav style="display: flex;">
         <a href="/">Home</a>
-        <a href="/group">Groups</a>
+        <a href="/group">Create or Join Group</a>
         <div class="dropdown">
 
             <input type="text" onkeydown="search()" id="search-input" placeholder="Search for a group" class="search-input">
@@ -182,7 +182,7 @@
             <h2>Group Details</h2>
             
             <ul id="groupDetailsList">
-                <!-- Display group details dynamically here -->
+                <!-- Display group details here -->
                 
                 <li><strong>Name:</strong> <%=  typeof('group') !='undefined' ? group.name : "Group Name" %></li>
                 <li><strong>Description:</strong> <%= typeof('group') !='undefined' ? group.description : "Group Description" %></li>
