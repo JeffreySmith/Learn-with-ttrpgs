@@ -109,18 +109,16 @@ function leaveGroup(userEmail, groupName) {
   }
 }
 
-function changeOwner(newOwnerEmail, groupName) {
+function changeOwner(newOwnerEmail, groupid) {
   let newOwner = findUserSafe(newOwnerEmail);
-  let group = findGroup(groupName);
-  if (group.length >= 1) {
-    group = group[0];
-  } else {
-    return undefined;
-  }
+  //console.log("Group name is: "+groupName);
+  let group = getGroupById(groupid);
+  console.log("Group is:");
+  console.log(group);
 
   if (newOwner && group) {
     let expr = db.prepare("UPDATE Groups SET owner = ? WHERE id = ?");
-    let info = expr.run(user.id, group.id);
+    let info = expr.run(newOwner.id, groupid);
     console.log(info);
   }
 }

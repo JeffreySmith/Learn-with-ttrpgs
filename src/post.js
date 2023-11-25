@@ -19,6 +19,8 @@ const {
   deleteGroup,
   leaveGroup,
   createGroup,
+  getGroupById,
+  changeOwner
 } = require("./groups.js");
 const { sendPasswordResetEmail, sendMail, sendMessage } = require("./email.js");
 const {
@@ -453,10 +455,10 @@ router
     if(groupid){
       group = getGroupById(groupid);
     }
-    if(groupid && newOwner && group){
+    if(groupid && newOwner && typeof group !=undefined){
       
-      console.log(`Group name is: ${group.name}`);
-      changeOwner(newOwner,group.name);
+      console.log(`Group name is: ${group.name} (in post, for changeOwner)`);
+      changeOwner(newOwner,groupid);
     }
     else{
       console.log("Something went wrong...");
