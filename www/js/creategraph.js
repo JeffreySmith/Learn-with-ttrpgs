@@ -14,6 +14,8 @@ function createChart(id) {
         xVals.push(d.time);
 
         yVals.push(Math.min(d.level, 15));// making it to 15
+	yVals.push(Math.min(d.level, 15));
+
       }
 
       if (xVals.length === 0 && yVals.length === 0) {

@@ -242,7 +242,7 @@
               
               <%for(let session of sessions){ %>
                   <% counter +=1; %>
-                  <div class="session">
+                  <div id="session<%=session.id%>" class="session">
                       <div class="session-title"><%=session.name%></div>
                       <div class="session-details">
                           <p><strong>Date: </strong><%=session.date%></p>

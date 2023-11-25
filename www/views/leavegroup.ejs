@@ -255,10 +255,10 @@
 
                     <button type="submit">Save Info</button>
                 </form>
-
-                <form method="post" action="/changeowner" >
-                    <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
-                    <% if(typeof('members') != 'undefined'){ %>
+                <% if(typeof('members') != 'undefined' && members.length>1){ %>
+                    <form method="post" action="/changeowner" >
+                        <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
+                        
                         <select name="newowner">
                             <% for(let member of members){ %>
                                 <% if(admin.email != member.email){ %>    
@@ -266,42 +266,42 @@
                                 <%}%>
                             <%}%>
                         </select>
-                    <%}%>
-                    <div>
-                        <button id="changeGroupBtn">Change Group Owner</button>
-                    </div>
-                </form>
-
-                <form method="post" action="/removeuser">
-                    <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
-                    <% if(typeof('members') != 'undefined'){ %>
-                        <select name="usertoremove">
-                            <% for(let member of members){ %>
-                                <% if(admin.email != member.email){ %>    
-                                    <option value="<%=member.email%>"><%=member.firstname%> <%= member.lastname%></option>
+                        
+                        <div>
+                            <button id="changeGroupBtn">Change Group Owner</button>
+                        </div>
+                <%}%>
+                    </form>
+                    <% if(typeof('members') != 'undefined' && members.length>1){ %>
+                        <form method="post" action="/removeuser">
+                            <input type="hidden" value="<%= typeof group != 'undefined' ? group.id : 1%>" name="groupid">
+                            
+                            <select name="usertoremove">
+                                <% for(let member of members){ %>
+                                    <% if(admin.email != member.email){ %>    
+                                        <option value="<%=member.email%>"><%=member.firstname%> <%= member.lastname%></option>
+                                    <%}%>
                                 <%}%>
-                            <%}%>
-                        </select>
-                    <%}%>
-                     <div>
-                         <button id="removeGroupBtn">Remove User From Group</button>
-                     </div>
-                </form>
-                <form method="post" action="/deletegroup">
-                    <% if(typeof group != 'undefined'){ %>
-                        <input type="hidden" value="<%=group.id%>" name="groupid">
-                        <div>
-                            <input style="display:inline;width:20px" type="checkbox" id="delete" name="delete" required>
-                            <label style="display:inline-block;" for="delete">I understand this cannot be undone</label>
+                            </select>
                             
-                            
-                        </div>
-                        <div>
-                            <button id="deleteGroupBtn">Delete Group</button>
-                        </div>
+                            <div>
+                                <button id="removeGroupBtn">Remove User From Group</button>
+                            </div>
                     <%}%>
-                 </form>
-
+                        </form>
+                    <form method="post" action="/deletegroup">
+                        <% if(typeof group != 'undefined'){ %>
+                            <input type="hidden" value="<%=group.id%>" name="groupid">
+                            <div>
+                                <input style="display:inline;width:20px" type="checkbox" id="delete" name="delete" required>
+                                <label style="display:inline-block;" for="delete">I understand this cannot be undone</label>
+                            </div>
+                            <div>
+                                <button id="deleteGroupBtn">Delete Group</button>
+                            </div>
+                        <%}%>
+                    </form>
+                    
             <%}%>
         </section>
         

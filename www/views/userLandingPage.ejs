@@ -298,12 +298,8 @@
                     <p><strong>Time:</strong> <%=nextSession.substring(11,16)%> </p>
                     <p><strong>Type:</strong> <%= sessionToShow.location.toLowerCase() == 'online' ? 'Online' : 'In-Person'%> </p>
                     <div class="card-button">
-                        <a onload="test()" href="/sessions/<%=sessionToShow.groupid%>" class="button">View Session</a>
-                        <script>
-                         function test(){
-                             console.log("ID to show: <%=sessionToShow.id%>");
-                         }
-                        </script>
+                        <a  href="/sessions/<%=sessionToShow.groupid%>/#session<%=sessionToShow.id%>" class="button">View Session</a>
+                        
                     </div>
                      <div class="card-button">
                          <a style="margin-top:10px" href="/createsession/" class="button">Create a Session</a>
