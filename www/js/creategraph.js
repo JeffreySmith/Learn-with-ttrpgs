@@ -12,6 +12,9 @@ function createChart(id) {
 
       for (let d of data) {
         xVals.push(d.time);
+	if(d.level>15){
+	  d.level=15;
+	}
         yVals.push(d.level);
       }
       if(xVals.length===0 && yVals.length===0){
