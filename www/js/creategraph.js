@@ -12,10 +12,13 @@ function createChart(id) {
 
       for (let d of data) {
         xVals.push(d.time);
-        yVals.push(d.level);
+
+        yVals.push(Math.min(d.level, 15));// making it to 15
       }
-      if(xVals.length===0 && yVals.length===0){
-	document.getElementById("graphSection").style="display:none;";
+
+      if (xVals.length === 0 && yVals.length === 0) {
+        document.getElementById("graphSection").style.display = "none";
+        return; 
       }
       new Chart("chart", {
         type: "line",
@@ -34,12 +37,16 @@ function createChart(id) {
         options: {
           legend: { display: false },
           scales: {
-            yAxes: [{ ticks: { min: 0, max: 20 } }],
+            yAxes: [
+              {
+                ticks: { min: 0, max: 20 },
+              },
+            ],
           },
         },
       });
     })
     .catch((err) => {
-      console.log(err);
+      console.error("Error fetching or processing data:", err);
     });
 }

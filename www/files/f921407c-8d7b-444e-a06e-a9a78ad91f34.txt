@@ -1,0 +1,15 @@
+Search + Filtering functionality: 
+
+Search for users in group(group)
+Group owner (group)
+Language Level Which games they've played(session)
+Location (session)
+
+Order by various fields: 
+
+most recent/least recent session(session), 14 19 19 14
+
+order by language level ascending+descending(session) 11 9
+
+
+ 
