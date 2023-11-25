@@ -59,12 +59,18 @@ function isInGroup(email, groupName) {
 function createGroup(userEmail, groupName, groupDescription) {
   let user = findUserSafe(userEmail);
   console.log(user);
-  let expr = db.prepare(
-    "INSERT INTO Groups (name,description,owner) VALUES (?,?,?)"
-  );
-  let info = expr.run(groupName, groupDescription, user.id);
-  console.log(info);
-  joinGroup(userEmail, groupName);
+  let test = db.prepare("SELECT * FROM Groups WHERE name=?");
+  let result = test.get(groupName);
+  if(!result){
+    let expr = db.prepare("INSERT INTO Groups (name,description,owner) VALUES (?,?,?)");
+    let info = expr.run(groupName, groupDescription, user.id);
+    console.log(info);
+    joinGroup(userEmail, groupName);
+  }
+  else{
+    console.log("Group names must be unique");
+    return false;
+  }
 }
 function joinGroup(userEmail, groupName) {
   let user = findUserSafe(userEmail);
