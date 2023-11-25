@@ -20,7 +20,8 @@ const {
   leaveGroup,
   createGroup,
   getGroupById,
-  changeOwner
+  changeOwner,
+  deleteGroupByID
 } = require("./groups.js");
 const { sendPasswordResetEmail, sendMail, sendMessage } = require("./email.js");
 const {
