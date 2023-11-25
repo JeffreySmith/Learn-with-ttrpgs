@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us</title>
+    <link rel="stylesheet" href="www/css/normalize.css">
+    <link rel="stylesheet" href="www/css/homepage.css" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+      integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+
+      body {
+        font-family: 'Kumbh Sans', sans-serif;
+        background-color: #131313;
+        color: #fff;
+      }
+      
+      .about {
+        background-color: #141414;
+      }
+      
+      .main__content {
+        margin-top: 3rem;
+      }
+      
+      .main__content h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background-color: #ff8177;
+        background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+        background-size: 100%;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -moz-text-fill-color: transparent;
+      }
+      
+      .main__content p {
+        margin-top: 1.5rem;
+        font-size: 1.2rem;
+        line-height: 1.6;
+      }
+      
+     
+      </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar__container">
+        <a href="/" id="navbar__logo"><i class="fas fa-gem"></i>TTRPGs</a>
+        <div class="navbar__toggle" id="mobile-menu">
+          <span class="bar"></span> <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <ul class="navbar__menu">
+          <li class="navbar__item">
+            <a href="/" class="navbar__links">Home</a>
+          </li>
+          
+          
+          <li class="navbar__btn"><a href="/register" class="button">Sign Up</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="main about">
+      <div class="main__container">
+        <div class="main__content">
+          <h1>About Us</h1>
+          <p>
+            Welcome to TTRPG Learning, your go-to platform for improving language skills
+            through tabletop role-playing games. Our mission is to provide an immersive
+            and enjoyable learning experience by bringing language enthusiasts together
+            to play and learn in a collaborative environment.
+          </p>
+          <p>
+            At TTRPG Learning, we believe that language acquisition can be a fun and
+            interactive process. By engaging in role-playing games, participants not
+            only enhance their language proficiency but also foster a sense of
+            community and camaraderie.
+          </p>
+          <p>
+            Join us on this exciting journey of language learning, where every game is an
+            opportunity to explore new worlds, make friends, and become a master of
+            communication.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <%- include('layouts/footer.ejs');%>
+    <script src="www/js/home.js"></script>
+  </body>
+</html>

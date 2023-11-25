@@ -42,6 +42,9 @@ router
       res.redirect("/dashboard");
     }
   })
+  .get("/about",(req,res)=>{
+    res.render("about");
+  })
 
   .get("/search-data", (req, res) => {
     let searchValue = req.query.search;
