@@ -296,7 +296,11 @@ router
     console.log(`Username: ${username}`);
     if (username) {
       console.log(`Username should be something: ${username}`);
-      createGroup(username, groupName, groupDescription);
+      
+      let test = createGroup(username, groupName, groupDescription);
+      if(!test){
+	return res.redirect("/group");
+      }
       let group = findGroup(username, groupName);
       res.redirect(`/group/${group[0].id}/`);
     } else {
