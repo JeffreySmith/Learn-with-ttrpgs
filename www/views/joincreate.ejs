@@ -8,7 +8,34 @@
     <link rel="stylesheet" type="text/css" href="/www/css/styles.css" />
     <link rel="stylesheet" type="text/css" href="/www/css/joincreate.css" />
     <link rel="stylesheet" type="text/css" href="/www/css/searchdropdown.css" />
+    <style>
+     .movetoright{
+         margin-left:auto;
+         display:flex;
+         margin-right:10px;
+     }
+     @media only screen and (max-width:800px){
+         .container{
+             flex-direction:column-reverse;
 
+         }
+         .divider{
+             display:none;
+         }
+         #graph{
+             display:flex;
+             align-items:center;
+             justify-content:center;
+         }
+         nav{
+             flex-direction:column;
+             text-align:center;
+         }
+         .movetoright{
+             margin:auto;
+         }
+     }
+    </style>
     <script type="text/javascript" src="/www/js/searchbar.js" defer></script>
 
     <script>
@@ -27,6 +54,7 @@
 
       <a href="/">Home</a>
       <a href="/group">Create/Join</a>
+      <div class="movetoright">
       <div class="dropdown">
         <input
           type="text"
@@ -40,6 +68,7 @@
       <button class="search" onclick="SearchSubmit()" id="search-submit">
         Search
       </button>
+      </div>
 
     </nav>
 
