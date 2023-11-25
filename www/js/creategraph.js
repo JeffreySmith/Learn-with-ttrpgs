@@ -12,7 +12,8 @@ function createChart(id) {
 
       for (let d of data) {
         xVals.push(d.time);
-        yVals.push(d.level);
+	yVals.push(Math.min(d.level, 15));
+
       }
       if(xVals.length===0 && yVals.length===0){
 	document.getElementById("graphSection").style="display:none;";
