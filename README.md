@@ -3,8 +3,6 @@ Capstone Project for INFO8105
 
 This application is known to run on Linux, MacOS, OpenBSD, and Windows.
 
-To see this application in action, click <a href="https://learn-with-ttrpgs-dev-nrtq.4.us-1.fl0.io">here</a>
-
 It runs on JavaScript, node, Express, and EJS and uses SQLite for its database.
 Make sure to run
 ```
