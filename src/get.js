@@ -412,8 +412,9 @@ router
       let groupName = getGroupById(req.params.id).name;
       let members = getGroupMembers(groupName);
       let id = req.params.id;
+      let user = findUserSafe(req.session.username);
       console.log(members);
-      res.render("feedback", { members: members, id: id });
+      res.render("feedback", { members: members, id: id,user:user });
     } else {
       req.session.previousPage = `/feedback/${req.params.id}`;
       res.redirect("/login");
