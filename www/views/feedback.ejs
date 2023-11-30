@@ -135,9 +135,9 @@
           id:"99999"%>">
           <label for="member">Select Member:</label>
           <select id="member" name="member">
-              <%if(typeof members != 'undefined'){%>
+              <%if(typeof members != 'undefined' && typeof user != 'undefined'){%>
                   <% for(let member of members){ %>
-                      <%if(id!=member.id){%>
+                      <%if(user.id!=member.id){%>
                       <option value="<%=member.id%>">
                           <%=member.firstname+" "+member.lastname%>
                       </option>
